@@ -1,6 +1,6 @@
 'use client';
 
-import { ReactNode, MouseEvent, useState, useEffect } from 'react';
+import { ReactNode, MouseEvent, useState, useEffect, useRef } from 'react';
 import { usePanels } from './PanelContext';
 
 interface PanelLinkProps {
@@ -51,13 +51,20 @@ function PanelContent({ path }: { path: string }) {
   const [html, setHtml] = useState<string>('');
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const contentRef = useRef<HTMLDivElement>(null);
+  const { addPanel } = usePanels();
 
   useEffect(() => {
     async function fetchContent() {
       try {
         setLoading(true);
-        // Fetch the actual page
-        const response = await fetch(path);
+        // Try multiple path formats for compatibility with different hosting configs
+        // 1. Clean URL (no extension) - works with Vercel cleanUrls: true
+        // 2. With .html extension - works with basic static hosting
+        let response = await fetch(path);
+        if (!response.ok) {
+          response = await fetch(`${path}.html`);
+        }
         if (!response.ok) {
           throw new Error('Page not found');
         }
@@ -70,6 +77,15 @@ function PanelContent({ path }: { path: string }) {
         const mainContent = doc.querySelector('article') || doc.querySelector('main');
 
         if (mainContent) {
+          // Remove the PageHeader buttons (first child div with the buttons)
+          const headerDiv = mainContent.querySelector('div.mb-8');
+          if (headerDiv) {
+            // Keep only the h1 and tag list, remove the button container
+            const buttonContainer = headerDiv.querySelector('div.flex.gap-2');
+            if (buttonContainer) {
+              buttonContainer.remove();
+            }
+          }
           setHtml(mainContent.innerHTML);
         } else {
           setHtml(htmlText);
@@ -84,6 +100,45 @@ function PanelContent({ path }: { path: string }) {
 
     fetchContent();
   }, [path]);
+
+  // Intercept link clicks to open in panels instead of navigating
+  useEffect(() => {
+    if (!contentRef.current) return;
+
+    const handleLinkClick = (e: Event) => {
+      const target = e.target as HTMLElement;
+      const link = target.closest('a');
+      if (!link) return;
+
+      const href = link.getAttribute('href');
+      if (!href) return;
+
+      // Skip external links
+      if (href.startsWith('http')) {
+        return;
+      }
+
+      // Skip anchor links
+      if (href.startsWith('#')) {
+        return;
+      }
+
+      e.preventDefault();
+
+      // Open in new panel
+      addPanel({
+        id: `${href}-${Date.now()}`,
+        title: href.split('/').pop() || href,
+        path: href,
+        content: <PanelContent path={href} />,
+      });
+    };
+
+    contentRef.current.addEventListener('click', handleLinkClick);
+    return () => {
+      contentRef.current?.removeEventListener('click', handleLinkClick);
+    };
+  }, [html, addPanel]);
 
   if (loading) {
     return (
@@ -103,6 +158,7 @@ function PanelContent({ path }: { path: string }) {
 
   return (
     <div
+      ref={contentRef}
       className="prose prose-neutral dark:prose-invert max-w-none prose-sm"
       dangerouslySetInnerHTML={{ __html: html }}
     />
