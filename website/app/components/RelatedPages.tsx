@@ -145,11 +145,12 @@ function PanelContent({ path }: { path: string }) {
     async function fetchContent() {
       try {
         setLoading(true);
-        // For static export, pages are served as .html files
-        // Try with .html extension first, then without
-        let response = await fetch(`${path}.html`);
+        // Try multiple path formats for compatibility with different hosting configs
+        // 1. Clean URL (no extension) - works with Vercel cleanUrls: true
+        // 2. With .html extension - works with basic static hosting
+        let response = await fetch(path);
         if (!response.ok) {
-          response = await fetch(path);
+          response = await fetch(`${path}.html`);
         }
         if (!response.ok) {
           throw new Error('Page not found');
