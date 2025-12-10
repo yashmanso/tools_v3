@@ -15,12 +15,17 @@ interface PanelContextType {
   removePanel: (id: string) => void;
   removePanelsAfter: (id: string) => void;
   clearPanels: () => void;
+  expandedPanelId: string | null;
+  expandPanel: (id: string) => void;
+  collapsePanel: () => void;
+  togglePanelExpand: (id: string) => void;
 }
 
 const PanelContext = createContext<PanelContextType | undefined>(undefined);
 
 export function PanelProvider({ children }: { children: ReactNode }) {
   const [panels, setPanels] = useState<Panel[]>([]);
+  const [expandedPanelId, setExpandedPanelId] = useState<string | null>(null);
 
   const addPanel = (panel: Panel) => {
     setPanels((prev) => {
@@ -46,11 +51,34 @@ export function PanelProvider({ children }: { children: ReactNode }) {
 
   const clearPanels = () => {
     setPanels([]);
+    setExpandedPanelId(null);
+  };
+
+  const expandPanel = (id: string) => {
+    setExpandedPanelId(id);
+  };
+
+  const collapsePanel = () => {
+    setExpandedPanelId(null);
+  };
+
+  const togglePanelExpand = (id: string) => {
+    setExpandedPanelId((prev) => (prev === id ? null : id));
   };
 
   return (
     <PanelContext.Provider
-      value={{ panels, addPanel, removePanel, removePanelsAfter, clearPanels }}
+      value={{
+        panels,
+        addPanel,
+        removePanel,
+        removePanelsAfter,
+        clearPanels,
+        expandedPanelId,
+        expandPanel,
+        collapsePanel,
+        togglePanelExpand,
+      }}
     >
       {children}
     </PanelContext.Provider>
