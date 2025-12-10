@@ -1,6 +1,9 @@
 import { notFound } from 'next/navigation';
 import { getResourceBySlug, getResourcesByCategory, getAllResources } from '@/app/lib/markdown';
+import { getRelatedPages } from '@/app/lib/graph';
 import { TagList } from '@/app/components/TagList';
+import { PageHeader } from '@/app/components/PageHeader';
+import { RelatedPages } from '@/app/components/RelatedPages';
 
 interface PageProps {
   params: Promise<{ slug: string }>;
@@ -22,13 +25,13 @@ export default async function CollectionPage({ params }: PageProps) {
   }
 
   const allResources = getAllResources();
+  const relatedPages = getRelatedPages('collections', slug, 5);
 
   return (
     <article className="max-w-4xl mx-auto">
-      <div className="mb-8">
-        <h1 className="text-4xl font-bold mb-4">{resource.title}</h1>
+      <PageHeader title={resource.title}>
         <TagList tags={resource.tags} allResources={allResources} />
-      </div>
+      </PageHeader>
 
       <div
         className="prose prose-gray dark:prose-invert max-w-none
@@ -44,6 +47,8 @@ export default async function CollectionPage({ params }: PageProps) {
           prose-img:rounded-lg prose-img:shadow-md"
         dangerouslySetInnerHTML={{ __html: resource.contentHtml }}
       />
+
+      <RelatedPages pages={relatedPages} currentCategory="collections" />
     </article>
   );
 }
