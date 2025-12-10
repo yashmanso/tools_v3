@@ -56,8 +56,12 @@ function PanelContent({ path }: { path: string }) {
     async function fetchContent() {
       try {
         setLoading(true);
-        // Fetch the actual page
-        const response = await fetch(path);
+        // For static export, pages are served as .html files
+        // Try with .html extension first, then without
+        let response = await fetch(`${path}.html`);
+        if (!response.ok) {
+          response = await fetch(path);
+        }
         if (!response.ok) {
           throw new Error('Page not found');
         }
