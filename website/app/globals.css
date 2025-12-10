@@ -116,3 +116,19 @@ a:hover {
 .animate-fade-in {
   animation: fade-in 0.15s ease-out;
 }
+
+/* Page expanded mode */
+html.page-expanded header,
+html.page-expanded footer {
+  display: none;
+}
+
+html.page-expanded main {
+  max-width: 100% !important;
+  padding: 2rem;
+}
+
+html.page-expanded article {
+  max-width: 4xl;
+  margin: 0 auto;
+}
