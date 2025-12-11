@@ -65,6 +65,13 @@ function convertWikiLinks(content: string): string {
   return content;
 }
 
+// Remove # from tags in content, keeping just the tag name
+function stripHashFromTags(content: string): string {
+  // Replace #tag-name with just tag-name (but not in URLs or code blocks)
+  // Match # followed by word characters and hyphens, but not preceded by [ or (
+  return content.replace(/(?<![(\[])\B#([\w-]+)/g, '$1');
+}
+
 // Get category from file path
 function getCategory(filePath: string): string {
   if (filePath.includes('1 –') || filePath.toLowerCase().includes('tool')) return 'tools';
@@ -264,8 +271,9 @@ export async function getResourceBySlug(
   const attachments = extractAttachments(resourcesContent);
 
   // Convert wiki links and inline images before processing markdown - include both main and resources
-  const convertedMainContent = convertWikiLinks(mainContent);
-  const convertedResourcesContent = convertWikiLinks(resourcesContent);
+  // Also strip # from tags to show clean tag names
+  const convertedMainContent = stripHashFromTags(convertWikiLinks(mainContent));
+  const convertedResourcesContent = stripHashFromTags(convertWikiLinks(resourcesContent));
   const fullConvertedContent = convertedMainContent + '\n\n' + convertedResourcesContent;
 
   // Process markdown to HTML
