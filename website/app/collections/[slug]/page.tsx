@@ -4,6 +4,7 @@ import { getRelatedPages } from '@/app/lib/graph';
 import { TagList } from '@/app/components/TagList';
 import { PageHeader } from '@/app/components/PageHeader';
 import { RelatedPages } from '@/app/components/RelatedPages';
+import { ContentWithHoverPreviews } from '@/app/components/ContentWithHoverPreviews';
 
 interface PageProps {
   params: Promise<{ slug: string }>;
@@ -33,7 +34,8 @@ export default async function CollectionPage({ params }: PageProps) {
         <TagList tags={resource.tags} allResources={allResources} />
       </PageHeader>
 
-      <div
+      <ContentWithHoverPreviews
+        html={resource.contentHtml}
         className="prose prose-gray dark:prose-invert max-w-none
           prose-headings:font-bold
           prose-h1:text-3xl prose-h1:mb-4
@@ -45,7 +47,6 @@ export default async function CollectionPage({ params }: PageProps) {
           prose-a:text-blue-600 dark:prose-a:text-blue-400 prose-a:no-underline hover:prose-a:underline
           prose-strong:font-semibold
           prose-img:rounded-lg prose-img:shadow-md"
-        dangerouslySetInnerHTML={{ __html: resource.contentHtml }}
       />
 
       <RelatedPages pages={relatedPages} currentCategory="collections" />

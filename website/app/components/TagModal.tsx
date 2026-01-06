@@ -136,6 +136,11 @@ function PanelContent({ path }: { path: string }) {
 export function TagModal({ tag, resources, onClose }: TagModalProps) {
   const { addPanel } = usePanels();
 
+  // Filter resources by tag
+  const filteredResources = resources.filter((resource) =>
+    resource.tags.includes(tag)
+  );
+
   // Close on Escape key
   useEffect(() => {
     const handleEscape = (e: KeyboardEvent) => {
@@ -150,11 +155,6 @@ export function TagModal({ tag, resources, onClose }: TagModalProps) {
       document.body.style.overflow = 'unset';
     };
   }, [onClose]);
-
-  // Filter resources by tag
-  const filteredResources = resources.filter((resource) =>
-    resource.tags.includes(tag)
-  );
 
   const handleResourceClick = (e: React.MouseEvent, resource: Resource) => {
     e.preventDefault();
@@ -171,7 +171,7 @@ export function TagModal({ tag, resources, onClose }: TagModalProps) {
 
   return (
     <div
-      className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-75 p-4"
+      className="fixed inset-0 z-[100] flex items-center justify-center bg-black bg-opacity-75 p-4"
       onClick={onClose}
     >
       <div
@@ -182,7 +182,7 @@ export function TagModal({ tag, resources, onClose }: TagModalProps) {
         <div className="flex items-center justify-between p-6 border-b border-gray-200 dark:border-gray-700">
           <div>
             <h2 className="text-2xl font-bold text-gray-900 dark:text-gray-100">
-              #{tag}
+              {tag}
             </h2>
             <p className="text-sm text-gray-600 dark:text-gray-400 mt-1">
               {filteredResources.length} {filteredResources.length === 1 ? 'page' : 'pages'} found

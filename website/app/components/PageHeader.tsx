@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 
 interface PageHeaderProps {
@@ -12,7 +12,16 @@ export function PageHeader({ title, children }: PageHeaderProps) {
   const [isExpanded, setIsExpanded] = useState(false);
   const router = useRouter();
 
+  // Clean up expanded state on unmount
+  useEffect(() => {
+    return () => {
+      document.documentElement.classList.remove('page-expanded');
+    };
+  }, []);
+
   const handleClose = () => {
+    // Remove expanded class before navigating
+    document.documentElement.classList.remove('page-expanded');
     // Navigate back to the category page
     router.back();
   };

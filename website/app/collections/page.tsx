@@ -1,8 +1,9 @@
-import { getResourcesByCategory } from '../lib/markdown';
+import { getResourcesByCategory, getAllResources } from '../lib/markdown';
 import { SearchFilter } from '../components/SearchFilter';
 
 export default function CollectionsPage() {
   const collections = getResourcesByCategory('collections');
+  const allResources = getAllResources();
 
   return (
     <div>
@@ -14,7 +15,7 @@ export default function CollectionsPage() {
         </p>
       </div>
 
-      <SearchFilter resources={collections} />
+      <SearchFilter resources={collections} allResources={allResources} />
     </div>
   );
 }

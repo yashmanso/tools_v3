@@ -20,15 +20,17 @@ export function ContentWithHoverPreviews({ html, className }: ContentWithHoverPr
     position: { x: number; y: number };
   } | null>(null);
   const timeoutRef = useRef<NodeJS.Timeout | undefined>(undefined);
+  const currentLinkRef = useRef<HTMLAnchorElement | null>(null);
 
   useEffect(() => {
     if (!contentRef.current) return;
 
     const handleMouseEnter = async (e: Event) => {
       const target = e.target as HTMLElement;
-      if (target.tagName !== 'A') return;
+      const link = target.closest('a') as HTMLAnchorElement;
+      if (!link) return;
 
-      const href = target.getAttribute('href');
+      const href = link.getAttribute('href');
       if (!href || href.startsWith('http') || href.startsWith('#')) return;
 
       // Clear any existing timeout
@@ -36,8 +38,13 @@ export function ContentWithHoverPreviews({ html, className }: ContentWithHoverPr
         clearTimeout(timeoutRef.current);
       }
 
-      // Set timeout for showing preview
+      currentLinkRef.current = link;
+
+      // Set timeout for showing preview (2 seconds)
       timeoutRef.current = setTimeout(async () => {
+        // Check if we're still hovering over the same link
+        if (currentLinkRef.current !== link) return;
+
         try {
           // Fetch the page to get metadata
           const response = await fetch(href);
@@ -60,7 +67,7 @@ export function ContentWithHoverPreviews({ html, className }: ContentWithHoverPr
           const category = href.split('/')[1] || '';
 
           // Get mouse position
-          const rect = target.getBoundingClientRect();
+          const rect = link.getBoundingClientRect();
           setPreview({
             data: { title, overview, category },
             position: {
@@ -71,14 +78,26 @@ export function ContentWithHoverPreviews({ html, className }: ContentWithHoverPr
         } catch (error) {
           console.error('Error fetching preview:', error);
         }
-      }, 300);
+      }, 2000);
     };
 
     const handleMouseLeave = () => {
       if (timeoutRef.current) {
         clearTimeout(timeoutRef.current);
+        timeoutRef.current = undefined;
+      }
+      currentLinkRef.current = null;
+      setPreview(null);
+    };
+
+    const handleClick = () => {
+      // Hide preview when clicking
+      if (timeoutRef.current) {
+        clearTimeout(timeoutRef.current);
+        timeoutRef.current = undefined;
       }
       setPreview(null);
+      currentLinkRef.current = null;
     };
 
     // Attach listeners to all links
@@ -86,12 +105,14 @@ export function ContentWithHoverPreviews({ html, className }: ContentWithHoverPr
     links.forEach((link) => {
       link.addEventListener('mouseenter', handleMouseEnter);
       link.addEventListener('mouseleave', handleMouseLeave);
+      link.addEventListener('click', handleClick);
     });
 
     return () => {
       links.forEach((link) => {
         link.removeEventListener('mouseenter', handleMouseEnter);
         link.removeEventListener('mouseleave', handleMouseLeave);
+        link.removeEventListener('click', handleClick);
       });
       if (timeoutRef.current) {
         clearTimeout(timeoutRef.current);

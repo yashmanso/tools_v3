@@ -6,9 +6,10 @@ import { ResourceCard } from './ResourceCard';
 
 interface SearchFilterProps {
   resources: ResourceMetadata[];
+  allResources: ResourceMetadata[];
 }
 
-export function SearchFilter({ resources }: SearchFilterProps) {
+export function SearchFilter({ resources, allResources }: SearchFilterProps) {
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedTags, setSelectedTags] = useState<Set<string>>(new Set());
 
@@ -111,7 +112,7 @@ export function SearchFilter({ resources }: SearchFilterProps) {
       {filteredResources.length > 0 ? (
         <div className="grid md:grid-cols-2 gap-4">
           {filteredResources.map((resource) => (
-            <ResourceCard key={resource.slug} resource={resource} />
+            <ResourceCard key={resource.slug} resource={resource} allResources={allResources} />
           ))}
         </div>
       ) : (
