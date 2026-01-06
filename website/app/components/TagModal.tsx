@@ -2,6 +2,7 @@
 
 import { useEffect, useState, useRef } from 'react';
 import { usePanels } from './PanelContext';
+import { ContentWithHoverPreviews } from './ContentWithHoverPreviews';
 
 interface Resource {
   slug: string;
@@ -21,7 +22,7 @@ function PanelContent({ path }: { path: string }) {
   const [html, setHtml] = useState<string>('');
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-  const contentRef = useRef<HTMLDivElement>(null);
+  const wrapperRef = useRef<HTMLDivElement>(null);
   const { addPanel } = usePanels();
 
   useEffect(() => {
@@ -69,31 +70,19 @@ function PanelContent({ path }: { path: string }) {
     fetchContent();
   }, [path]);
 
-  // Intercept link clicks to open in panels instead of navigating
+  // Handle link clicks to open in panels
   useEffect(() => {
-    if (!contentRef.current) return;
+    if (!wrapperRef.current) return;
 
-    const handleLinkClick = (e: Event) => {
+    const handleLinkClick = (e: MouseEvent) => {
       const target = e.target as HTMLElement;
       const link = target.closest('a');
       if (!link) return;
 
       const href = link.getAttribute('href');
-      if (!href) return;
-
-      // Skip external links
-      if (href.startsWith('http')) {
-        return;
-      }
-
-      // Skip anchor links
-      if (href.startsWith('#')) {
-        return;
-      }
+      if (!href || href.startsWith('http') || href.startsWith('#')) return;
 
       e.preventDefault();
-
-      // Open in new panel
       addPanel({
         id: `${href}-${Date.now()}`,
         title: href.split('/').pop() || href,
@@ -102,9 +91,9 @@ function PanelContent({ path }: { path: string }) {
       });
     };
 
-    contentRef.current.addEventListener('click', handleLinkClick);
+    wrapperRef.current.addEventListener('click', handleLinkClick);
     return () => {
-      contentRef.current?.removeEventListener('click', handleLinkClick);
+      wrapperRef.current?.removeEventListener('click', handleLinkClick);
     };
   }, [html, addPanel]);
 
@@ -125,11 +114,12 @@ function PanelContent({ path }: { path: string }) {
   }
 
   return (
-    <div
-      ref={contentRef}
-      className="prose prose-neutral dark:prose-invert max-w-none prose-sm"
-      dangerouslySetInnerHTML={{ __html: html }}
-    />
+    <div ref={wrapperRef}>
+      <ContentWithHoverPreviews
+        html={html}
+        className="prose prose-neutral dark:prose-invert max-w-none prose-sm"
+      />
+    </div>
   );
 }
 

@@ -31,7 +31,7 @@ export function ContentWithHoverPreviews({ html, className }: ContentWithHoverPr
       if (!link) return;
 
       const href = link.getAttribute('href');
-      if (!href || href.startsWith('http') || href.startsWith('#')) return;
+      if (!href || href.startsWith('#')) return;
 
       // Clear any existing timeout
       if (timeoutRef.current) {
@@ -46,9 +46,42 @@ export function ContentWithHoverPreviews({ html, className }: ContentWithHoverPr
         if (currentLinkRef.current !== link) return;
 
         try {
-          // Fetch the page to get metadata
+          // Get mouse position
+          const rect = link.getBoundingClientRect();
+          
+          // Handle external links
+          if (href.startsWith('http')) {
+            setPreview({
+              data: { 
+                title: link.textContent || href, 
+                overview: `External link: ${href}`,
+                category: 'external'
+              },
+              position: {
+                x: rect.left + rect.width / 2,
+                y: rect.bottom + 8,
+              },
+            });
+            return;
+          }
+
+          // Handle internal links - fetch the page to get metadata
           const response = await fetch(href);
-          if (!response.ok) return;
+          if (!response.ok) {
+            // If fetch fails, show basic info
+            setPreview({
+              data: { 
+                title: link.textContent || href, 
+                overview: '',
+                category: href.split('/')[1] || 'page'
+              },
+              position: {
+                x: rect.left + rect.width / 2,
+                y: rect.bottom + 8,
+              },
+            });
+            return;
+          }
 
           const htmlText = await response.text();
           const parser = new DOMParser();
@@ -56,7 +89,7 @@ export function ContentWithHoverPreviews({ html, className }: ContentWithHoverPr
 
           // Extract title
           const h1 = doc.querySelector('h1');
-          const title = h1?.textContent || '';
+          const title = h1?.textContent || link.textContent || '';
 
           // Extract overview (first paragraph)
           const article = doc.querySelector('article');
@@ -66,8 +99,6 @@ export function ContentWithHoverPreviews({ html, className }: ContentWithHoverPr
           // Extract category from URL
           const category = href.split('/')[1] || '';
 
-          // Get mouse position
-          const rect = link.getBoundingClientRect();
           setPreview({
             data: { title, overview, category },
             position: {
@@ -76,7 +107,19 @@ export function ContentWithHoverPreviews({ html, className }: ContentWithHoverPr
             },
           });
         } catch (error) {
-          console.error('Error fetching preview:', error);
+          // On error, show basic preview
+          const rect = link.getBoundingClientRect();
+          setPreview({
+            data: { 
+              title: link.textContent || href, 
+              overview: '',
+              category: href.startsWith('http') ? 'external' : (href.split('/')[1] || 'page')
+            },
+            position: {
+              x: rect.left + rect.width / 2,
+              y: rect.bottom + 8,
+            },
+          });
         }
       }, 2000);
     };

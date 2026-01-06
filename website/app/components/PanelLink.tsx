@@ -2,6 +2,7 @@
 
 import { ReactNode, MouseEvent, useState, useEffect, useRef } from 'react';
 import { usePanels } from './PanelContext';
+import { ContentWithHoverPreviews } from './ContentWithHoverPreviews';
 
 interface PanelLinkProps {
   href: string;
@@ -157,10 +158,9 @@ function PanelContent({ path }: { path: string }) {
   }
 
   return (
-    <div
-      ref={contentRef}
+    <ContentWithHoverPreviews
+      html={html}
       className="prose prose-neutral dark:prose-invert max-w-none prose-sm"
-      dangerouslySetInnerHTML={{ __html: html }}
     />
   );
 }

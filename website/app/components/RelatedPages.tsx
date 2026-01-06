@@ -2,6 +2,7 @@
 
 import Link from 'next/link';
 import { usePanels } from './PanelContext';
+import { ContentWithHoverPreviews } from './ContentWithHoverPreviews';
 
 interface RelatedPage {
   slug: string;
@@ -140,7 +141,6 @@ function PanelContent({ path }: { path: string }) {
   const [html, setHtml] = React.useState<string>('');
   const [loading, setLoading] = React.useState(true);
   const [error, setError] = React.useState<string | null>(null);
-  const contentRef = React.useRef<HTMLDivElement>(null);
   const { addPanel } = usePanels();
 
   React.useEffect(() => {
@@ -188,44 +188,8 @@ function PanelContent({ path }: { path: string }) {
     fetchContent();
   }, [path]);
 
-  // Intercept link clicks to open in panels instead of navigating
-  React.useEffect(() => {
-    if (!contentRef.current) return;
-
-    const handleLinkClick = (e: Event) => {
-      const target = e.target as HTMLElement;
-      const link = target.closest('a');
-      if (!link) return;
-
-      const href = link.getAttribute('href');
-      if (!href) return;
-
-      // Skip external links
-      if (href.startsWith('http')) {
-        return;
-      }
-
-      // Skip anchor links
-      if (href.startsWith('#')) {
-        return;
-      }
-
-      e.preventDefault();
-
-      // Open in new panel
-      addPanel({
-        id: `${href}-${Date.now()}`,
-        title: href.split('/').pop() || href,
-        path: href,
-        content: <PanelContent path={href} />,
-      });
-    };
-
-    contentRef.current.addEventListener('click', handleLinkClick);
-    return () => {
-      contentRef.current?.removeEventListener('click', handleLinkClick);
-    };
-  }, [html, addPanel]);
+  // Note: Link click handling for opening in panels is now handled
+  // by ContentWithHoverPreviews component which wraps the content
 
   if (loading) {
     return (
@@ -243,12 +207,42 @@ function PanelContent({ path }: { path: string }) {
     );
   }
 
+  const wrapperRef = React.useRef<HTMLDivElement>(null);
+
+  // Handle link clicks to open in panels
+  React.useEffect(() => {
+    if (!wrapperRef.current) return;
+
+    const handleLinkClick = (e: MouseEvent) => {
+      const target = e.target as HTMLElement;
+      const link = target.closest('a');
+      if (!link) return;
+
+      const href = link.getAttribute('href');
+      if (!href || href.startsWith('http') || href.startsWith('#')) return;
+
+      e.preventDefault();
+      addPanel({
+        id: `${href}-${Date.now()}`,
+        title: href.split('/').pop() || href,
+        path: href,
+        content: <PanelContent path={href} />,
+      });
+    };
+
+    wrapperRef.current.addEventListener('click', handleLinkClick);
+    return () => {
+      wrapperRef.current?.removeEventListener('click', handleLinkClick);
+    };
+  }, [html, addPanel]);
+
   return (
-    <div
-      ref={contentRef}
-      className="prose prose-neutral dark:prose-invert max-w-none prose-sm"
-      dangerouslySetInnerHTML={{ __html: html }}
-    />
+    <div ref={wrapperRef}>
+      <ContentWithHoverPreviews
+        html={html}
+        className="prose prose-neutral dark:prose-invert max-w-none prose-sm"
+      />
+    </div>
   );
 }
 
