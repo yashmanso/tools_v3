@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect } from 'react';
+import { useEffect, useState, useRef } from 'react';
 import { usePanels } from './PanelContext';
 
 interface Resource {
@@ -14,6 +14,123 @@ interface TagModalProps {
   tag: string;
   resources: Resource[];
   onClose: () => void;
+}
+
+// Panel content component for fetching page content (shared with PanelLink pattern)
+function PanelContent({ path }: { path: string }) {
+  const [html, setHtml] = useState<string>('');
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+  const contentRef = useRef<HTMLDivElement>(null);
+  const { addPanel } = usePanels();
+
+  useEffect(() => {
+    async function fetchContent() {
+      try {
+        setLoading(true);
+        // Try multiple path formats for compatibility with different hosting configs
+        let response = await fetch(path);
+        if (!response.ok) {
+          response = await fetch(`${path}.html`);
+        }
+        if (!response.ok) {
+          throw new Error('Page not found');
+        }
+
+        const htmlText = await response.text();
+
+        // Extract just the main content from the fetched HTML
+        const parser = new DOMParser();
+        const doc = parser.parseFromString(htmlText, 'text/html');
+        const mainContent = doc.querySelector('article') || doc.querySelector('main');
+
+        if (mainContent) {
+          // Remove the PageHeader buttons (first child div with the buttons)
+          const headerDiv = mainContent.querySelector('div.mb-8');
+          if (headerDiv) {
+            // Keep only the h1 and tag list, remove the button container
+            const buttonContainer = headerDiv.querySelector('div.flex.gap-2');
+            if (buttonContainer) {
+              buttonContainer.remove();
+            }
+          }
+          setHtml(mainContent.innerHTML);
+        } else {
+          setHtml(htmlText);
+        }
+
+        setLoading(false);
+      } catch (err) {
+        setError(err instanceof Error ? err.message : 'Failed to load content');
+        setLoading(false);
+      }
+    }
+
+    fetchContent();
+  }, [path]);
+
+  // Intercept link clicks to open in panels instead of navigating
+  useEffect(() => {
+    if (!contentRef.current) return;
+
+    const handleLinkClick = (e: Event) => {
+      const target = e.target as HTMLElement;
+      const link = target.closest('a');
+      if (!link) return;
+
+      const href = link.getAttribute('href');
+      if (!href) return;
+
+      // Skip external links
+      if (href.startsWith('http')) {
+        return;
+      }
+
+      // Skip anchor links
+      if (href.startsWith('#')) {
+        return;
+      }
+
+      e.preventDefault();
+
+      // Open in new panel
+      addPanel({
+        id: `${href}-${Date.now()}`,
+        title: href.split('/').pop() || href,
+        path: href,
+        content: <PanelContent path={href} />,
+      });
+    };
+
+    contentRef.current.addEventListener('click', handleLinkClick);
+    return () => {
+      contentRef.current?.removeEventListener('click', handleLinkClick);
+    };
+  }, [html, addPanel]);
+
+  if (loading) {
+    return (
+      <div className="flex items-center justify-center py-12">
+        <div className="text-sm text-[var(--text-secondary)]">Loading...</div>
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className="flex items-center justify-center py-12">
+        <div className="text-sm text-red-500">{error}</div>
+      </div>
+    );
+  }
+
+  return (
+    <div
+      ref={contentRef}
+      className="prose prose-neutral dark:prose-invert max-w-none prose-sm"
+      dangerouslySetInnerHTML={{ __html: html }}
+    />
+  );
 }
 
 export function TagModal({ tag, resources, onClose }: TagModalProps) {
@@ -65,7 +182,7 @@ export function TagModal({ tag, resources, onClose }: TagModalProps) {
         <div className="flex items-center justify-between p-6 border-b border-gray-200 dark:border-gray-700">
           <div>
             <h2 className="text-2xl font-bold text-gray-900 dark:text-gray-100">
-              {tag}
+              #{tag}
             </h2>
             <p className="text-sm text-gray-600 dark:text-gray-400 mt-1">
               {filteredResources.length} {filteredResources.length === 1 ? 'page' : 'pages'} found
@@ -140,106 +257,5 @@ export function TagModal({ tag, resources, onClose }: TagModalProps) {
         </div>
       </div>
     </div>
-  );
-}
-
-// Panel content component for fetching page content
-import React from 'react';
-
-function PanelContent({ path }: { path: string }) {
-  const [html, setHtml] = React.useState<string>('');
-  const [loading, setLoading] = React.useState(true);
-  const [error, setError] = React.useState<string | null>(null);
-  const contentRef = React.useRef<HTMLDivElement>(null);
-  const { addPanel } = usePanels();
-
-  React.useEffect(() => {
-    async function fetchContent() {
-      try {
-        setLoading(true);
-        let response = await fetch(path);
-        if (!response.ok) {
-          response = await fetch(`${path}.html`);
-        }
-        if (!response.ok) {
-          throw new Error('Page not found');
-        }
-
-        const htmlText = await response.text();
-        const parser = new DOMParser();
-        const doc = parser.parseFromString(htmlText, 'text/html');
-        const mainContent = doc.querySelector('article') || doc.querySelector('main');
-
-        if (mainContent) {
-          const headerDiv = mainContent.querySelector('div.mb-8');
-          if (headerDiv) {
-            const buttonContainer = headerDiv.querySelector('div.flex.gap-2');
-            if (buttonContainer) {
-              buttonContainer.remove();
-            }
-          }
-          setHtml(mainContent.innerHTML);
-        } else {
-          setHtml(htmlText);
-        }
-
-        setLoading(false);
-      } catch (err) {
-        setError(err instanceof Error ? err.message : 'Failed to load content');
-        setLoading(false);
-      }
-    }
-
-    fetchContent();
-  }, [path]);
-
-  React.useEffect(() => {
-    if (!contentRef.current) return;
-
-    const handleLinkClick = (e: Event) => {
-      const target = e.target as HTMLElement;
-      const link = target.closest('a');
-      if (!link) return;
-
-      const href = link.getAttribute('href');
-      if (!href || href.startsWith('http') || href.startsWith('#')) return;
-
-      e.preventDefault();
-      addPanel({
-        id: `${href}-${Date.now()}`,
-        title: href.split('/').pop() || href,
-        path: href,
-        content: <PanelContent path={href} />,
-      });
-    };
-
-    contentRef.current.addEventListener('click', handleLinkClick);
-    return () => {
-      contentRef.current?.removeEventListener('click', handleLinkClick);
-    };
-  }, [html, addPanel]);
-
-  if (loading) {
-    return (
-      <div className="flex items-center justify-center py-12">
-        <div className="text-sm text-[var(--text-secondary)]">Loading...</div>
-      </div>
-    );
-  }
-
-  if (error) {
-    return (
-      <div className="flex items-center justify-center py-12">
-        <div className="text-sm text-red-500">{error}</div>
-      </div>
-    );
-  }
-
-  return (
-    <div
-      ref={contentRef}
-      className="prose prose-neutral dark:prose-invert max-w-none prose-sm"
-      dangerouslySetInnerHTML={{ __html: html }}
-    />
   );
 }
