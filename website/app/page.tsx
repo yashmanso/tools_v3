@@ -1,6 +1,7 @@
 import Link from 'next/link';
 import { getAllResources } from './lib/markdown';
 import { ExploreSection } from './components/ExploreSection';
+import { TypewriterTitle } from './components/TypewriterTitle';
 
 export default function HomePage() {
   const allResources = getAllResources();
@@ -12,7 +13,7 @@ export default function HomePage() {
     <div className="max-w-4xl mx-auto">
       <section className="text-center mb-16">
         <h1 className="text-4xl md:text-5xl font-bold mb-4">
-          Sustainability Atlas
+          <TypewriterTitle text="Sustainability Atlas" speed={100} repeat={true} />
         </h1>
         <p className="text-xl text-gray-600 dark:text-gray-400 mb-8">
           Tools and methods for sustainable entrepreneurship and innovation

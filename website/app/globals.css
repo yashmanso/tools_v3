@@ -117,6 +117,26 @@ a:hover {
   animation: fade-in 0.15s ease-out;
 }
 
+/* Blinking cursor animation */
+@keyframes blink {
+  0%, 50% {
+    opacity: 1;
+  }
+  51%, 100% {
+    opacity: 0;
+  }
+}
+
+.blinking-cursor {
+  display: inline-block;
+  width: 0.15em;
+  height: 1em;
+  margin-left: 0.1em;
+  background-color: currentColor;
+  animation: blink 1s infinite;
+  vertical-align: baseline;
+}
+
 /* Page expanded mode */
 html.page-expanded header,
 html.page-expanded footer {
