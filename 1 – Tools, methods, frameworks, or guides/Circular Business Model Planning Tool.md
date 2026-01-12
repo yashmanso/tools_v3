@@ -5,51 +5,51 @@ Circular Business Model Planning Tool is designed to guide companies in integrat
 ___
 # Dimensions
 
-**Resource Type**
+**Resource type:**
 Circular Business Model Planning Tool and the associate guide serve to integrates business model planning with circular economy principles.
 - Tags: #tool, #framework, #guide , #canvas 
 
-**Objective**
+**Objective:**
 The primary goal of this resource is to map out and align business strategies with circular economy concepts, ensuring long-term value creation and resource efficiency.
 - Tags: #map, #align, #assess 
 
-**Target Audience**
+**Target audience:**
 This resource is tailored to entrepreneurs and students but also directly relevant for practitioners and larger corporations too.
 - Tags: #entrepreneurs, #SMEs, #corporations, #practitioners, #students 
 
-**Sustainability Focus**
+**Sustainability focus:**
 The resource is centered on environmental sustainability, specifically on maintaining a closed-loop system for products and materials to minimize waste.
 - Tags: #environmental-sustainability, #circular-economy
 
-**Innovation Type**
+**Innovation type:**
 It supports business model innovation by encouraging companies to rethink and redesign their approach to product life cycles and value creation.
 - Tags: #business-model-innovation
 
-**Entrepreneurship Stage**
+**Entrepreneurship stage:**
 The resource is relevant across various stages of entrepreneurship, from the initial design phase to the maturity and scaling of operations.
 - Tags: #design, #development, #implementation, #growth, #scale-up
 
-**Scope of Relevance**
+**Scope of relevance:**
 While the principles can be applied globally, the resource is particularly relevant for businesses operating in regions with strong circular economy policies and frameworks.
 - Tags: #global, #regional
 
-**Methodological Approach**
+**Methodological approach:**
 The resource is based on a strategic and analytical approach that draws on principles of circular economy and business model innovation.
 - Tags: #theoretical-frameworks, #strategic-planning
 
-**Skill Development**
+**Skill development:**
 It aims to enhance skills in systems thinking, innovation, and environmental awareness, which are crucial for implementing sustainable business models.
 - Tags: #systems-thinking, #innovative-thinking, #environmental-awareness, #holistic-thinking 
 
-**Source and Credibility**
+**Source and credibility:**
 The resource is developed with a strong foundation in sustainable entrepreneurship research by researchers at Lund University in Sweden.
 - Tags: #academic-institutions, #recognized-experts
 
-**Prerequisites and Requirements**
+**Prerequisites and requirements:**
 While no specific prerequisites are envisioned, users should have a basic understanding of business models and sustainability concepts to effectively utilize this resource.
 - Tags: #beginner-level, #specific-educational-background
 
-**Collaboration Level**
+**Collaboration level:**
 While using the tool can be done individually and in teams, collaborating across teams in the organization as well as beyond its boundaries can improve the relevance of the outcomes.
 - Tags: #team, #individual  #cross-sector-partnerships, #cross-team-collaboration 
 

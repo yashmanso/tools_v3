@@ -5,51 +5,51 @@ The [SDG Impact Assessment Tool](https://sdgimpactassessmenttool.org/en-gb/tool/
 ___
 # Dimensions
 
-**Resource Type**
+**Resource type:**
 The SDG Impact Assessment Tool is a learning tool that visualizes the results from a self-assessment of how an activity, organization, or innovation affects the SDGs.
 - Tags: #tool, #online
 
-**Objective**
+**Objective:**
 The primary goal of the tool is to facilitate the assessment of activities in relation to the SDGs and to promote strategic sustainability alignment.
 - Tags: #map #assess, #align
 
-**Target Audience**
+**Target audience:**
 The tool is designed for a diverse audience, including those involved in education, research, and various organizational roles focused on sustainability.
 - Tags: #researchers, #students, #educators, #practitioners, #policy-makers, #nonprofits, #corporations
 
-**Sustainability Focus**
+**Sustainability focus:**
 The tool emphasizes all three pillars of sustainability and encourages users to consider the environmental, social, and economic impacts of their activities.
 - Tags: #environmental-sustainability, #social-sustainability, #economic-sustainability, #SDGs
 
-**Innovation Type**
+**Innovation type:**
 The tool supports organizations in developing social, technological and policy innovative approaches to sustainability challenges.
 - Tags: #social-innovation, #business-model-innovation, #technological-innovation , #policy-innovation
 
-**Entrepreneurship Stage**
+**Entrepreneurship stage:**
 The tool is applicable across various stages of entrepreneurship, especially useful for those in the ideation and implementation phases.
 - Tags: #ideation, #implementation
 
-**Scope of Relevance**
+**Scope of relevance:**
 The tool has a global scope, as it is based on the universal SDGs, but it can be contextualized to national or local settings.
 - Tags: #global, #national, #local
 
-**Methodological Approach**
+**Methodological approach:**
 The tool's methodology is based on a structured self-assessment process that involves qualitative analysis and discussion.
 - Tags: #qualitative-research, #theoretical-frameworks
 
-**Skill Development**
+**Skill development:**
 Using the tool can enhance skills in systems thinking, strategic planning, and sustainability assessment.
 - Tags: #systems-thinking, #strategic-planning, #sustainability-assessment
 
-**Source and Credibility**
+**Source and credibility:**
 The tool is developed by reputable academic institutions and is based on SDGs framework. The tool is used in several pilot projects.
 - Tags: #academic-institutions, #recognized-experts, #SDGs
 
-**Prerequisites and Requirements**
+**Prerequisites and requirements:**
 The tool is designed to be accessible to a wide audience, with no specific prerequisites required for its use, although a basic understanding of SDGs can be useful.
 - Tags: #none
 
-**Collaboration Level**
+**Collaboration level:**
 The assessment process encourages collaboration among team members to leverage diverse expertise and perspectives.
 - Tags: #team, #community-engagement, #cross-team-collaboration 
 

@@ -2,10 +2,29 @@
 
 import { useEffect, useRef } from 'react';
 import { usePanels } from './PanelContext';
+import { ResourceMetadata } from '../lib/markdown';
+import { BookmarkButton } from './BookmarkButton';
+import { ShareButton } from './ShareButton';
 
-export function SlidingPanels({ children }: { children: React.ReactNode }) {
+interface SlidingPanelsProps {
+  children: React.ReactNode;
+  allResources?: ResourceMetadata[];
+}
+
+export function SlidingPanels({ children, allResources = [] }: SlidingPanelsProps) {
   const { panels, removePanel, expandedPanelId, togglePanelExpand } = usePanels();
   const containerRef = useRef<HTMLDivElement>(null);
+  
+  // Helper to get resource from panel path
+  const getResourceFromPath = (path: string): ResourceMetadata | null => {
+    const pathParts = path.split('/').filter(Boolean);
+    if (pathParts.length >= 2) {
+      const category = pathParts[0];
+      const slug = pathParts[1];
+      return allResources.find(r => r.category === category && r.slug === slug) || null;
+    }
+    return null;
+  };
 
   // Auto-scroll to the rightmost panel when a new panel is added
   useEffect(() => {
@@ -21,13 +40,13 @@ export function SlidingPanels({ children }: { children: React.ReactNode }) {
 
   return (
     <div className="flex-1 flex overflow-hidden">
-      {/* Main content area - hidden when a panel is expanded */}
+      {/* Main content area - hidden when a panel is expanded, otherwise 50% width when panels are open */}
       <div
         className={`flex-shrink-0 overflow-y-auto transition-all duration-300 ${
-          isExpanded ? 'w-0 opacity-0' : panels.length > 0 ? 'w-[400px]' : 'flex-1'
+          isExpanded ? 'w-0 opacity-0' : panels.length > 0 ? 'w-1/2' : 'flex-1'
         }`}
       >
-        <div className="container mx-auto px-6 py-12 max-w-5xl">
+        <div className="container mx-auto px-6 py-12 max-w-5xl bg-[var(--bg-primary)]">
           {children}
         </div>
       </div>
@@ -36,7 +55,9 @@ export function SlidingPanels({ children }: { children: React.ReactNode }) {
       {panels.length > 0 && (
         <div
           ref={containerRef}
-          className={`flex-1 overflow-x-auto overflow-y-hidden flex border-l border-[var(--border)] transition-all duration-300`}
+          className={`flex-shrink-0 overflow-x-auto overflow-y-hidden flex border-l border-[var(--border)] transition-all duration-300 ${
+            isExpanded ? 'flex-1' : 'w-1/2'
+          }`}
           style={{ scrollSnapType: isExpanded ? 'none' : 'x mandatory' }}
         >
           {panels.map((panel) => {
@@ -92,6 +113,22 @@ export function SlidingPanels({ children }: { children: React.ReactNode }) {
                       </svg>
                     )}
                   </button>
+
+                  {/* Bookmark button */}
+                  {(() => {
+                    const resource = getResourceFromPath(panel.path);
+                    return resource ? (
+                      <BookmarkButton resource={resource} size="md" className="page-header" />
+                    ) : null;
+                  })()}
+
+                  {/* Share button */}
+                  {(() => {
+                    const resource = getResourceFromPath(panel.path);
+                    return resource ? (
+                      <ShareButton resource={resource} size="md" />
+                    ) : null;
+                  })()}
 
                   {/* Close button */}
                   <button
