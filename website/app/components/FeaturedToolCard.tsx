@@ -13,7 +13,7 @@ export function FeaturedToolCard({ tool, allResources }: FeaturedToolCardProps) 
   return (
     <PanelLink
       href={`/${tool.category}/${tool.slug}`}
-      className="block p-4 rounded-lg border border-gray-200 dark:border-gray-700 hover:border-blue-500 dark:hover:border-blue-500 transition-colors hover:no-underline"
+      className="block p-4 rounded-3xl border border-gray-200 dark:border-gray-700 hover:border-blue-500 dark:hover:border-blue-500 transition-colors hover:no-underline"
     >
       <h3 className="font-semibold mb-2">{tool.title}</h3>
       <div className="mt-2 flex flex-wrap gap-1">

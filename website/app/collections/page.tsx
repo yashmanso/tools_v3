@@ -8,7 +8,7 @@ export default function CollectionsPage() {
   return (
     <div>
       <div className="mb-8">
-        <h1 className="text-3xl font-bold mb-3">Collections, Compendia & Kits</h1>
+        <h1 className="text-3xl font-bold mb-3">Collections, compendia & kits</h1>
         <p className="text-gray-600 dark:text-gray-400">
           An evolving list of collections, compendia or kits of tools related to sustainable
           entrepreneurship and innovation.

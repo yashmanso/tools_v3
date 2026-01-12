@@ -5,51 +5,51 @@ The [Okala Ecodesign Strategy Wheel ](http://www.okala.net/Okala%20Ecodesign%20S
 ___
 # Dimensions
 
-**Resource Type**
+**Resource type:**
 The Okala Ecodesign Strategy Wheel is a practical tool that aids in the sustainable design process.
 - Tags: #tool, #framework
 
-**Objective**
+**Objective:**
 This resource is aimed at aligning design strategies with sustainable goals and assessing their ecological impact.
 - Tags: #align, #assess, #coordinate
 
-**Target Audience**
+**Target audience:**
 The wheel is intended for a variety of users who are involved in the design and development of sustainable products and systems in a way that reduces the material use.
 - Tags: #designers, #practitioners, #educators, #SMEs, #corporations
 
-**Sustainability Focus**
+**Sustainability focus:**
 The primary focus of this resource is on environmental sustainability, but it also touches on the social and economic aspects as they are interconnected in the product life cycle.
 - Tags: #environmental-sustainability #environmental-impact
 
-**Innovation Type**
+**Innovation type:**
 It supports innovation in product design by providing a structured approach to incorporating sustainability.
 - Tags: #product-innovation, #process-innovation
 
-**Entrepreneurship Stage**
+**Entrepreneurship stage:**
 The tool is relevant across various stages of entrepreneurship, especially during the design and development phases where sustainable practices can be integrated but also the life cycle of a product in its entirety.
 - Tags: #ideation, #design, #development
 
-**Scope of Relevance**
+**Scope of relevance:**
 While the tool can be applied globally, it may be particularly relevant to regions with strong sustainability regulations or initiatives.
 - Tags: #global, #regional
 
-**Methodological Approach**
+**Methodological approach:**
 The Okala Ecodesign Strategy Wheel is based on a strategic and systematic approach to design, incorporating life-cycle thinking and system thinking.
 - Tags: #theoretical-frameworks
 
-**Skill Development**
+**Skill development:**
 Using this tool can enhance skills in sustainable design, systems thinking, and environmental awareness.
 - Tags: #creativity-and-design, #systems-thinking, #environmental-awareness
 
-**Source and Credibility**
+**Source and credibility:**
 The Okala ecodesign strategy wheel was developed by recognized experts in ecodesign which ensure a certain degree of credibility.
 - Tags: #academic-institutions, #recognized-experts, #practice 
 
-**Prerequisites and Requirements**
+**Prerequisites and requirements:**
 The tool is accessible to a wide range of users, bur requires some basic knowledge about ecodesign principle and strategies.
 - Tags: #beginner-level
 
-**Collaboration Level**
+**Collaboration level:**
 The tool can be used individually or in team settings, facilitating cross-team collaborative efforts in sustainable design.
 - Tags: #individual, #team, #cross-team-collaboration
 

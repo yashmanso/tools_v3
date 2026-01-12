@@ -14,7 +14,7 @@ export function ResourceCard({ resource, allResources }: ResourceCardProps) {
   return (
     <PanelLink
       href={`/${resource.category}/${resource.slug}`}
-      className="block p-5 rounded-lg border border-gray-200 dark:border-gray-700 hover:border-blue-500 dark:hover:border-blue-500 transition-all hover:shadow-md hover:no-underline"
+      className="block p-5 rounded-3xl border border-gray-200 dark:border-gray-700 hover:border-blue-500 dark:hover:border-blue-500 transition-all hover:shadow-md hover:no-underline"
     >
       <h3 className="text-lg font-semibold mb-2 text-gray-900 dark:text-gray-100">
         {resource.title}

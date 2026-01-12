@@ -173,24 +173,33 @@ export function ContentWithHoverPreviews({ html, className }: ContentWithHoverPr
 
       {preview && (
         <div
-          className="fixed z-50 w-80 p-4 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg shadow-xl animate-fade-in"
+          className="fixed z-50 w-80 bg-white dark:bg-gray-800 shadow-xl animate-fade-in relative"
           style={{
             left: `${preview.position.x}px`,
             top: `${preview.position.y}px`,
             transform: 'translateX(-50%)',
           }}
         >
-          <div className="text-xs text-gray-500 dark:text-gray-400 mb-1 uppercase tracking-wide">
-            {preview.data.category}
-          </div>
-          <div className="font-semibold text-gray-900 dark:text-gray-100 mb-2">
-            {preview.data.title}
-          </div>
-          {preview.data.overview && (
-            <div className="text-sm text-gray-600 dark:text-gray-400 line-clamp-3">
-              {preview.data.overview}
+          {/* Left border frame */}
+          <div className="absolute left-0 top-0 bottom-0 w-px bg-gray-300 dark:bg-gray-600"></div>
+          
+          {/* Right border frame */}
+          <div className="absolute right-0 top-0 bottom-0 w-px bg-gray-300 dark:bg-gray-600"></div>
+          
+          {/* Content */}
+          <div className="p-4 pl-5 pr-5">
+            <div className="text-xs text-gray-500 dark:text-gray-400 mb-1 uppercase tracking-wide">
+              {preview.data.category}
             </div>
-          )}
+            <div className="font-semibold text-gray-900 dark:text-gray-100 mb-2">
+              {preview.data.title}
+            </div>
+            {preview.data.overview && (
+              <div className="text-sm text-gray-600 dark:text-gray-400 line-clamp-3">
+                {preview.data.overview}
+              </div>
+            )}
+          </div>
         </div>
       )}
     </>

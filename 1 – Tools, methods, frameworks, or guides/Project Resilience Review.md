@@ -5,51 +5,51 @@ The Project Resilience Review is a comprehensive framework designed to evaluate 
 ___
 # Dimensions
 
-**Resource Type**
+**Resource type:**
 The Project Resilience Review is a structured set of questions and recommendations, serving as a methodological guide for project assessment.
 - Tags: #method, #framework, #guide
 
-**Objective**
+**Objective:**
 This resource aims to align project outcomes with sustainability goals and to enhance awareness of potential impacts.
 - Tags: #assess, #align
 
-**Target Audience**
+**Target audience:**
 The tool is designed for project groups within academic and research settings, but it has relevance for other contexts too.
 - Tags: #researchers, #students, #educators, #practitioners
 
-**Sustainability Focus**
+**Sustainability focus:**
 The review covers all three pillars of sustainability, with a strong emphasis on identifying and mitigating negative impacts.
 - Tags: #environmental-sustainability, #social-sustainability, #economic-sustainability, #SDGs
 
-**Innovation Type**
+**Innovation type:**
 It supports innovation by prompting users to consider sustainable practices and opportunities for improvement in their projects.
 - Tags: #process-innovation, #social-innovation, #business-model-innovation 
 
-**Entrepreneurship Stage**
+**Entrepreneurship stage:**
 The tool is relevant across various stages of project development, from initial design to implementation and future scaling.
 - Tags: #design, #development, #implementation, #growth
 
-**Scope of Relevance**
+**Scope of relevance:**
 While the tool can be applied universally, it is particularly relevant to projects with potential global sustainability impacts.
 - Tags: #global, #national
 
-**Methodological Approach**
+**Methodological approach:**
 The review employs a qualitative approach, encouraging reflective and critical thinking about project sustainability.
 - Tags: #qualitative-research, #theoretical-frameworks
 
-**Skill Development**
+**Skill development:**
 It aims to develop skills in sustainability assessment, strategic planning, and the integration of new competencies.
 - Tags: #systems-thinking, #holistic-thinking, #environmental-awareness, #innovative-thinking, #adaptability-and-resilience
 
-**Source and Credibility**
+**Source and credibility:**
 The tool is developed by practitioners at Chalmers Innovation Office. Its creation is based on years of experience.
 - Tags: #academic-institutions, #research, #practice 
 
-**Prerequisites and Requirements**
+**Prerequisites and requirements:**
 Users should have a basic understanding of sustainability concepts and project management to effectively utilize the tool.
 - Tags: #intermediate-level, #beginner-level 
 
-**Collaboration Level**
+**Collaboration level:**
 The review encourages collaboration within project groups and the integration of external competencies.
 - Tags: #team, #cross-sector-partnerships 
 

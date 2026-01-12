@@ -66,7 +66,7 @@ export function RelatedPages({ pages, currentCategory }: RelatedPagesProps) {
             key={`${page.category}-${page.slug}`}
             href={`/${page.category}/${page.slug}`}
             onClick={(e) => handleClick(e, page)}
-            className="group block p-4 rounded-lg border border-gray-200 dark:border-gray-700
+            className="group block p-4 rounded-3xl border border-gray-200 dark:border-gray-700
               hover:border-blue-500 dark:hover:border-blue-500 bg-white dark:bg-gray-800
               transition-all hover:shadow-md cursor-pointer"
           >

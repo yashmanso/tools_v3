@@ -2,23 +2,19 @@ import Link from 'next/link';
 import { getAllResources } from './lib/markdown';
 import { ExploreSection } from './components/ExploreSection';
 import { TypewriterTitle } from './components/TypewriterTitle';
-
 export default function HomePage() {
   const allResources = getAllResources();
-  const toolsCount = allResources.filter((r) => r.category === 'tools').length;
-  const collectionsCount = allResources.filter((r) => r.category === 'collections').length;
-  const articlesCount = allResources.filter((r) => r.category === 'articles').length;
 
   return (
-    <div className="max-w-4xl mx-auto">
+    <div className="max-w-4xl mx-auto bg-[var(--bg-primary)]">
       <section className="text-center mb-16">
         <h1 className="text-4xl md:text-5xl font-bold mb-4">
           <TypewriterTitle text="Sustainability Atlas" speed={100} repeat={true} />
         </h1>
-        <p className="text-xl text-gray-600 dark:text-gray-400 mb-8">
+        <p className="text-xl text-gray-600 dark:text-gray-400 mb-8 text-center">
           Tools and methods for sustainable entrepreneurship and innovation
         </p>
-        <p className="text-lg leading-relaxed max-w-3xl mx-auto">
+        <p className="text-lg leading-relaxed max-w-3xl mx-auto text-left">
           An evolving collection of resources designed to help entrepreneurs, researchers,
           educators, and practitioners integrate sustainability into their work.
         </p>
@@ -27,45 +23,36 @@ export default function HomePage() {
       <section className="grid md:grid-cols-3 gap-6 mb-16">
         <Link
           href="/tools"
-          className="p-6 rounded-lg border-2 border-gray-200 dark:border-gray-700 hover:border-blue-500 dark:hover:border-blue-500 transition-colors hover:no-underline group"
+          className="p-6 rounded-3xl border border-gray-200 dark:border-gray-700 hover:border-gray-300 dark:hover:border-gray-600 transition-all hover:no-underline bg-[var(--bg-secondary)]"
         >
-          <div className="text-3xl font-bold text-blue-600 dark:text-blue-400 mb-2">
-            {toolsCount}
-          </div>
-          <h2 className="text-xl font-semibold mb-2 group-hover:text-blue-600 dark:group-hover:text-blue-400">
-            Tools & Methods
+          <h2 className="text-xl font-semibold mb-3 text-[var(--text-primary)]">
+            Tools & methods
           </h2>
-          <p className="text-sm text-gray-600 dark:text-gray-400 text-justify">
+          <p className="text-sm text-[var(--text-secondary)] text-left leading-relaxed">
             Individual tools, methods, frameworks, and guides for sustainable innovation
           </p>
         </Link>
 
         <Link
           href="/collections"
-          className="p-6 rounded-lg border-2 border-gray-200 dark:border-gray-700 hover:border-blue-500 dark:hover:border-blue-500 transition-colors hover:no-underline group"
+          className="p-6 rounded-3xl border border-gray-200 dark:border-gray-700 hover:border-gray-300 dark:hover:border-gray-600 transition-all hover:no-underline bg-[var(--bg-secondary)]"
         >
-          <div className="text-3xl font-bold text-blue-600 dark:text-blue-400 mb-2">
-            {collectionsCount}
-          </div>
-          <h2 className="text-xl font-semibold mb-2 group-hover:text-blue-600 dark:group-hover:text-blue-400">
-            Collections & Kits
+          <h2 className="text-xl font-semibold mb-3 text-[var(--text-primary)]">
+            Collections & kits
           </h2>
-          <p className="text-sm text-gray-600 dark:text-gray-400 text-justify">
+          <p className="text-sm text-[var(--text-secondary)] text-left leading-relaxed">
             Curated collections, compendia, and toolkits for comprehensive learning
           </p>
         </Link>
 
         <Link
           href="/articles"
-          className="p-6 rounded-lg border-2 border-gray-200 dark:border-gray-700 hover:border-blue-500 dark:hover:border-blue-500 transition-colors hover:no-underline group"
+          className="p-6 rounded-3xl border border-gray-200 dark:border-gray-700 hover:border-gray-300 dark:hover:border-gray-600 transition-all hover:no-underline bg-[var(--bg-secondary)]"
         >
-          <div className="text-3xl font-bold text-blue-600 dark:text-blue-400 mb-2">
-            {articlesCount}
-          </div>
-          <h2 className="text-xl font-semibold mb-2 group-hover:text-blue-600 dark:group-hover:text-blue-400">
-            Academic Articles
+          <h2 className="text-xl font-semibold mb-3 text-[var(--text-primary)]">
+            Academic articles
           </h2>
-          <p className="text-sm text-gray-600 dark:text-gray-400 text-justify">
+          <p className="text-sm text-[var(--text-secondary)] text-left leading-relaxed">
             Peer-reviewed research on sustainable entrepreneurship and innovation
           </p>
         </Link>
@@ -73,7 +60,7 @@ export default function HomePage() {
 
       <section className="mb-16 max-w-3xl mx-auto">
         <div className="prose prose-gray dark:prose-invert max-w-none">
-          <h2 className="text-2xl font-bold mb-4 text-center">About This Collection</h2>
+          <h2 className="text-2xl font-bold mb-4 text-center">About this collection</h2>
           
           <div className="space-y-6 text-gray-700 dark:text-gray-300 leading-relaxed">
             <p>

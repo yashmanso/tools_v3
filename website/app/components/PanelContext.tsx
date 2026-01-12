@@ -40,6 +40,10 @@ export function PanelProvider({ children }: { children: ReactNode }) {
 
   const removePanel = (id: string) => {
     setPanels((prev) => prev.filter((p) => p.id !== id));
+    // If the removed panel was expanded, clear the expanded state
+    if (expandedPanelId === id) {
+      setExpandedPanelId(null);
+    }
   };
 
   const removePanelsAfter = (id: string) => {

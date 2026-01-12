@@ -114,6 +114,20 @@ To mark files as available (once you've added them), edit:
 
 Or implement a file check function to dynamically verify file availability.
 
+## Contact Form
+
+The website includes a "Contact us" button in the footer that opens the user's default email client (Mail, Outlook, etc.) with a pre-filled email to `yashar.mansoori@chalmers.se`.
+
+### How It Works
+
+When users click the "Contact us" button:
+- Their default email application opens automatically
+- The email is pre-addressed to `yashar.mansoori@chalmers.se`
+- The subject line is pre-filled with "Contact from Sustainability Atlas"
+- Users can compose and send their message directly from their email client
+
+This approach requires no backend server or email service setup - it works entirely client-side using the standard `mailto:` protocol.
+
 ## Theme
 
 The color scheme matches the original Obsidian Publish site:

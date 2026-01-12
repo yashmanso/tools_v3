@@ -165,7 +165,7 @@ export function TagModal({ tag, resources, onClose }: TagModalProps) {
       onClick={onClose}
     >
       <div
-        className="relative w-full max-w-2xl max-h-[80vh] bg-white dark:bg-gray-800 rounded-lg shadow-2xl overflow-hidden flex flex-col"
+        className="relative w-full max-w-2xl max-h-[80vh] bg-white dark:bg-gray-800 rounded-3xl shadow-2xl overflow-hidden flex flex-col"
         onClick={(e) => e.stopPropagation()}
       >
         {/* Header */}
@@ -208,11 +208,11 @@ export function TagModal({ tag, resources, onClose }: TagModalProps) {
           ) : (
             <div className="space-y-3">
               {filteredResources.map((resource) => (
-                <a
+                <button
                   key={`${resource.category}-${resource.slug}`}
-                  href={`/${resource.category}/${resource.slug}`}
+                  type="button"
                   onClick={(e) => handleResourceClick(e, resource)}
-                  className="block p-4 rounded-lg border-2 border-gray-200 dark:border-gray-700
+                  className="w-full text-left block p-4 rounded-3xl border-2 border-gray-200 dark:border-gray-700
                     hover:border-blue-500 dark:hover:border-blue-500 bg-white dark:bg-gray-800
                     transition-colors group cursor-pointer"
                 >
@@ -240,7 +240,7 @@ export function TagModal({ tag, resources, onClose }: TagModalProps) {
                       />
                     </svg>
                   </div>
-                </a>
+                </button>
               ))}
             </div>
           )}

@@ -46,7 +46,7 @@ export default async function ArticlePage({ params }: PageProps) {
           prose-li:mb-2
           prose-a:text-blue-600 dark:prose-a:text-blue-400 prose-a:no-underline hover:prose-a:underline
           prose-strong:font-semibold
-          prose-img:rounded-lg prose-img:shadow-md"
+          prose-img:rounded-3xl prose-img:shadow-md"
       />
 
       <RelatedPages pages={relatedPages} currentCategory="articles" />

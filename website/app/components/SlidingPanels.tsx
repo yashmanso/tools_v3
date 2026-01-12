@@ -21,13 +21,13 @@ export function SlidingPanels({ children }: { children: React.ReactNode }) {
 
   return (
     <div className="flex-1 flex overflow-hidden">
-      {/* Main content area - hidden when a panel is expanded */}
+      {/* Main content area - hidden when a panel is expanded, otherwise 50% width when panels are open */}
       <div
         className={`flex-shrink-0 overflow-y-auto transition-all duration-300 ${
-          isExpanded ? 'w-0 opacity-0' : panels.length > 0 ? 'w-[400px]' : 'flex-1'
+          isExpanded ? 'w-0 opacity-0' : panels.length > 0 ? 'w-1/2' : 'flex-1'
         }`}
       >
-        <div className="container mx-auto px-6 py-12 max-w-5xl">
+        <div className="container mx-auto px-6 py-12 max-w-5xl bg-[var(--bg-primary)]">
           {children}
         </div>
       </div>
@@ -36,7 +36,9 @@ export function SlidingPanels({ children }: { children: React.ReactNode }) {
       {panels.length > 0 && (
         <div
           ref={containerRef}
-          className={`flex-1 overflow-x-auto overflow-y-hidden flex border-l border-[var(--border)] transition-all duration-300`}
+          className={`flex-shrink-0 overflow-x-auto overflow-y-hidden flex border-l border-[var(--border)] transition-all duration-300 ${
+            isExpanded ? 'flex-1' : 'w-1/2'
+          }`}
           style={{ scrollSnapType: isExpanded ? 'none' : 'x mandatory' }}
         >
           {panels.map((panel) => {

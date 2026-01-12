@@ -32,6 +32,7 @@
 
 html {
   scroll-behavior: smooth;
+  background-color: var(--bg-primary);
 }
 
 html,
@@ -54,6 +55,18 @@ h1, h2, h3, h4, h5, h6 {
   font-weight: 600;
 }
 
+/* Elegant left-aligned text */
+p {
+  text-align: left;
+}
+
+/* Center text for headings and specific contexts */
+h1, h2, h3, h4, h5, h6,
+.text-center,
+.text-center p {
+  text-align: center;
+}
+
 a {
   color: var(--text-primary);
   text-decoration: none;
@@ -64,9 +77,9 @@ a:hover {
   color: var(--text-secondary);
 }
 
-/* Minimal tag style */
+/* Minimal tag style with rounded edges */
 .tag {
-  @apply inline-flex items-center px-2.5 py-1 text-xs font-medium rounded-md
+  @apply inline-flex items-center px-2.5 py-1 text-xs font-medium rounded-full
          bg-transparent border border-gray-200 dark:border-gray-800
          text-gray-700 dark:text-gray-300
          transition-colors duration-200;
@@ -91,6 +104,7 @@ a:hover {
 
 .content-section p {
   @apply mb-4 leading-relaxed text-gray-600 dark:text-gray-400;
+  text-align: left;
 }
 
 .content-section ul {
@@ -151,4 +165,67 @@ html.page-expanded main {
 html.page-expanded article {
   max-width: 4xl;
   margin: 0 auto;
+}
+
+/* Very rounded edges for cards and containers - matching reference site */
+.card,
+.rounded-container {
+  border-radius: 2rem;
+}
+
+/* Very rounded corners for buttons - pill-like style */
+button,
+.btn {
+  border-radius: 9999px;
+}
+
+/* Rounded edges for images */
+img {
+  border-radius: 1rem;
+}
+
+/* Border frame style for hover previews and tooltips */
+.border-frame {
+  position: relative;
+}
+
+.border-frame::before,
+.border-frame::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  width: 1px;
+  background-color: rgb(209 213 219); /* gray-300 */
+}
+
+.dark .border-frame::before,
+.dark .border-frame::after {
+  background-color: rgb(75 85 99); /* gray-600 */
+}
+
+.border-frame::before {
+  left: 0;
+}
+
+.border-frame::after {
+  right: 0;
+}
+
+/* Cursor styles - hide default cursor on desktop only */
+@media (min-width: 768px) {
+  * {
+    cursor: none !important;
+  }
+  
+  a, button, [role="button"], input, textarea, select {
+    cursor: none !important;
+  }
+}
+
+/* Show default cursor on mobile */
+@media (max-width: 767px) {
+  * {
+    cursor: auto !important;
+  }
 }

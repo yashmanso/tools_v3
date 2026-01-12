@@ -24,8 +24,8 @@ const QUESTIONS = [
     description: 'Select the role that best describes you',
     options: [
       { value: 'entrepreneurs', label: 'Entrepreneur' },
-      { value: 'startups', label: 'Startup Founder' },
-      { value: 'SMEs', label: 'Small/Medium Business' },
+      { value: 'startups', label: 'Startup founder' },
+      { value: 'SMEs', label: 'Small/medium business' },
       { value: 'corporations', label: 'Corporation' },
       { value: 'researchers', label: 'Researcher' },
       { value: 'students', label: 'Student' },
@@ -43,7 +43,7 @@ const QUESTIONS = [
       { value: 'design', label: 'Design', description: 'Designing your solution or approach' },
       { value: 'development', label: 'Development', description: 'Building and developing your concept' },
       { value: 'implementation', label: 'Implementation', description: 'Putting your solution into practice' },
-      { value: 'startup', label: 'Startup Phase', description: 'Early stage startup' },
+      { value: 'startup', label: 'Startup phase', description: 'Early stage startup' },
       { value: 'growth', label: 'Growth', description: 'Scaling and growing your venture' },
       { value: 'scale-up', label: 'Scale-up', description: 'Expanding operations' },
       { value: 'maturity', label: 'Maturity', description: 'Established and optimizing' },
@@ -57,7 +57,7 @@ const QUESTIONS = [
       { value: 'environmental-sustainability', label: 'Environmental', description: 'Climate, resources, ecosystems' },
       { value: 'social-sustainability', label: 'Social', description: 'Community, equity, well-being' },
       { value: 'economic-sustainability', label: 'Economic', description: 'Financial viability, business models' },
-      { value: 'circular-economy', label: 'Circular Economy', description: 'Waste reduction, resource loops' },
+      { value: 'circular-economy', label: 'Circular economy', description: 'Waste reduction, resource loops' },
       { value: 'SDGs', label: 'SDGs', description: 'UN Sustainable Development Goals' },
       { value: 'governance', label: 'Governance', description: 'Ethics, transparency, accountability' },
     ],
@@ -67,10 +67,10 @@ const QUESTIONS = [
     question: 'What do you want to accomplish?',
     description: 'What is your primary goal?',
     options: [
-      { value: 'map', label: 'Map & Understand', description: 'Visualize relationships and systems' },
-      { value: 'assess', label: 'Assess & Measure', description: 'Evaluate impact and performance' },
-      { value: 'report', label: 'Report & Communicate', description: 'Document and share results' },
-      { value: 'align', label: 'Align & Strategize', description: 'Align goals and create strategy' },
+      { value: 'map', label: 'Map & understand', description: 'Visualize relationships and systems' },
+      { value: 'assess', label: 'Assess & measure', description: 'Evaluate impact and performance' },
+      { value: 'report', label: 'Report & communicate', description: 'Document and share results' },
+      { value: 'align', label: 'Align & strategize', description: 'Align goals and create strategy' },
     ],
   },
   {
@@ -78,11 +78,11 @@ const QUESTIONS = [
     question: 'What type of innovation are you working on?',
     description: 'Select the innovation type that applies',
     options: [
-      { value: 'product-innovation', label: 'Product Innovation', description: 'New or improved products' },
-      { value: 'process-innovation', label: 'Process Innovation', description: 'Better ways of doing things' },
-      { value: 'business-model-innovation', label: 'Business Model Innovation', description: 'New ways of creating value' },
-      { value: 'social-innovation', label: 'Social Innovation', description: 'Solutions to social challenges' },
-      { value: 'technological-innovation', label: 'Technological Innovation', description: 'Technology-driven solutions' },
+      { value: 'product-innovation', label: 'Product innovation', description: 'New or improved products' },
+      { value: 'process-innovation', label: 'Process innovation', description: 'Better ways of doing things' },
+      { value: 'business-model-innovation', label: 'Business model innovation', description: 'New ways of creating value' },
+      { value: 'social-innovation', label: 'Social innovation', description: 'Solutions to social challenges' },
+      { value: 'technological-innovation', label: 'Technological innovation', description: 'Technology-driven solutions' },
     ],
   },
 ];
@@ -161,7 +161,7 @@ export function ToolFinder({ allResources }: ToolFinderProps) {
             </div>
             <button
               onClick={handleReset}
-              className="px-4 py-2 text-sm border border-gray-300 dark:border-gray-600 rounded-lg hover:border-blue-500 dark:hover:border-blue-500 transition-colors"
+              className="px-4 py-2 text-sm border border-gray-300 dark:border-gray-600 rounded-full hover:border-blue-500 dark:hover:border-blue-500 transition-colors"
             >
               Start Over
             </button>
@@ -200,9 +200,9 @@ export function ToolFinder({ allResources }: ToolFinderProps) {
             </p>
             <Link
               href="/tools"
-              className="px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors inline-block"
+              className="px-6 py-3 bg-blue-600 text-white rounded-full hover:bg-blue-700 transition-colors inline-block"
             >
-              Browse All Tools
+              Browse all tools
             </Link>
           </div>
         )}

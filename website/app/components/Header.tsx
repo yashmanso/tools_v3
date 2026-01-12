@@ -5,8 +5,14 @@ import Link from 'next/link';
 import { useTheme } from './ThemeProvider';
 import { usePathname } from 'next/navigation';
 import { usePanels } from './PanelContext';
+import { ChatBotIcon } from './ChatBotIcon';
+import { ResourceMetadata } from '../lib/markdown';
 
-export function Header() {
+interface HeaderProps {
+  allResources: ResourceMetadata[];
+}
+
+export function Header({ allResources }: HeaderProps) {
   const { theme, toggleTheme } = useTheme();
   const [mounted, setMounted] = useState(false);
   const pathname = usePathname();
@@ -32,11 +38,11 @@ export function Header() {
           Sustainability Atlas
         </Link>
 
-        <nav className="flex items-center gap-1">
+        <nav className="flex items-center gap-2 px-3 py-2 rounded-full bg-[var(--bg-secondary)] border border-[var(--border)]">
           <Link
             href="/"
             onClick={clearPanels}
-            className={`px-3 py-1.5 text-sm font-medium rounded-md transition-colors ${
+            className={`px-3 py-1.5 text-sm font-medium rounded-full transition-colors ${
               isActive('/') && pathname === '/'
                 ? 'text-[var(--text-primary)]'
                 : 'text-[var(--text-secondary)] hover:text-[var(--text-primary)] hover:bg-[var(--border-subtle)]'
@@ -46,7 +52,7 @@ export function Header() {
           </Link>
           <Link
             href="/tools"
-            className={`px-3 py-1.5 text-sm font-medium rounded-md transition-colors ${
+            className={`px-3 py-1.5 text-sm font-medium rounded-full transition-colors ${
               isActive('/tools')
                 ? 'text-[var(--text-primary)]'
                 : 'text-[var(--text-secondary)] hover:text-[var(--text-primary)] hover:bg-[var(--border-subtle)]'
@@ -56,7 +62,7 @@ export function Header() {
           </Link>
           <Link
             href="/collections"
-            className={`px-3 py-1.5 text-sm font-medium rounded-md transition-colors ${
+            className={`px-3 py-1.5 text-sm font-medium rounded-full transition-colors ${
               isActive('/collections')
                 ? 'text-[var(--text-primary)]'
                 : 'text-[var(--text-secondary)] hover:text-[var(--text-primary)] hover:bg-[var(--border-subtle)]'
@@ -66,7 +72,7 @@ export function Header() {
           </Link>
           <Link
             href="/articles"
-            className={`px-3 py-1.5 text-sm font-medium rounded-md transition-colors ${
+            className={`px-3 py-1.5 text-sm font-medium rounded-full transition-colors ${
               isActive('/articles')
                 ? 'text-[var(--text-primary)]'
                 : 'text-[var(--text-secondary)] hover:text-[var(--text-primary)] hover:bg-[var(--border-subtle)]'
@@ -75,11 +81,12 @@ export function Header() {
             Articles
           </Link>
 
-          <div className="ml-2 pl-2 border-l border-[var(--border)]">
+          <div className="ml-2 pl-2 border-l border-[var(--border)] flex items-center gap-2">
+            <ChatBotIcon allResources={allResources} />
             {mounted && (
               <button
                 onClick={toggleTheme}
-                className="p-1.5 rounded-md text-[var(--text-secondary)] hover:text-[var(--text-primary)] hover:bg-[var(--border-subtle)] transition-colors"
+                className="p-1.5 rounded-full text-[var(--text-secondary)] hover:text-[var(--text-primary)] hover:bg-[var(--border-subtle)] transition-colors"
                 aria-label="Toggle theme"
               >
                 {theme === 'light' ? (
