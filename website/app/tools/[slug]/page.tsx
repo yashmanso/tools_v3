@@ -5,6 +5,8 @@ import { TagList } from '@/app/components/TagList';
 import { PageHeader } from '@/app/components/PageHeader';
 import { RelatedPages } from '@/app/components/RelatedPages';
 import { ContentWithHoverPreviews } from '@/app/components/ContentWithHoverPreviews';
+import { Breadcrumbs } from '@/app/components/Breadcrumbs';
+import { TrackPageView } from '@/app/components/TrackPageView';
 
 interface PageProps {
   params: Promise<{ slug: string }>;
@@ -30,7 +32,9 @@ export default async function ToolPage({ params }: PageProps) {
 
   return (
     <article className="max-w-4xl mx-auto">
-      <PageHeader title={resource.title}>
+      <TrackPageView resource={resource} />
+      <Breadcrumbs currentPageTitle={resource.title} />
+      <PageHeader title={resource.title} resource={resource}>
         <TagList tags={resource.tags} allResources={allResources} />
       </PageHeader>
 

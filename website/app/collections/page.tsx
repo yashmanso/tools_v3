@@ -1,5 +1,6 @@
 import { getResourcesByCategory, getAllResources } from '../lib/markdown';
-import { SearchFilter } from '../components/SearchFilter';
+import { FilteredPageLayout } from '../components/FilteredPageLayout';
+import { Breadcrumbs } from '../components/Breadcrumbs';
 
 export default function CollectionsPage() {
   const collections = getResourcesByCategory('collections');
@@ -7,6 +8,7 @@ export default function CollectionsPage() {
 
   return (
     <div>
+      <Breadcrumbs />
       <div className="mb-8">
         <h1 className="text-3xl font-bold mb-3">Collections, compendia & kits</h1>
         <p className="text-gray-600 dark:text-gray-400">
@@ -15,7 +17,7 @@ export default function CollectionsPage() {
         </p>
       </div>
 
-      <SearchFilter resources={collections} allResources={allResources} />
+      <FilteredPageLayout resources={collections} allResources={allResources} />
     </div>
   );
 }

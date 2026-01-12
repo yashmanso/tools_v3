@@ -1,5 +1,6 @@
 import { getResourcesByCategory, getAllResources } from '../lib/markdown';
-import { SearchFilter } from '../components/SearchFilter';
+import { FilteredPageLayout } from '../components/FilteredPageLayout';
+import { Breadcrumbs } from '../components/Breadcrumbs';
 
 export default function ArticlesPage() {
   const articles = getResourcesByCategory('articles');
@@ -7,6 +8,7 @@ export default function ArticlesPage() {
 
   return (
     <div>
+      <Breadcrumbs />
       <div className="mb-8">
         <h1 className="text-3xl font-bold mb-3">Practical academic articles & scientific reports</h1>
         <p className="text-gray-600 dark:text-gray-400">
@@ -15,7 +17,7 @@ export default function ArticlesPage() {
         </p>
       </div>
 
-      <SearchFilter resources={articles} allResources={allResources} />
+      <FilteredPageLayout resources={articles} allResources={allResources} />
     </div>
   );
 }

@@ -1,7 +1,6 @@
 'use client';
 
-import { useState } from 'react';
-import { TagModal } from './TagModal';
+import { useTagModal } from './TagModalContext';
 import { ResourceMetadata } from '../lib/markdown';
 
 interface ClickableTagProps {
@@ -12,12 +11,13 @@ interface ClickableTagProps {
 }
 
 export function ClickableTag({ tag, allResources, className = '', size = 'xs' }: ClickableTagProps) {
-  const [selectedTag, setSelectedTag] = useState<string | null>(null);
+  const { openTag, setOpenTag } = useTagModal();
 
   const handleClick = (e: React.MouseEvent) => {
     e.preventDefault();
     e.stopPropagation();
-    setSelectedTag(tag);
+    // Toggle: if already open, close it; otherwise open it
+    setOpenTag(openTag === tag ? null : tag);
   };
 
   const sizeClasses = {
@@ -26,24 +26,14 @@ export function ClickableTag({ tag, allResources, className = '', size = 'xs' }:
   };
 
   return (
-    <>
-      <button
-        type="button"
-        onClick={handleClick}
-        className={`tag cursor-pointer hover:bg-blue-50 hover:border-blue-500 hover:text-blue-700 dark:hover:bg-blue-900/30 dark:hover:border-blue-400 dark:hover:text-blue-300 transition-all duration-200 active:scale-95 ${sizeClasses[size]} ${className}`}
-        title={`Click to see all pages with tag: ${tag}`}
-      >
-        {tag}
-      </button>
-
-      {selectedTag && (
-        <TagModal
-          tag={selectedTag}
-          resources={allResources}
-          onClose={() => setSelectedTag(null)}
-        />
-      )}
-    </>
+    <button
+      type="button"
+      onClick={handleClick}
+      className={`tag cursor-pointer hover:bg-blue-50 hover:border-blue-500 hover:text-blue-700 dark:hover:bg-blue-900/30 dark:hover:border-blue-400 dark:hover:text-blue-300 transition-all duration-200 active:scale-95 ${sizeClasses[size]} ${className}`}
+      title={`Click to see all pages with tag: ${tag}`}
+    >
+      {tag}
+    </button>
   );
 }
 

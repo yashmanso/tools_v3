@@ -189,8 +189,8 @@ export function ToolFinder({ allResources }: ToolFinderProps) {
 
         {recommendedTools.length > 0 ? (
           <div className="grid md:grid-cols-2 gap-4">
-            {recommendedTools.map((tool) => (
-              <ResourceCard key={tool.slug} resource={tool} allResources={allResources} />
+            {recommendedTools.map((tool, idx) => (
+              <ResourceCard key={tool.slug} resource={tool} allResources={allResources} animationDelay={idx * 50} />
             ))}
           </div>
         ) : (

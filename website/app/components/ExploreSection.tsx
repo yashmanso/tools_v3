@@ -5,13 +5,19 @@ import Link from 'next/link';
 import { ResourceMetadata } from '../lib/markdown';
 import { ToolFinder } from './ToolFinder';
 import { CompareTools } from './CompareTools';
+import { TimelineView } from './TimelineView';
+import { NetworkGraph } from './NetworkGraph';
 
 interface ExploreSectionProps {
   allResources: ResourceMetadata[];
+  graphData?: {
+    nodes: Array<{ id: string; node: { slug: string; title: string; category: string; tags: string[] } }>;
+    edges: Array<{ source: string; target: string; weight: number; reasons: string[] }>;
+  };
 }
 
-export function ExploreSection({ allResources }: ExploreSectionProps) {
-  const [mode, setMode] = useState<'select' | 'browse' | 'find' | 'compare'>('select');
+export function ExploreSection({ allResources, graphData }: ExploreSectionProps) {
+  const [mode, setMode] = useState<'select' | 'browse' | 'find' | 'compare' | 'timeline' | 'network'>('select');
 
   if (mode === 'browse') {
     return (
@@ -85,6 +91,44 @@ export function ExploreSection({ allResources }: ExploreSectionProps) {
     );
   }
 
+  if (mode === 'timeline') {
+    return (
+      <section className="py-8 bg-[var(--bg-primary)]">
+        <div className="mb-6">
+          <button
+            onClick={() => setMode('select')}
+            className="text-sm text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-100 mb-4 inline-flex items-center gap-2"
+          >
+            ← Back to options
+          </button>
+        </div>
+        <TimelineView allResources={allResources} />
+      </section>
+    );
+  }
+
+  if (mode === 'network') {
+    return (
+      <section className="py-8 bg-[var(--bg-primary)]">
+        <div className="mb-6">
+          <button
+            onClick={() => setMode('select')}
+            className="text-sm text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-100 mb-4 inline-flex items-center gap-2"
+          >
+            ← Back to options
+          </button>
+        </div>
+        {graphData ? (
+          <NetworkGraph allResources={allResources} graphData={graphData} />
+        ) : (
+          <div className="text-center py-12 text-gray-500 dark:text-gray-400">
+            Loading network graph...
+          </div>
+        )}
+      </section>
+    );
+  }
+
   return (
     <section className="text-center py-12 bg-[var(--bg-primary)]">
       <h2 className="text-3xl font-bold mb-4">Start exploring</h2>
@@ -92,7 +136,7 @@ export function ExploreSection({ allResources }: ExploreSectionProps) {
         Choose how you'd like to discover tools and resources for your sustainable innovation journey.
       </p>
       
-      <div className="grid md:grid-cols-3 gap-6 max-w-5xl mx-auto">
+      <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6 max-w-6xl mx-auto">
         {/* Browse Option */}
         <button
           onClick={() => setMode('browse')}
@@ -141,6 +185,40 @@ export function ExploreSection({ allResources }: ExploreSectionProps) {
           </p>
           <div className="mt-4 text-blue-600 dark:text-blue-400 text-sm font-medium">
             Start comparing →
+          </div>
+        </button>
+
+        {/* Timeline View Option */}
+        <button
+          onClick={() => setMode('timeline')}
+          className="group p-8 rounded-3xl border border-gray-200 dark:border-gray-700 hover:border-gray-300 dark:hover:border-gray-600 transition-all text-left bg-[var(--bg-secondary)]"
+        >
+          <h3 className="text-xl font-semibold mb-3 text-[var(--text-primary)]">
+            View by stage
+          </h3>
+          <p className="text-sm text-[var(--text-secondary)] leading-relaxed">
+            Explore tools organized by innovation process stages, from ideation through implementation. 
+            See where each tool fits in your innovation journey.
+          </p>
+          <div className="mt-4 text-blue-600 dark:text-blue-400 text-sm font-medium">
+            View timeline →
+          </div>
+        </button>
+
+        {/* Network Graph Option */}
+        <button
+          onClick={() => setMode('network')}
+          className="group p-8 rounded-3xl border border-gray-200 dark:border-gray-700 hover:border-gray-300 dark:hover:border-gray-600 transition-all text-left bg-[var(--bg-secondary)]"
+        >
+          <h3 className="text-xl font-semibold mb-3 text-[var(--text-primary)]">
+            Network graph
+          </h3>
+          <p className="text-sm text-[var(--text-secondary)] leading-relaxed">
+            Visualize how tools are connected through shared tags and relationships. 
+            Explore the network of interconnected resources and discover unexpected connections.
+          </p>
+          <div className="mt-4 text-blue-600 dark:text-blue-400 text-sm font-medium">
+            View network →
           </div>
         </button>
       </div>

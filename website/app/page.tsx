@@ -1,9 +1,21 @@
 import Link from 'next/link';
 import { getAllResources } from './lib/markdown';
+import { buildPageGraph } from './lib/graph';
 import { ExploreSection } from './components/ExploreSection';
 import { TypewriterTitle } from './components/TypewriterTitle';
+
 export default function HomePage() {
   const allResources = getAllResources();
+  
+  // Build graph on server side
+  const graph = buildPageGraph();
+  const graphData = {
+    nodes: Array.from(graph.nodes.entries()).map(([id, node]) => ({
+      id,
+      node,
+    })),
+    edges: graph.edges,
+  };
 
   return (
     <div className="max-w-4xl mx-auto bg-[var(--bg-primary)]">
@@ -94,7 +106,7 @@ export default function HomePage() {
         </div>
       </section>
 
-      <ExploreSection allResources={allResources} />
+      <ExploreSection allResources={allResources} graphData={graphData} />
     </div>
   );
 }

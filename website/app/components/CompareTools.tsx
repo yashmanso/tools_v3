@@ -4,6 +4,7 @@ import { useState } from 'react';
 import { ResourceMetadata } from '../lib/markdown';
 import { PanelLink } from './PanelLink';
 import { ResourceCard } from './ResourceCard';
+import { convertMarkdownLinksToHTML } from '../lib/markdownLinks';
 
 interface CompareToolsProps {
   allResources: ResourceMetadata[];
@@ -33,14 +34,12 @@ export function CompareTools({ allResources }: CompareToolsProps) {
   const handleCompare = () => {
     if (selectedTools.length >= 2) {
       setShowComparison(true);
-      setSearchMode('compare');
     }
   };
 
   const handleReset = () => {
     setSelectedTools([]);
     setShowComparison(false);
-    setSearchMode('select');
   };
 
   // Get unique tags across all selected tools
@@ -134,21 +133,20 @@ export function CompareTools({ allResources }: CompareToolsProps) {
                   const overviewText = tool.overview || '';
                   const isLong = overviewText.length > 150;
                   
-                  // Convert markdown links [text](url) to "text (url)" format
-                  const formatOverview = (text: string) => {
-                    return text.replace(/\[([^\]]+)\]\(([^\)]+)\)/g, '$1 ($2)');
-                  };
+                  // Convert markdown links to HTML
+                  const overviewWithLinks = convertMarkdownLinksToHTML(overviewText);
                   
                   return (
                     <td key={tool.slug} className="p-4 text-sm text-gray-600 dark:text-gray-400 align-top group/overview relative">
                       {overviewText ? (
                         <>
-                          <div className="line-clamp-3 break-words">
-                            {formatOverview(overviewText)}
-                            {isLong && (
-                              <span className="ml-1 text-blue-500 text-xs">(hover for full)</span>
-                            )}
-                          </div>
+                          <div 
+                            className="line-clamp-3 break-words"
+                            dangerouslySetInnerHTML={{ __html: overviewWithLinks }}
+                          />
+                          {isLong && (
+                            <span className="ml-1 text-blue-500 text-xs">(hover for full)</span>
+                          )}
                           {isLong && (
                             <div className="absolute left-0 top-full mt-2 w-96 bg-white dark:bg-gray-800 shadow-xl opacity-0 invisible group-hover/overview:opacity-100 group-hover/overview:visible z-[100] transition-all duration-200 pointer-events-none relative">
                               {/* Left border frame */}
@@ -158,9 +156,10 @@ export function CompareTools({ allResources }: CompareToolsProps) {
                               <div className="absolute right-0 top-0 bottom-0 w-px bg-gray-300 dark:bg-gray-600"></div>
                               
                               <div className="p-4 pl-5 pr-5">
-                                <div className="text-sm text-gray-700 dark:text-gray-300 leading-relaxed break-words whitespace-pre-wrap">
-                                  {formatOverview(overviewText)}
-                                </div>
+                                <div 
+                                  className="text-sm text-gray-700 dark:text-gray-300 leading-relaxed break-words whitespace-pre-wrap"
+                                  dangerouslySetInnerHTML={{ __html: overviewWithLinks }}
+                                />
                               </div>
                             </div>
                           )}
@@ -363,7 +362,7 @@ export function CompareTools({ allResources }: CompareToolsProps) {
                 tool.overview?.toLowerCase().includes(searchQuery.toLowerCase());
               return matchesSearch;
             })
-            .map((tool) => {
+            .map((tool, idx) => {
               const isSelected = selectedTools.some(t => t.slug === tool.slug);
               const canSelect = selectedTools.length < 3 || isSelected;
               
@@ -391,7 +390,7 @@ export function CompareTools({ allResources }: CompareToolsProps) {
                       </svg>
                     )}
                   </button>
-                  <ResourceCard resource={tool} allResources={allResources} />
+                  <ResourceCard resource={tool} allResources={allResources} animationDelay={idx * 50} />
                 </div>
               );
             })}

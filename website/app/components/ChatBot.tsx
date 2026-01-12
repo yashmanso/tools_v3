@@ -3,6 +3,7 @@
 import { useState, useRef, useEffect } from 'react';
 import { ResourceMetadata } from '../lib/markdown';
 import { PanelLink } from './PanelLink';
+import { convertMarkdownLinksToHTML } from '../lib/markdownLinks';
 
 interface ChatBotProps {
   allResources: ResourceMetadata[];
@@ -256,9 +257,10 @@ export function ChatBot({ allResources, isOpen: externalIsOpen, onClose }: ChatB
                             {tool.title}
                           </div>
                           {tool.overview && (
-                            <div className="text-xs text-gray-600 dark:text-gray-400 mt-1 line-clamp-2">
-                              {tool.overview.substring(0, 100)}...
-                            </div>
+                            <div 
+                              className="text-xs text-gray-600 dark:text-gray-400 mt-1 line-clamp-2"
+                              dangerouslySetInnerHTML={{ __html: convertMarkdownLinksToHTML(tool.overview.substring(0, 100) + '...') }}
+                            />
                           )}
                         </PanelLink>
                       ))}

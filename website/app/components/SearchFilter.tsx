@@ -143,7 +143,7 @@ export function SearchFilter({ resources, allResources, onToolSelect, selectedTo
                     )}
                   </button>
                 )}
-                <ResourceCard resource={resource} allResources={allResources} />
+                <ResourceCard resource={resource} allResources={allResources} animationDelay={index * 50} />
               </div>
             );
           })}

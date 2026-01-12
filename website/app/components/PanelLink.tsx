@@ -87,6 +87,32 @@ function PanelContent({ path }: { path: string }) {
               buttonContainer.remove();
             }
           }
+          
+          // Convert markdown-style links [text](url) to HTML links
+          // Process the HTML string directly - replace markdown links that aren't already in <a> tags
+          let processedHTML = mainContent.innerHTML;
+          
+          // First, temporarily replace existing <a> tags to avoid double-processing
+          const linkPlaceholders: string[] = [];
+          processedHTML = processedHTML.replace(/<a\b[^>]*>.*?<\/a>/gi, (match) => {
+            const placeholder = `__LINK_PLACEHOLDER_${linkPlaceholders.length}__`;
+            linkPlaceholders.push(match);
+            return placeholder;
+          });
+          
+          // Now replace markdown links
+          processedHTML = processedHTML.replace(/\[([^\]]+)\]\(([^)]+)\)/g, (match, text, url) => {
+            // Convert to HTML link
+            return `<a href="${url}" class="text-blue-600 dark:text-blue-400 hover:underline" target="_blank" rel="noopener noreferrer">${text}</a>`;
+          });
+          
+          // Restore the original <a> tags
+          linkPlaceholders.forEach((link, index) => {
+            processedHTML = processedHTML.replace(`__LINK_PLACEHOLDER_${index}__`, link);
+          });
+          
+          mainContent.innerHTML = processedHTML;
+          
           setHtml(mainContent.innerHTML);
         } else {
           setHtml(htmlText);

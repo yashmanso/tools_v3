@@ -2,10 +2,29 @@
 
 import { useEffect, useRef } from 'react';
 import { usePanels } from './PanelContext';
+import { ResourceMetadata } from '../lib/markdown';
+import { BookmarkButton } from './BookmarkButton';
+import { ShareButton } from './ShareButton';
 
-export function SlidingPanels({ children }: { children: React.ReactNode }) {
+interface SlidingPanelsProps {
+  children: React.ReactNode;
+  allResources?: ResourceMetadata[];
+}
+
+export function SlidingPanels({ children, allResources = [] }: SlidingPanelsProps) {
   const { panels, removePanel, expandedPanelId, togglePanelExpand } = usePanels();
   const containerRef = useRef<HTMLDivElement>(null);
+  
+  // Helper to get resource from panel path
+  const getResourceFromPath = (path: string): ResourceMetadata | null => {
+    const pathParts = path.split('/').filter(Boolean);
+    if (pathParts.length >= 2) {
+      const category = pathParts[0];
+      const slug = pathParts[1];
+      return allResources.find(r => r.category === category && r.slug === slug) || null;
+    }
+    return null;
+  };
 
   // Auto-scroll to the rightmost panel when a new panel is added
   useEffect(() => {
@@ -94,6 +113,22 @@ export function SlidingPanels({ children }: { children: React.ReactNode }) {
                       </svg>
                     )}
                   </button>
+
+                  {/* Bookmark button */}
+                  {(() => {
+                    const resource = getResourceFromPath(panel.path);
+                    return resource ? (
+                      <BookmarkButton resource={resource} size="md" className="page-header" />
+                    ) : null;
+                  })()}
+
+                  {/* Share button */}
+                  {(() => {
+                    const resource = getResourceFromPath(panel.path);
+                    return resource ? (
+                      <ShareButton resource={resource} size="md" />
+                    ) : null;
+                  })()}
 
                   {/* Close button */}
                   <button

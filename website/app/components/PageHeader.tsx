@@ -2,13 +2,17 @@
 
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
+import { ResourceMetadata } from '../lib/markdown';
+import { BookmarkButton } from './BookmarkButton';
+import { ShareButton } from './ShareButton';
 
 interface PageHeaderProps {
   title: string;
   children?: React.ReactNode;
+  resource?: ResourceMetadata;
 }
 
-export function PageHeader({ title, children }: PageHeaderProps) {
+export function PageHeader({ title, children, resource }: PageHeaderProps) {
   const [isExpanded, setIsExpanded] = useState(false);
   const router = useRouter();
 
@@ -84,6 +88,16 @@ export function PageHeader({ title, children }: PageHeaderProps) {
             )}
           </button>
 
+          {/* Bookmark button */}
+          {resource && (
+            <BookmarkButton resource={resource} size="md" className="page-header" />
+          )}
+          
+          {/* Share button */}
+          {resource && (
+            <ShareButton resource={resource} />
+          )}
+          
           {/* Close button */}
           <button
             onClick={handleClose}

@@ -6,6 +6,8 @@ import { useTheme } from './ThemeProvider';
 import { usePathname } from 'next/navigation';
 import { usePanels } from './PanelContext';
 import { ChatBotIcon } from './ChatBotIcon';
+import { FavoritesIcon } from './FavoritesIcon';
+import { RecentViewsSidebar } from './RecentViewsSidebar';
 import { ResourceMetadata } from '../lib/markdown';
 
 interface HeaderProps {
@@ -15,6 +17,7 @@ interface HeaderProps {
 export function Header({ allResources }: HeaderProps) {
   const { theme, toggleTheme } = useTheme();
   const [mounted, setMounted] = useState(false);
+  const [recentViewsOpen, setRecentViewsOpen] = useState(false);
   const pathname = usePathname();
   const { clearPanels } = usePanels();
 
@@ -82,6 +85,17 @@ export function Header({ allResources }: HeaderProps) {
           </Link>
 
           <div className="ml-2 pl-2 border-l border-[var(--border)] flex items-center gap-2">
+            <button
+              onClick={() => setRecentViewsOpen(!recentViewsOpen)}
+              className="p-1.5 rounded-full text-[var(--text-secondary)] hover:text-[var(--text-primary)] hover:bg-[var(--border-subtle)] transition-colors relative"
+              aria-label="Recent views"
+              title="Recent views"
+            >
+              <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+              </svg>
+            </button>
+            <FavoritesIcon allResources={allResources} />
             <ChatBotIcon allResources={allResources} />
             {mounted && (
               <button
@@ -103,6 +117,11 @@ export function Header({ allResources }: HeaderProps) {
           </div>
         </nav>
       </div>
+      <RecentViewsSidebar 
+        allResources={allResources} 
+        isOpen={recentViewsOpen} 
+        onClose={() => setRecentViewsOpen(false)} 
+      />
     </header>
   );
 }
