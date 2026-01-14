@@ -173,7 +173,7 @@ export function ContentWithHoverPreviews({ html, className }: ContentWithHoverPr
 
       {preview && (
         <div
-          className="fixed z-50 w-80 bg-white dark:bg-gray-800 shadow-xl animate-fade-in relative"
+          className="fixed z-[100] w-80 bg-white dark:bg-gray-800 shadow-xl animate-fade-in relative"
           style={{
             left: `${preview.position.x}px`,
             top: `${preview.position.y}px`,

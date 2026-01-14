@@ -243,7 +243,7 @@ export function HeaderLinkWithPreview({ href, children, className, onClick, allR
       {preview && (
         <div
           data-preview-box
-          className="fixed z-50 w-80 max-h-96 bg-white dark:bg-gray-800 shadow-xl relative overflow-hidden flex flex-col"
+          className="fixed z-[100] w-80 max-h-96 bg-white dark:bg-gray-800 shadow-xl relative overflow-hidden flex flex-col"
           style={{
             left: `${preview.position.x}px`,
             top: `${preview.position.y}px`,

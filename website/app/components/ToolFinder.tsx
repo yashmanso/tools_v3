@@ -115,48 +115,96 @@ export function ToolFinder({ allResources }: ToolFinderProps) {
     setShowResults(false);
   };
 
-  // Filter resources based on answers
-  const getRecommendedTools = (): ResourceMetadata[] => {
+  // Score and reorder all tools based on answers
+  const getReorderedTools = (): Array<{ tool: ResourceMetadata; score: number; matchPercentage: number }> => {
     const tools = allResources.filter((r) => r.category === 'tools');
     
     if (Object.keys(answers).length === 0) {
-      return tools.slice(0, 12);
+      // If no answers, return all tools with score 0
+      return tools.map(tool => ({ tool, score: 0, matchPercentage: 0 }));
     }
 
-    // Score each tool based on how many matching tags it has
+    const answerValues = Object.values(answers).filter(Boolean);
+    const maxPossibleScore = answerValues.length * 20; // Maximum score if all answers match perfectly
+
+    // Score each tool based on how well it matches the answers
     const scoredTools = tools.map((tool) => {
       let score = 0;
-      const answerValues = Object.values(answers).filter(Boolean);
 
       answerValues.forEach((answer) => {
+        // Direct tag match - highest priority (20 points)
         if (tool.tags.includes(answer)) {
-          score += 1;
+          score += 20;
+        } else {
+          // Partial tag match (contains the answer) - 10 points
+          const matchingTag = tool.tags.find(tag => {
+            const tagLower = tag.toLowerCase().replace(/[#-]/g, '');
+            const answerLower = answer.toLowerCase().replace(/[#-]/g, '');
+            return tagLower.includes(answerLower) || answerLower.includes(tagLower);
+          });
+          if (matchingTag) {
+            score += 10;
+          } else {
+            // Check if overview mentions the answer - 3 points
+            if (tool.overview?.toLowerCase().includes(answer.toLowerCase())) {
+              score += 3;
+            }
+            
+            // Check if title mentions the answer - 5 points
+            if (tool.title.toLowerCase().includes(answer.toLowerCase())) {
+              score += 5;
+            }
+          }
         }
       });
 
-      return { tool, score };
+      // Additional scoring based on question-specific logic
+      if (answers.stage) {
+        // Stage-specific tags get bonus
+        const stageTags = ['ideation', 'design', 'development', 'implementation', 'startup', 'growth', 'scale-up', 'maturity'];
+        if (stageTags.some(stage => tool.tags.includes(stage) && stage === answers.stage)) {
+          score += 15;
+        }
+      }
+      
+      if (answers.objective) {
+        // Objective-specific tags get bonus
+        const objectiveTags = ['map', 'assess', 'report', 'align'];
+        if (objectiveTags.some(obj => tool.tags.includes(obj) && obj === answers.objective)) {
+          score += 15;
+        }
+      }
+
+      // Calculate match percentage (0-100)
+      const matchPercentage = maxPossibleScore > 0 
+        ? Math.min(100, Math.round((score / maxPossibleScore) * 100))
+        : 0;
+
+      return { tool, score, matchPercentage };
     });
 
-    // Sort by score (highest first) and return top matches
-    return scoredTools
-      .filter((item) => item.score > 0)
-      .sort((a, b) => b.score - a.score)
-      .map((item) => item.tool)
-      .slice(0, 12);
+    // Sort by score (highest first), but include ALL tools
+    return scoredTools.sort((a, b) => b.score - a.score);
   };
 
-  const recommendedTools = getRecommendedTools();
+  const reorderedTools = getReorderedTools();
   const currentQuestion = QUESTIONS[currentStep];
 
   if (showResults) {
+    const topMatches = reorderedTools.filter(item => item.score > 0).slice(0, 12);
+    const otherTools = reorderedTools.filter(item => item.score === 0);
+    
     return (
       <div className="max-w-6xl mx-auto">
         <div className="mb-8">
           <div className="flex items-center justify-between mb-4">
             <div>
-              <h2 className="text-3xl font-bold mb-2">Recommended Tools for You</h2>
+              <h2 className="text-3xl font-bold mb-2">Tools for You</h2>
               <p className="text-gray-600 dark:text-gray-400">
-                Based on your answers, we found {recommendedTools.length} relevant tools
+                {topMatches.length > 0 
+                  ? `We've reordered ${reorderedTools.length} tools based on your answers. The most relevant are shown first.`
+                  : `Showing all ${reorderedTools.length} tools.`
+                }
               </p>
             </div>
             <button
@@ -187,23 +235,61 @@ export function ToolFinder({ allResources }: ToolFinderProps) {
           </div>
         </div>
 
-        {recommendedTools.length > 0 ? (
-          <div className="grid md:grid-cols-2 gap-4">
-            {recommendedTools.map((tool, idx) => (
-              <ResourceCard key={tool.slug} resource={tool} allResources={allResources} animationDelay={idx * 50} />
-            ))}
+        {/* Top matches section */}
+        {topMatches.length > 0 && (
+          <div className="mb-12">
+            <h3 className="text-xl font-semibold mb-4 text-gray-900 dark:text-gray-100">
+              Most Relevant Tools ({topMatches.length})
+            </h3>
+            <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-4">
+              {topMatches.map((item, idx) => (
+                <div key={item.tool.slug} className="relative">
+                  <ResourceCard 
+                    resource={item.tool} 
+                    allResources={allResources} 
+                    animationDelay={idx * 50} 
+                  />
+                  {item.matchPercentage > 0 && (
+                    <div className="absolute top-3 right-3 bg-blue-600 text-white text-xs font-semibold px-2.5 py-1 rounded-full shadow-lg z-10">
+                      {item.matchPercentage}% match
+                    </div>
+                  )}
+                </div>
+              ))}
+            </div>
           </div>
-        ) : (
-          <div className="text-center py-12">
-            <p className="text-gray-600 dark:text-gray-400 mb-4">
-              No specific matches found. Try browsing all tools instead.
-            </p>
-            <Link
-              href="/tools"
-              className="px-6 py-3 bg-blue-600 text-white rounded-full hover:bg-blue-700 transition-colors inline-block"
-            >
-              Browse all tools
-            </Link>
+        )}
+
+        {/* All other tools section */}
+        {otherTools.length > 0 && (
+          <div>
+            <h3 className="text-xl font-semibold mb-4 text-gray-900 dark:text-gray-100">
+              All Other Tools ({otherTools.length})
+            </h3>
+            <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-4">
+              {otherTools.map((item, idx) => (
+                <ResourceCard 
+                  key={item.tool.slug} 
+                  resource={item.tool} 
+                  allResources={allResources} 
+                  animationDelay={(topMatches.length + idx) * 50} 
+                />
+              ))}
+            </div>
+          </div>
+        )}
+
+        {/* If no matches but tools exist, show all */}
+        {topMatches.length === 0 && reorderedTools.length > 0 && (
+          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-4">
+            {reorderedTools.map((item, idx) => (
+              <ResourceCard 
+                key={item.tool.slug} 
+                resource={item.tool} 
+                allResources={allResources} 
+                animationDelay={idx * 50} 
+              />
+            ))}
           </div>
         )}
       </div>

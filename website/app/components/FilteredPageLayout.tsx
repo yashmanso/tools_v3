@@ -1,10 +1,11 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useMemo, useEffect } from 'react';
 import { ResourceMetadata } from '../lib/markdown';
 import { QuickFiltersSidebar, FilterState } from './QuickFiltersSidebar';
 import { FilteredResourceList } from './FilteredResourceList';
 import { FilterButton } from './FilterButton';
+import { getWelcomeAnswers, reorderResourcesByWelcomeAnswers } from '../lib/welcomeAnswers';
 
 interface FilteredPageLayoutProps {
   resources: ResourceMetadata[];
@@ -20,6 +21,7 @@ export function FilteredPageLayout({
   selectedTools = [],
 }: FilteredPageLayoutProps) {
   const [isFiltersOpen, setIsFiltersOpen] = useState(false);
+  const [welcomeAnswers, setWelcomeAnswers] = useState(getWelcomeAnswers());
   const [filters, setFilters] = useState<FilterState>({
     searchQuery: '',
     selectedTags: new Set(),
@@ -28,6 +30,29 @@ export function FilteredPageLayout({
     selectedStages: new Set(),
     selectedAudiences: new Set(),
   });
+
+  // Reorder resources based on welcome answers
+  const reorderedResources = useMemo(() => {
+    if (Object.keys(welcomeAnswers).length === 0) {
+      return resources;
+    }
+    return reorderResourcesByWelcomeAnswers(resources, welcomeAnswers);
+  }, [resources, welcomeAnswers]);
+
+  // Update welcome answers when they change
+  useEffect(() => {
+    const handleWelcomeUpdate = () => {
+      setWelcomeAnswers(getWelcomeAnswers());
+    };
+    
+    window.addEventListener('welcome-answers-updated', handleWelcomeUpdate);
+    window.addEventListener('storage', handleWelcomeUpdate);
+
+    return () => {
+      window.removeEventListener('welcome-answers-updated', handleWelcomeUpdate);
+      window.removeEventListener('storage', handleWelcomeUpdate);
+    };
+  }, []);
 
   const activeFilterCount = filters.selectedTags.size + (filters.searchQuery.length > 0 ? 1 : 0);
 
@@ -48,7 +73,7 @@ export function FilteredPageLayout({
         {/* Sidebar */}
         {isFiltersOpen && (
           <QuickFiltersSidebar
-            resources={resources}
+            resources={reorderedResources}
             onFiltersChange={setFilters}
             initialFilters={filters}
             isOpen={isFiltersOpen}
@@ -59,7 +84,7 @@ export function FilteredPageLayout({
         {/* Main content */}
         <div className={`flex-1 transition-all duration-300 ${isFiltersOpen ? '' : ''}`}>
           <FilteredResourceList
-            resources={resources}
+            resources={reorderedResources}
             allResources={allResources}
             filters={filters}
             onToolSelect={onToolSelect}

@@ -8,6 +8,7 @@ import { SlidingPanels } from './components/SlidingPanels';
 import { CursorAnimation } from './components/CursorAnimation';
 import { ContactForm } from './components/ContactForm';
 import { TagModal } from './components/TagModal';
+import { WelcomePopup } from './components/WelcomePopup';
 import { getAllResources } from './lib/markdown';
 
 export const metadata: Metadata = {
@@ -37,6 +38,7 @@ export default function RootLayout({
                   </main>
                 </SlidingPanels>
                 <TagModal resources={allResources} />
+                <WelcomePopup allResources={allResources} />
                 <footer className="py-6 mt-12 bg-[var(--bg-primary)] border-t border-[var(--border)]">
                   <div className="container mx-auto px-4">
                     <div className="flex flex-col md:flex-row items-center justify-between gap-4 mb-4">

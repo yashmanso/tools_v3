@@ -83,7 +83,7 @@ export function ShareButton({ resource, size = 'md', className = '' }: ShareButt
         title="Share tool"
       >
         <svg 
-          className={`${iconSizeClasses[size]} ${isInPanelHeader ? 'text-[var(--text-primary)]' : 'text-[var(--text-secondary)]'}`}
+          className={`${iconSizeClasses[size]} text-[var(--text-primary)]`}
           fill="none" 
           stroke="currentColor" 
           viewBox="0 0 24 24"

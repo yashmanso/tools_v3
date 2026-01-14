@@ -1,11 +1,12 @@
 'use client';
 
-import { useState, useMemo } from 'react';
+import { useState, useMemo, useEffect } from 'react';
 import { ResourceMetadata } from '../lib/markdown';
 import { ResourceCard } from './ResourceCard';
 import { ResourceListItem } from './ResourceListItem';
 import { ViewToggle } from './ViewToggle';
 import { FilterState } from './QuickFiltersSidebar';
+import { getWelcomeAnswers, scoreResourceByWelcomeAnswers } from '../lib/welcomeAnswers';
 
 interface FilteredResourceListProps {
   resources: ResourceMetadata[];
@@ -23,6 +24,27 @@ export function FilteredResourceList({
   selectedTools = [],
 }: FilteredResourceListProps) {
   const [view, setView] = useState<'grid' | 'list'>('grid');
+  const [welcomeAnswers, setWelcomeAnswers] = useState<ReturnType<typeof getWelcomeAnswers>>({});
+  const [isClient, setIsClient] = useState(false);
+  
+  // Only load welcome answers on client to avoid hydration mismatch
+  useEffect(() => {
+    setIsClient(true);
+    setWelcomeAnswers(getWelcomeAnswers());
+    
+    const handleWelcomeUpdate = () => {
+      setWelcomeAnswers(getWelcomeAnswers());
+    };
+    
+    window.addEventListener('welcome-answers-updated', handleWelcomeUpdate);
+    window.addEventListener('storage', handleWelcomeUpdate);
+    
+    return () => {
+      window.removeEventListener('welcome-answers-updated', handleWelcomeUpdate);
+      window.removeEventListener('storage', handleWelcomeUpdate);
+    };
+  }, []);
+  
   const filteredResources = useMemo(() => {
     return resources.filter((resource) => {
       // Search filter
@@ -59,6 +81,8 @@ export function FilteredResourceList({
             {filteredResources.map((resource, index) => {
               const isSelected = selectedTools.some(t => t.slug === resource.slug);
               const canSelect = !onToolSelect || selectedTools.length < 3 || isSelected;
+              const relevanceScore = isClient ? scoreResourceByWelcomeAnswers(resource, welcomeAnswers) : 0;
+              const isRelevant = isClient && relevanceScore > 0;
               
               return (
                 <div key={resource.slug} className="relative">
@@ -85,6 +109,11 @@ export function FilteredResourceList({
                         </svg>
                       )}
                     </button>
+                  )}
+                  {isRelevant && index < 6 && (
+                    <div className="absolute top-2 left-2 bg-green-500 text-white text-[10px] font-semibold px-1.5 py-0.5 rounded-full shadow-lg z-10">
+                      Recommended
+                    </div>
                   )}
                   <ResourceCard resource={resource} allResources={allResources} animationDelay={index * 50} />
                 </div>

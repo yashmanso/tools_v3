@@ -18,18 +18,34 @@ export function RecentViewsSidebar({ allResources, isOpen, onClose }: RecentView
   useEffect(() => {
     const updateRecentViews = () => {
       const recent = getRecentViewsAsResources(allResources);
+      console.log('RecentViewsSidebar - updating with', recent.length, 'items');
+      console.log('RecentViewsSidebar - allResources count:', allResources.length);
+      console.log('RecentViewsSidebar - recent resources:', recent.map(r => `${r.category}/${r.slug}: ${r.title}`));
       setRecentResources(recent);
     };
 
+    // Initial load
     updateRecentViews();
+    
+    // Listen for changes
     window.addEventListener('recent-views-changed', updateRecentViews);
-    return () => window.removeEventListener('recent-views-changed', updateRecentViews);
+    
+    return () => {
+      window.removeEventListener('recent-views-changed', updateRecentViews);
+    };
   }, [allResources]);
 
   if (!isOpen) return null;
 
   return (
-    <div className="fixed right-0 top-[80px] bottom-0 w-80 bg-[var(--bg-secondary)] border-l border-[var(--border)] z-40 overflow-y-auto">
+    <>
+      {/* Overlay */}
+      <div 
+        className="fixed inset-0 bg-black bg-opacity-50 z-[150]"
+        onClick={onClose}
+      />
+      {/* Sidebar */}
+      <div className="fixed right-0 top-0 bottom-0 w-80 bg-[var(--bg-secondary)] border-l border-[var(--border)] z-[200] overflow-y-auto shadow-xl">
       <div className="p-4 border-b border-[var(--border)] sticky top-0 bg-[var(--bg-secondary)]">
         <div className="flex items-center justify-between mb-2">
           <h2 className="text-lg font-semibold text-gray-900 dark:text-gray-100">
@@ -76,10 +92,10 @@ export function RecentViewsSidebar({ allResources, isOpen, onClose }: RecentView
           </div>
         ) : (
           recentResources.map((resource, index) => (
-            <ScrollAnimation key={`${resource.category}/${resource.slug}`} delay={index * 50} direction="slide-left">
+            <div key={`${resource.category}/${resource.slug}`} className="relative z-10">
               <PanelLink
                 href={`/${resource.category}/${resource.slug}`}
-                className="block p-3 rounded-xl border border-gray-200 dark:border-gray-700 hover:border-blue-500 dark:hover:border-blue-500 transition-all hover:shadow-sm hover:no-underline group"
+                className="block p-3 rounded-xl border border-gray-200 dark:border-gray-700 hover:border-blue-500 dark:hover:border-blue-500 transition-all hover:shadow-sm hover:no-underline group relative z-10"
               >
                 <h3 className="text-sm font-semibold text-gray-900 dark:text-gray-100 mb-1 group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors">
                   {resource.title}
@@ -88,10 +104,11 @@ export function RecentViewsSidebar({ allResources, isOpen, onClose }: RecentView
                   {resource.category}
                 </p>
               </PanelLink>
-            </ScrollAnimation>
+            </div>
           ))
         )}
       </div>
     </div>
+    </>
   );
 }

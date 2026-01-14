@@ -44,6 +44,7 @@ export function ResourceCard({ resource, allResources, animationDelay = 0 }: Res
               <div 
                 className="text-sm text-gray-600 dark:text-gray-400 leading-relaxed"
                 dangerouslySetInnerHTML={{ __html: overviewWithLinks }}
+                suppressHydrationWarning
               />
               {shouldTruncate && (
                 <button

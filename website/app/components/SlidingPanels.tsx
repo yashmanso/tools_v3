@@ -5,6 +5,7 @@ import { usePanels } from './PanelContext';
 import { ResourceMetadata } from '../lib/markdown';
 import { BookmarkButton } from './BookmarkButton';
 import { ShareButton } from './ShareButton';
+import { addRecentView } from '../lib/recentViews';
 
 interface SlidingPanelsProps {
   children: React.ReactNode;
@@ -35,6 +36,50 @@ export function SlidingPanels({ children, allResources = [] }: SlidingPanelsProp
       });
     }
   }, [panels.length, expandedPanelId]);
+
+  // Track page views when panels are opened
+  const trackedPanelIdsRef = useRef<Set<string>>(new Set());
+  const previousPanelCountRef = useRef<number>(0);
+  const allResourcesRef = useRef(allResources);
+  
+  // Keep allResources ref up to date
+  useEffect(() => {
+    allResourcesRef.current = allResources;
+  }, [allResources]);
+  
+  useEffect(() => {
+    // Only track when panels count increases (new panel added)
+    if (panels.length > previousPanelCountRef.current && allResourcesRef.current.length > 0) {
+      previousPanelCountRef.current = panels.length;
+      
+      // Get the most recently added panel
+      const latestPanel = panels[panels.length - 1];
+      
+      if (latestPanel && !trackedPanelIdsRef.current.has(latestPanel.id)) {
+        trackedPanelIdsRef.current.add(latestPanel.id);
+        
+        // Helper function to find resource from path
+        const pathParts = latestPanel.path.split('/').filter(Boolean);
+        if (pathParts.length >= 2) {
+          const category = pathParts[0];
+          const slug = pathParts[1];
+          const resource = allResourcesRef.current.find(r => r.category === category && r.slug === slug);
+          
+          if (resource) {
+            addRecentView(resource);
+          }
+        }
+      }
+    } else if (panels.length < previousPanelCountRef.current) {
+      // Panel was removed, update count
+      previousPanelCountRef.current = panels.length;
+      // Clear tracked IDs for removed panels
+      const currentPanelIds = new Set(panels.map(p => p.id));
+      trackedPanelIdsRef.current = new Set(
+        Array.from(trackedPanelIdsRef.current).filter(id => currentPanelIds.has(id))
+      );
+    }
+  }, [panels.length]);
 
   const isExpanded = expandedPanelId !== null;
 
@@ -126,7 +171,7 @@ export function SlidingPanels({ children, allResources = [] }: SlidingPanelsProp
                   {(() => {
                     const resource = getResourceFromPath(panel.path);
                     return resource ? (
-                      <ShareButton resource={resource} size="md" />
+                      <ShareButton resource={resource} size="md" className="page-header" />
                     ) : null;
                   })()}
 
