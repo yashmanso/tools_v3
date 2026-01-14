@@ -35,7 +35,7 @@ export function BookmarkButton({ resource, size = 'md', className = '' }: Bookma
   };
 
   const sizeClasses = {
-    sm: 'p-1.5',
+    sm: 'p-2',
     md: 'p-2',
     lg: 'p-3',
   };

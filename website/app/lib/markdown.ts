@@ -200,11 +200,22 @@ export function getResourcesByCategory(category: string): ResourceMetadata[] {
       if (overviewSectionMatch) {
         overview = overviewSectionMatch[1].trim();
       } else {
-        // Fallback: get first substantial paragraph (skip horizontal rules and empty lines)
-        const cleanContent = content.replace(/^___+\s*/gm, '').replace(/^#+[^\n]*\n+/m, '');
-        const firstParagraphMatch = cleanContent.match(/^([^\n]+(?:\n(?!\n|#+|___)[^\n]+)*)/);
+        // Fallback: get first substantial paragraph (skip horizontal rules, empty lines, and images)
+        // Remove horizontal rules and leading headers
+        let cleanContent = content.replace(/^___+\s*/gm, '').replace(/^#+[^\n]*\n+/m, '');
+        // Remove leading whitespace and blank lines
+        cleanContent = cleanContent.replace(/^\s+/, '').trim();
+        // Remove image references (like ![[image.png]])
+        cleanContent = cleanContent.replace(/!\[\[[^\]]+\]\]/g, '');
+        
+        // Match first paragraph(s) - can span multiple lines until we hit a blank line, header, or horizontal rule
+        const firstParagraphMatch = cleanContent.match(/^(.+?)(?:\n\s*\n|(?=\n#+)|(?=\n___+)|$)/s);
         if (firstParagraphMatch) {
           overview = firstParagraphMatch[1].trim();
+          // Limit overview length to reasonable size
+          if (overview.length > 500) {
+            overview = overview.substring(0, 500).trim() + '...';
+          }
         }
       }
 
@@ -292,11 +303,22 @@ export async function getResourceBySlug(
   if (overviewSectionMatch) {
     overview = overviewSectionMatch[1].trim();
   } else {
-    // Fallback: get first substantial paragraph (skip horizontal rules and empty lines)
-    const cleanContent = content.replace(/^___+\s*/gm, '').replace(/^#+[^\n]*\n+/m, '');
-    const firstParagraphMatch = cleanContent.match(/^([^\n]+(?:\n(?!\n|#+|___)[^\n]+)*)/);
+    // Fallback: get first substantial paragraph (skip horizontal rules, empty lines, and images)
+    // Remove horizontal rules and leading headers
+    let cleanContent = content.replace(/^___+\s*/gm, '').replace(/^#+[^\n]*\n+/m, '');
+    // Remove leading whitespace and blank lines
+    cleanContent = cleanContent.replace(/^\s+/, '').trim();
+    // Remove image references (like ![[image.png]])
+    cleanContent = cleanContent.replace(/!\[\[[^\]]+\]\]/g, '');
+    
+    // Match first paragraph(s) - can span multiple lines until we hit a blank line, header, or horizontal rule
+    const firstParagraphMatch = cleanContent.match(/^(.+?)(?:\n\s*\n|(?=\n#+)|(?=\n___+)|$)/s);
     if (firstParagraphMatch) {
       overview = firstParagraphMatch[1].trim();
+      // Limit overview length to reasonable size
+      if (overview.length > 500) {
+        overview = overview.substring(0, 500).trim() + '...';
+      }
     }
   }
 

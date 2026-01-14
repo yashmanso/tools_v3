@@ -368,29 +368,15 @@ export function CompareTools({ allResources }: CompareToolsProps) {
               
               return (
                 <div key={tool.slug} className="relative">
-                  <button
-                    onClick={() => handleSelectTool(tool)}
-                    disabled={!canSelect && !isSelected}
-                    className={`absolute top-2 right-2 z-10 p-2 rounded-full transition-colors ${
-                      isSelected
-                        ? 'bg-blue-600 text-white'
-                        : canSelect
-                        ? 'bg-white dark:bg-gray-800 text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-700 border border-gray-300 dark:border-gray-600'
-                        : 'bg-gray-100 dark:bg-gray-700 text-gray-400 cursor-not-allowed'
-                    }`}
-                    title={isSelected ? 'Remove from comparison' : canSelect ? 'Add to comparison' : 'Maximum 3 tools selected'}
-                  >
-                    {isSelected ? (
-                      <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
-                      </svg>
-                    ) : (
-                      <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
-                      </svg>
-                    )}
-                  </button>
-                  <ResourceCard resource={tool} allResources={allResources} animationDelay={idx * 50} />
+                  <ResourceCard 
+                    resource={tool} 
+                    allResources={allResources} 
+                    animationDelay={idx * 50}
+                    showSelectionButton={true}
+                    isSelected={isSelected}
+                    canSelect={canSelect}
+                    onSelect={() => handleSelectTool(tool)}
+                  />
                 </div>
               );
             })}

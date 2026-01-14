@@ -87,8 +87,8 @@ export function SlidingPanels({ children, allResources = [] }: SlidingPanelsProp
     <div className="flex-1 flex overflow-hidden">
       {/* Main content area - hidden when a panel is expanded, otherwise 50% width when panels are open */}
       <div
-        className={`flex-shrink-0 overflow-y-auto transition-all duration-300 ${
-          isExpanded ? 'w-0 opacity-0' : panels.length > 0 ? 'w-1/2' : 'flex-1'
+        className={`flex-shrink-0 transition-all duration-300 ${
+          isExpanded ? 'w-0 opacity-0 overflow-hidden' : panels.length > 0 ? 'w-1/2 overflow-y-auto overscroll-contain' : 'flex-1 overflow-y-auto'
         }`}
       >
         <div className="container mx-auto px-6 py-12 max-w-5xl bg-[var(--bg-primary)]">
@@ -103,7 +103,9 @@ export function SlidingPanels({ children, allResources = [] }: SlidingPanelsProp
           className={`flex-shrink-0 overflow-x-auto overflow-y-hidden flex border-l border-[var(--border)] transition-all duration-300 ${
             isExpanded ? 'flex-1' : 'w-1/2'
           }`}
-          style={{ scrollSnapType: isExpanded ? 'none' : 'x mandatory' }}
+          style={{ 
+            scrollSnapType: isExpanded ? 'none' : 'x mandatory'
+          }}
         >
           {panels.map((panel) => {
             const isPanelExpanded = expandedPanelId === panel.id;
@@ -115,7 +117,11 @@ export function SlidingPanels({ children, allResources = [] }: SlidingPanelsProp
                 className={`flex-shrink-0 overflow-y-auto border-r border-[var(--border)] bg-[var(--bg-secondary)] relative transition-all duration-300 ${
                   isPanelExpanded ? 'w-full' : isHidden ? 'w-0 opacity-0 overflow-hidden' : 'w-[500px]'
                 }`}
-                style={{ scrollSnapAlign: isExpanded ? 'none' : 'start' }}
+                style={{ 
+                  scrollSnapAlign: isExpanded ? 'none' : 'start',
+                  overscrollBehaviorY: 'contain',
+                  overscrollBehaviorX: 'none'
+                }}
               >
                 {/* Panel header with expand and close buttons */}
                 <div className="sticky top-0 z-10 flex justify-end gap-2 p-4 bg-[var(--bg-secondary)]">

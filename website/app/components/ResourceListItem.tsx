@@ -19,8 +19,13 @@ export function ResourceListItem({ resource, allResources, animationDelay = 0 }:
       <div className="relative group">
         <PanelLink
         href={`/${resource.category}/${resource.slug}`}
-        className="block p-5 rounded-3xl border border-gray-200 dark:border-gray-700 hover:border-blue-500 dark:hover:border-blue-500 transition-all hover:shadow-md hover:no-underline"
+        className="block p-5 pt-12 rounded-3xl border border-gray-200 dark:border-gray-700 hover:border-blue-500 dark:hover:border-blue-500 transition-all hover:shadow-md hover:no-underline"
       >
+        {/* Button ribbon area */}
+        <div className="absolute top-3 right-3 flex items-center gap-2 z-10">
+          <BookmarkButton resource={resource} size="sm" />
+        </div>
+        
         <div className="flex items-start gap-4">
           <div className="flex-1 min-w-0">
             <h3 className="text-lg font-semibold mb-2 text-gray-900 dark:text-gray-100">
@@ -52,11 +57,6 @@ export function ResourceListItem({ resource, allResources, animationDelay = 0 }:
           </div>
         </div>
       </PanelLink>
-      
-        {/* Bookmark button */}
-        <div className="absolute top-3 right-3 z-10">
-          <BookmarkButton resource={resource} size="sm" />
-        </div>
       </div>
     </ScrollAnimation>
   );

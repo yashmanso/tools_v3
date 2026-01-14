@@ -250,7 +250,7 @@ export function ToolFinder({ allResources }: ToolFinderProps) {
                     animationDelay={idx * 50} 
                   />
                   {item.matchPercentage > 0 && (
-                    <div className="absolute top-3 right-3 bg-blue-600 text-white text-xs font-semibold px-2.5 py-1 rounded-full shadow-lg z-10">
+                    <div className="absolute top-2 left-2 bg-blue-600 text-white text-[10px] font-semibold px-1.5 py-0.5 rounded-full shadow-lg z-10">
                       {item.matchPercentage}% match
                     </div>
                   )}

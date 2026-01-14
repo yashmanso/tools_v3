@@ -12,9 +12,21 @@ interface ResourceCardProps {
   resource: ResourceMetadata;
   allResources: ResourceMetadata[];
   animationDelay?: number;
+  showSelectionButton?: boolean;
+  isSelected?: boolean;
+  canSelect?: boolean;
+  onSelect?: () => void;
 }
 
-export function ResourceCard({ resource, allResources, animationDelay = 0 }: ResourceCardProps) {
+export function ResourceCard({ 
+  resource, 
+  allResources, 
+  animationDelay = 0,
+  showSelectionButton = false,
+  isSelected = false,
+  canSelect = true,
+  onSelect
+}: ResourceCardProps) {
   const [isExpanded, setIsExpanded] = useState(false);
   
   const hasOverview = resource.overview && resource.overview.length > 0;
@@ -33,8 +45,43 @@ export function ResourceCard({ resource, allResources, animationDelay = 0 }: Res
       <div className="relative group h-full flex flex-col">
         <PanelLink
           href={`/${resource.category}/${resource.slug}`}
-          className="block p-6 rounded-3xl border border-gray-200 dark:border-gray-700 hover:border-blue-500 dark:hover:border-blue-500 transition-all hover:shadow-md h-full flex flex-col min-h-[280px] hover:no-underline"
+          className="block p-6 pt-12 rounded-3xl border border-gray-200 dark:border-gray-700 hover:border-blue-500 dark:hover:border-blue-500 transition-all hover:shadow-md h-full flex flex-col min-h-[280px] hover:no-underline hover-lift"
         >
+          {/* Button ribbon area */}
+          <div className="absolute top-3 right-3 flex items-center gap-2 z-10">
+            {showSelectionButton && (
+              <button
+                onClick={(e) => {
+                  e.preventDefault();
+                  e.stopPropagation();
+                  if (onSelect && canSelect) {
+                    onSelect();
+                  }
+                }}
+                disabled={!canSelect && !isSelected}
+                className={`p-2 rounded-full transition-colors ${
+                  isSelected
+                    ? 'bg-blue-600 text-white'
+                    : canSelect
+                    ? 'bg-white dark:bg-gray-800 text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-700 border border-gray-300 dark:border-gray-600'
+                    : 'bg-gray-100 dark:bg-gray-700 text-gray-400 cursor-not-allowed'
+                }`}
+                title={isSelected ? 'Remove from comparison' : canSelect ? 'Add to comparison' : 'Maximum 3 tools selected'}
+              >
+                {isSelected ? (
+                  <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                  </svg>
+                ) : (
+                  <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
+                  </svg>
+                )}
+              </button>
+            )}
+            <BookmarkButton resource={resource} size="sm" />
+          </div>
+          
           <h3 className="text-lg font-semibold mb-2 text-gray-900 dark:text-gray-100">
             {resource.title}
           </h3>
@@ -85,11 +132,6 @@ export function ResourceCard({ resource, allResources, animationDelay = 0 }: Res
             )}
           </div>
         </PanelLink>
-        
-        {/* Bookmark button */}
-        <div className="absolute top-3 right-3 z-10">
-          <BookmarkButton resource={resource} size="sm" />
-        </div>
       </div>
     </ScrollAnimation>
   );
