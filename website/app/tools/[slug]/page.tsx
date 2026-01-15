@@ -7,6 +7,8 @@ import { RelatedPages } from '@/app/components/RelatedPages';
 import { ContentWithHoverPreviews } from '@/app/components/ContentWithHoverPreviews';
 import { Breadcrumbs } from '@/app/components/Breadcrumbs';
 import { TrackPageView } from '@/app/components/TrackPageView';
+import { ToolCompatibility } from '@/app/components/ToolCompatibility';
+import { ToolPrerequisites } from '@/app/components/ToolPrerequisites';
 
 interface PageProps {
   params: Promise<{ slug: string }>;
@@ -52,6 +54,10 @@ export default async function ToolPage({ params }: PageProps) {
           prose-strong:font-semibold
           prose-img:rounded-3xl prose-img:shadow-md"
       />
+
+      <ToolPrerequisites tool={resource} allResources={allResources} />
+
+      <ToolCompatibility currentTool={resource} allResources={allResources} />
 
       <RelatedPages pages={relatedPages} currentCategory="tools" />
     </article>

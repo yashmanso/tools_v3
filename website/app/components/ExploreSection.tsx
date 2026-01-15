@@ -7,6 +7,9 @@ import { ToolFinder } from './ToolFinder';
 import { CompareTools } from './CompareTools';
 import { TimelineView } from './TimelineView';
 import { NetworkGraph } from './NetworkGraph';
+import { WorkflowBuilder } from './WorkflowBuilder';
+import { ToolCompatibilityChecker } from './ToolCompatibilityChecker';
+import { VisualToolSelector } from './VisualToolSelector';
 
 interface ExploreSectionProps {
   allResources: ResourceMetadata[];
@@ -17,7 +20,7 @@ interface ExploreSectionProps {
 }
 
 export function ExploreSection({ allResources, graphData }: ExploreSectionProps) {
-  const [mode, setMode] = useState<'select' | 'browse' | 'find' | 'compare' | 'timeline' | 'network'>('select');
+  const [mode, setMode] = useState<'select' | 'browse' | 'find' | 'compare' | 'timeline' | 'network' | 'workflows' | 'compatibility' | 'visual'>('select');
 
   if (mode === 'browse') {
     return (
@@ -129,6 +132,54 @@ export function ExploreSection({ allResources, graphData }: ExploreSectionProps)
     );
   }
 
+  if (mode === 'workflows') {
+    return (
+      <section className="py-8 bg-[var(--bg-primary)]">
+        <div className="mb-6">
+          <button
+            onClick={() => setMode('select')}
+            className="text-sm text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-100 mb-4 inline-flex items-center gap-2"
+          >
+            ← Back to options
+          </button>
+        </div>
+        <WorkflowBuilder allResources={allResources} />
+      </section>
+    );
+  }
+
+  if (mode === 'compatibility') {
+    return (
+      <section className="py-8 bg-[var(--bg-primary)]">
+        <div className="mb-6">
+          <button
+            onClick={() => setMode('select')}
+            className="text-sm text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-100 mb-4 inline-flex items-center gap-2"
+          >
+            ← Back to options
+          </button>
+        </div>
+        <ToolCompatibilityChecker allResources={allResources} />
+      </section>
+    );
+  }
+
+  if (mode === 'visual') {
+    return (
+      <section className="py-8 bg-[var(--bg-primary)]">
+        <div className="mb-6">
+          <button
+            onClick={() => setMode('select')}
+            className="text-sm text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-100 mb-4 inline-flex items-center gap-2"
+          >
+            ← Back to options
+          </button>
+        </div>
+        <VisualToolSelector allResources={allResources} />
+      </section>
+    );
+  }
+
   return (
     <section className="text-center py-12 bg-[var(--bg-primary)]">
       <h2 className="text-3xl font-bold mb-4">Start exploring</h2>
@@ -219,6 +270,57 @@ export function ExploreSection({ allResources, graphData }: ExploreSectionProps)
           </p>
           <div className="mt-4 text-blue-600 dark:text-blue-400 text-sm font-medium">
             View network →
+          </div>
+        </button>
+
+        {/* Workflow Builder Option */}
+        <button
+          onClick={() => setMode('workflows')}
+          className="group p-8 rounded-3xl border border-gray-200 dark:border-gray-700 hover:border-gray-300 dark:hover:border-gray-600 transition-all text-left bg-[var(--bg-secondary)] hover-lift"
+        >
+          <h3 className="text-xl font-semibold mb-3 text-[var(--text-primary)]">
+            Build workflows
+          </h3>
+          <p className="text-sm text-[var(--text-secondary)] leading-relaxed">
+            Create step-by-step workflows combining multiple tools. Design custom processes 
+            for your sustainability projects and save them for future use.
+          </p>
+          <div className="mt-4 text-blue-600 dark:text-blue-400 text-sm font-medium">
+            Create workflow →
+          </div>
+        </button>
+
+        {/* Compatibility Checker Option */}
+        <button
+          onClick={() => setMode('compatibility')}
+          className="group p-8 rounded-3xl border border-gray-200 dark:border-gray-700 hover:border-gray-300 dark:hover:border-gray-600 transition-all text-left bg-[var(--bg-secondary)] hover-lift"
+        >
+          <h3 className="text-xl font-semibold mb-3 text-[var(--text-primary)]">
+            Check compatibility
+          </h3>
+          <p className="text-sm text-[var(--text-secondary)] leading-relaxed">
+            See which tools work well together, identify complementary tools, and get warnings 
+            about potential conflicts or overlaps in your tool selection.
+          </p>
+          <div className="mt-4 text-blue-600 dark:text-blue-400 text-sm font-medium">
+            Check compatibility →
+          </div>
+        </button>
+
+        {/* Visual Tool Selector Option */}
+        <button
+          onClick={() => setMode('visual')}
+          className="group p-8 rounded-3xl border border-gray-200 dark:border-gray-700 hover:border-gray-300 dark:hover:border-gray-600 transition-all text-left bg-[var(--bg-secondary)] hover-lift"
+        >
+          <h3 className="text-xl font-semibold mb-3 text-[var(--text-primary)]">
+            Visual tool selector
+          </h3>
+          <p className="text-sm text-[var(--text-secondary)] leading-relaxed">
+            Interactive decision tree with visual filters. Answer questions about your goal, 
+            audience, and timeline, then refine with sliders and toggles.
+          </p>
+          <div className="mt-4 text-blue-600 dark:text-blue-400 text-sm font-medium">
+            Start selecting →
           </div>
         </button>
       </div>

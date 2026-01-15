@@ -5,6 +5,7 @@ import { ExploreSection } from './components/ExploreSection';
 import { TypewriterTitle } from './components/TypewriterTitle';
 import { ScrollAnimation } from './components/ScrollAnimation';
 import { StaggeredText } from './components/StaggeredText';
+import { MostViewedTools } from './components/MostViewedTools';
 
 export default function HomePage() {
   const allResources = getAllResources();
@@ -131,6 +132,8 @@ export default function HomePage() {
           </div>
         </ScrollAnimation>
       </section>
+
+      <MostViewedTools allResources={allResources} />
 
       <ExploreSection allResources={allResources} graphData={graphData} />
     </div>
