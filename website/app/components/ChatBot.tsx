@@ -1,6 +1,7 @@
 'use client';
 
 import { useState, useRef, useEffect } from 'react';
+import { createPortal } from 'react-dom';
 import { ResourceMetadata } from '../lib/markdown';
 import { PanelLink } from './PanelLink';
 import { convertMarkdownLinksToHTML } from '../lib/markdownLinks';
@@ -147,6 +148,7 @@ function generateResponse(
 
 export function ChatBot({ allResources, isOpen: externalIsOpen, onClose }: ChatBotProps) {
   const [internalIsOpen, setInternalIsOpen] = useState(false);
+  const [mounted, setMounted] = useState(false);
   const [messages, setMessages] = useState<Message[]>([
     {
       type: 'bot',
@@ -159,6 +161,10 @@ export function ChatBot({ allResources, isOpen: externalIsOpen, onClose }: ChatB
 
   const isOpen = externalIsOpen !== undefined ? externalIsOpen : internalIsOpen;
   const handleClose = onClose ? () => onClose() : () => setInternalIsOpen(false);
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
 
   useEffect(() => {
     if (isOpen && inputRef.current) {
@@ -229,32 +235,39 @@ export function ChatBot({ allResources, isOpen: externalIsOpen, onClose }: ChatB
     }
   };
 
-  if (!isOpen) return null;
+  if (!isOpen || !mounted) return null;
 
-  return (
-    <div 
-      data-chatbot
-      className="fixed top-24 right-6 z-50 w-96 h-[600px] bg-white dark:bg-gray-800 rounded-3xl shadow-2xl flex flex-col border border-gray-200 dark:border-gray-700"
-      onClick={(e) => e.stopPropagation()}
-      onMouseDown={(e) => e.stopPropagation()}
-    >
-          {/* Header */}
-          <div className="flex items-center justify-between p-4 border-b border-gray-200 dark:border-gray-700">
+  return createPortal(
+    <>
+      {/* Overlay */}
+      <div 
+        className="fixed inset-0 bg-black bg-opacity-50 z-[150]"
+        onClick={handleClose}
+      />
+      {/* Sidebar */}
+      <div 
+        data-chatbot
+        className="fixed right-0 top-0 bottom-0 w-80 bg-[var(--bg-secondary)] border-l border-[var(--border)] z-[200] overflow-y-auto shadow-xl flex flex-col"
+        onClick={(e) => e.stopPropagation()}
+        onMouseDown={(e) => e.stopPropagation()}
+      >
+        {/* Header */}
+        <div className="p-4 border-b border-[var(--border)] sticky top-0 bg-[var(--bg-secondary)] flex-shrink-0">
+          <div className="flex items-center justify-between mb-2">
             <div>
-              <h3 className="font-semibold text-gray-900 dark:text-gray-100">Tool finder</h3>
-              <p className="text-xs text-gray-500 dark:text-gray-400">Ask me anything about tools</p>
+              <h2 className="text-lg font-semibold text-gray-900 dark:text-gray-100">
+                Tool finder
+              </h2>
+              <p className="text-xs text-gray-500 dark:text-gray-400 mt-0.5">
+                Ask me anything about tools
+              </p>
             </div>
             <Button variant="ghost"
               onClick={handleClose}
               className="p-1 rounded-full hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors"
               aria-label="Close chat"
             >
-              <svg
-                className="w-5 h-5 text-gray-500"
-                fill="none"
-                stroke="currentColor"
-                viewBox="0 0 24 24"
-              >
+              <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path
                   strokeLinecap="round"
                   strokeLinejoin="round"
@@ -264,9 +277,10 @@ export function ChatBot({ allResources, isOpen: externalIsOpen, onClose }: ChatB
               </svg>
             </Button>
           </div>
+        </div>
 
-          {/* Messages */}
-          <div className="flex-1 overflow-y-auto p-4 space-y-4">
+        {/* Messages */}
+        <div className="flex-1 overflow-y-auto p-4 space-y-4">
             {messages.map((msg, idx) => (
               <div
                 key={idx}
@@ -307,8 +321,8 @@ export function ChatBot({ allResources, isOpen: externalIsOpen, onClose }: ChatB
             <div ref={messagesEndRef} />
           </div>
 
-          {/* Input */}
-          <div className="p-4 border-t border-gray-200 dark:border-gray-700">
+        {/* Input */}
+        <div className="p-4 border-t border-[var(--border)] flex-shrink-0">
             <div className="flex gap-2">
               <input
                 ref={inputRef}
@@ -340,6 +354,7 @@ export function ChatBot({ allResources, isOpen: externalIsOpen, onClose }: ChatB
               </Button>
             </div>
           </div>
-        </div>
-  );
+      </div>
+    </>
+  , document.body);
 }

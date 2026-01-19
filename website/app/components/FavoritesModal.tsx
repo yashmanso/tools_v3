@@ -1,6 +1,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
+import { createPortal } from 'react-dom';
 import { getBookmarkedResources } from '../lib/bookmarks';
 import { PanelLink } from './PanelLink';
 import { ResourceMetadata } from '../lib/markdown';
@@ -10,13 +11,20 @@ interface FavoritesModalProps {
   onClose: () => void;
 }
 
-import { convertMarkdownLinksToHTML } from '../lib/markdownLinks';
+import { formatCardOverview } from '../lib/markdownLinks';
 import { Button } from '@/components/ui/button';
+import { CardLink } from './CardLink';
 
 export function FavoritesModal({ allResources, onClose }: FavoritesModalProps) {
   const [bookmarkedResources, setBookmarkedResources] = useState<ResourceMetadata[]>([]);
   const [selectedTools, setSelectedTools] = useState<ResourceMetadata[]>([]);
   const [showComparison, setShowComparison] = useState(false);
+  const [mounted, setMounted] = useState(false);
+  const comparisonGridTemplate = `200px repeat(${selectedTools.length}, minmax(0, 1fr))`;
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
 
   useEffect(() => {
     if (!allResources || allResources.length === 0) {
@@ -39,6 +47,8 @@ export function FavoritesModal({ allResources, onClose }: FavoritesModalProps) {
 
   // Close on escape key
   useEffect(() => {
+    if (!mounted) return;
+    
     const handleEscape = (e: KeyboardEvent) => {
       if (e.key === 'Escape') {
         if (showComparison) {
@@ -50,9 +60,9 @@ export function FavoritesModal({ allResources, onClose }: FavoritesModalProps) {
       }
     };
 
-    window.addEventListener('keydown', handleEscape);
-    return () => window.removeEventListener('keydown', handleEscape);
-  }, [onClose, showComparison]);
+    document.addEventListener('keydown', handleEscape);
+    return () => document.removeEventListener('keydown', handleEscape);
+  }, [onClose, showComparison, mounted]);
 
   const handleSelectTool = (tool: ResourceMetadata) => {
     if (selectedTools.find(t => t.slug === tool.slug && t.category === tool.category)) {
@@ -108,235 +118,150 @@ export function FavoritesModal({ allResources, onClose }: FavoritesModalProps) {
     return tool.tags.filter(tag => patterns.some(pattern => tag.includes(pattern)));
   };
 
-  return (
-    <div
-      className="fixed inset-0 z-[100] bg-black bg-opacity-75"
-      style={{ top: '80px', pointerEvents: 'auto' }}
-      onClick={onClose}
-    >
-      <div
-        className={`absolute top-4 left-1/2 -translate-x-1/2 w-full ${
-          showComparison ? 'max-w-6xl' : 'max-w-2xl'
-        } max-h-[calc(100vh-120px)] bg-white dark:bg-gray-800 rounded-3xl shadow-2xl overflow-hidden flex flex-col pointer-events-auto`}
-        onClick={(e) => {
-          e.stopPropagation();
-        }}
-        onMouseDown={(e) => {
-          e.stopPropagation();
-        }}
-      >
+  if (!mounted) return null;
+
+  return createPortal(
+    <>
+      {/* Overlay */}
+      <div 
+        className="fixed inset-0 bg-black bg-opacity-50 z-[150]"
+        onClick={onClose}
+      />
+      {/* Sidebar */}
+      <div className={`fixed right-0 top-0 bottom-0 ${showComparison ? 'w-[800px]' : 'w-80'} bg-[var(--bg-secondary)] border-l border-[var(--border)] z-[200] overflow-y-auto shadow-xl flex flex-col`}>
         {/* Header */}
-        <div className="flex items-center justify-between p-6 border-b border-gray-200 dark:border-gray-700">
-          <div>
-            <h2 className="text-2xl font-bold text-gray-900 dark:text-gray-100">
-              {showComparison ? 'Compare tools' : 'Your favorites'}
-            </h2>
-            <p className="text-sm text-gray-600 dark:text-gray-400 mt-1">
-              {showComparison 
-                ? `Comparing ${selectedTools.length} ${selectedTools.length === 1 ? 'tool' : 'tools'}`
-                : `${bookmarkedResources.length} saved ${bookmarkedResources.length === 1 ? 'tool' : 'tools'}`
-              }
-            </p>
-          </div>
-          <div className="flex items-center gap-2">
-            {showComparison ? (
+        <div className="p-4 border-b border-[var(--border)] sticky top-0 bg-[var(--bg-secondary)] flex-shrink-0">
+          <div className="flex items-center justify-between mb-2">
+            <div>
+              <h2 className="text-lg font-semibold text-gray-900 dark:text-gray-100">
+                {showComparison ? 'Compare tools' : 'Your favorites'}
+              </h2>
+              <p className="text-xs text-gray-500 dark:text-gray-400 mt-0.5">
+                {showComparison 
+                  ? `Comparing ${selectedTools.length} ${selectedTools.length === 1 ? 'tool' : 'tools'}`
+                  : `${bookmarkedResources.length} saved ${bookmarkedResources.length === 1 ? 'tool' : 'tools'}`
+                }
+              </p>
+            </div>
+            <div className="flex items-center gap-2">
+              {showComparison ? (
+                <Button variant="ghost"
+                  onClick={handleResetComparison}
+                  className="px-3 py-1.5 text-xs border border-gray-300 dark:border-gray-600 rounded-full hover:border-blue-500 dark:hover:border-blue-500 transition-colors"
+                >
+                  Back
+                </Button>
+              ) : (
+                <>
+                  {selectedTools.length >= 2 && (
+                    <Button variant="ghost"
+                      onClick={handleCompare}
+                      className="px-3 py-1.5 text-xs bg-blue-600 text-white rounded-full hover:bg-blue-700 transition-colors"
+                    >
+                      Compare ({selectedTools.length})
+                    </Button>
+                  )}
+                </>
+              )}
               <Button variant="ghost"
-                onClick={handleResetComparison}
-                className="px-4 py-2 text-sm border border-gray-300 dark:border-gray-600 rounded-full hover:border-blue-500 dark:hover:border-blue-500 transition-colors"
+                onClick={onClose}
+                className="p-1 rounded-full hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors"
+                aria-label="Close"
               >
-                Back to favorites
+                <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                </svg>
               </Button>
-            ) : (
-              <>
-                {selectedTools.length >= 2 && (
-                  <Button variant="ghost"
-                    onClick={handleCompare}
-                    className="px-4 py-2 text-sm bg-blue-600 text-white rounded-full hover:bg-blue-700 transition-colors"
-                  >
-                    Compare ({selectedTools.length})
-                  </Button>
-                )}
-              </>
-            )}
-            <Button variant="ghost"
-              onClick={onClose}
-              className="p-2 rounded-full hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors"
-              aria-label="Close"
-            >
-              <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
-              </svg>
-            </Button>
+            </div>
           </div>
         </div>
 
         {/* Content */}
-        <div className="flex-1 overflow-y-auto p-4">
+        <div className="flex-1 overflow-y-auto overflow-x-auto p-4">
           {showComparison && selectedTools.length >= 2 ? (
             /* Comparison View */
-            <div className="overflow-x-auto">
-              <table className="w-full table-fixed border-collapse">
-                <colgroup>
-                  <col style={{ width: '20%' }} />
-                  {selectedTools.map((_, index) => (
-                    <col key={index} style={{ width: `${80 / selectedTools.length}%` }} />
-                  ))}
-                </colgroup>
-                <thead>
-                  <tr className="border-b-2 border-gray-200 dark:border-gray-700">
-                    <th className="p-4 text-left font-semibold text-gray-900 dark:text-gray-100 align-top">Dimension</th>
-                    {selectedTools.map((tool) => (
-                      <th key={`${tool.category}/${tool.slug}`} className="p-4 text-left font-semibold text-gray-900 dark:text-gray-100 align-top">
-                        <PanelLink
-                          href={`/${tool.category}/${tool.slug}`}
-                          className="hover:no-underline"
-                        >
-                          <div className="font-semibold text-blue-600 dark:text-blue-400 hover:underline">
-                            {tool.title}
-                          </div>
-                        </PanelLink>
-                      </th>
-                    ))}
-                  </tr>
-                </thead>
-                <tbody>
-                  {/* Overview */}
-                  <tr className="border-b border-gray-200 dark:border-gray-700">
-                    <td className="p-4 font-medium text-gray-700 dark:text-gray-300 align-top">Overview</td>
-                    {selectedTools.map((tool) => {
-                      const overviewText = tool.overview || '';
-                      const isLong = overviewText.length > 150;
-                      
-                      return (
-                        <td key={`${tool.category}/${tool.slug}`} className="p-4 text-sm text-gray-600 dark:text-gray-400 align-top group/overview relative">
-                          {overviewText ? (
-                            <>
-                              <div 
-                                className="line-clamp-3 break-words"
-                                dangerouslySetInnerHTML={{ __html: convertMarkdownLinksToHTML(overviewText) }}
-                              />
-                              {isLong && (
-                                <span className="ml-1 text-blue-500 text-xs">(hover for full)</span>
-                              )}
-                              {isLong && (
-                                <div className="absolute left-0 top-full mt-2 w-96 bg-white dark:bg-gray-800 shadow-xl opacity-0 invisible group-hover/overview:opacity-100 group-hover/overview:visible z-[100] transition-all duration-200 pointer-events-none relative">
-                                  <div className="absolute left-0 top-0 bottom-0 w-px bg-gray-300 dark:bg-gray-600"></div>
-                                  <div className="absolute right-0 top-0 bottom-0 w-px bg-gray-300 dark:bg-gray-600"></div>
-                                  <div className="p-4 pl-5 pr-5">
-                                    <div 
-                                      className="text-sm text-gray-700 dark:text-gray-300 leading-relaxed break-words whitespace-pre-wrap"
-                                      dangerouslySetInnerHTML={{ __html: convertMarkdownLinksToHTML(overviewText) }}
-                                    />
-                                  </div>
-                                </div>
-                              )}
-                            </>
-                          ) : (
-                            <span className="text-gray-400">No overview available</span>
-                          )}
-                        </td>
-                      );
-                    })}
-                  </tr>
+            <div className="min-w-full space-y-6">
+              <div className="grid gap-4 items-start" style={{ gridTemplateColumns: comparisonGridTemplate }}>
+                <div className="text-xs uppercase tracking-wide text-gray-500 dark:text-gray-400 font-semibold">
+                  Dimension
+                </div>
+                {selectedTools.map((tool) => (
+                  <PanelLink
+                    key={`${tool.category}/${tool.slug}`}
+                    href={`/${tool.category}/${tool.slug}`}
+                    className="text-sm font-semibold text-blue-600 dark:text-blue-400 hover:underline"
+                  >
+                    {tool.title}
+                  </PanelLink>
+                ))}
+              </div>
 
-                  {/* Dimensions */}
-                  {getDimensionCategories().map((dimension) => {
-                    const dimensionTags = selectedTools.map(tool => getTagsForDimension(dimension, tool));
-                    const hasAnyTags = dimensionTags.some(tags => tags.length > 0);
-                    
-                    if (!hasAnyTags) return null;
+              <div className="grid gap-4 items-start border-t border-gray-200 dark:border-gray-700 pt-4" style={{ gridTemplateColumns: comparisonGridTemplate }}>
+                <div className="text-sm font-semibold text-gray-700 dark:text-gray-300">
+                  Overview
+                </div>
+                {selectedTools.map((tool) => {
+                  const overviewText = formatCardOverview(tool.overview || '');
+                  return (
+                    <div key={`${tool.category}/${tool.slug}`} className="text-sm text-gray-600 dark:text-gray-400 leading-relaxed break-words whitespace-pre-wrap">
+                      {overviewText || 'No overview available'}
+                    </div>
+                  );
+                })}
+              </div>
 
-                    return (
-                      <tr key={dimension} className="border-b border-gray-200 dark:border-gray-700">
-                        <td className="p-4 font-medium text-gray-700 dark:text-gray-300 capitalize align-top">
-                          {dimension.replace(/-/g, ' ')}
-                        </td>
-                        {selectedTools.map((tool, idx) => (
-                          <td key={`${tool.category}/${tool.slug}`} className="p-4 align-top">
-                            <div className="flex flex-wrap gap-1 max-h-16 overflow-hidden group relative cursor-help">
-                              {dimensionTags[idx].length > 0 ? (
-                                <>
-                                  {dimensionTags[idx].slice(0, 3).map((tag) => (
-                                    <span
-                                      key={tag}
-                                      className="text-xs px-2 py-1 rounded-full bg-blue-100 dark:bg-blue-900/30 text-blue-700 dark:text-blue-300 whitespace-nowrap"
-                                    >
-                                      {tag.replace(/-/g, ' ')}
-                                    </span>
-                                  ))}
-                                  {dimensionTags[idx].length > 3 && (
-                                    <>
-                                      <span className="text-xs text-gray-400">+{dimensionTags[idx].length - 3}</span>
-                                      <div className="absolute left-0 top-full mt-2 w-80 bg-white dark:bg-gray-800 shadow-xl opacity-0 invisible group-hover:opacity-100 group-hover:visible z-50 transition-all duration-200 pointer-events-none max-h-64 overflow-y-auto relative">
-                                        <div className="absolute left-0 top-0 bottom-0 w-px bg-gray-300 dark:bg-gray-600"></div>
-                                        <div className="absolute right-0 top-0 bottom-0 w-px bg-gray-300 dark:bg-gray-600"></div>
-                                        <div className="p-3 pl-5 pr-5">
-                                          <div className="flex flex-wrap gap-1">
-                                            {dimensionTags[idx].map((tag) => (
-                                              <span
-                                                key={tag}
-                                                className="text-xs px-2 py-1 rounded-full bg-blue-100 dark:bg-blue-900/30 text-blue-700 dark:text-blue-300 whitespace-nowrap"
-                                              >
-                                                {tag.replace(/-/g, ' ')}
-                                              </span>
-                                            ))}
-                                          </div>
-                                        </div>
-                                      </div>
-                                    </>
-                                  )}
-                                </>
-                              ) : (
-                                <span className="text-xs text-gray-400">—</span>
-                              )}
-                            </div>
-                          </td>
-                        ))}
-                      </tr>
-                    );
-                  })}
+              {getDimensionCategories().map((dimension) => {
+                const dimensionTags = selectedTools.map(tool => getTagsForDimension(dimension, tool));
+                const hasAnyTags = dimensionTags.some(tags => tags.length > 0);
 
-                  {/* All tags */}
-                  <tr className="border-b border-gray-200 dark:border-gray-700">
-                    <td className="p-4 font-medium text-gray-700 dark:text-gray-300 align-top">All tags</td>
-                    {selectedTools.map((tool) => (
-                      <td key={`${tool.category}/${tool.slug}`} className="p-4 align-top">
-                        <div className="flex flex-wrap gap-1 max-h-16 overflow-hidden group relative cursor-help">
-                          {tool.tags.slice(0, 6).map((tag) => (
+                if (!hasAnyTags) return null;
+
+                return (
+                  <div key={dimension} className="grid gap-4 items-start border-t border-gray-200 dark:border-gray-700 pt-4" style={{ gridTemplateColumns: comparisonGridTemplate }}>
+                    <div className="text-sm font-semibold text-gray-700 dark:text-gray-300 capitalize">
+                      {dimension.replace(/-/g, ' ')}
+                    </div>
+                    {selectedTools.map((tool, idx) => (
+                      <div key={`${tool.category}/${tool.slug}`} className="flex flex-wrap gap-1">
+                        {dimensionTags[idx].length > 0 ? (
+                          dimensionTags[idx].map((tag) => (
                             <span
                               key={tag}
-                              className="text-xs px-2 py-1 rounded-full bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-400 whitespace-nowrap"
+                              className="text-xs px-2 py-1 rounded-full bg-blue-100 dark:bg-blue-900/30 text-blue-700 dark:text-blue-300 whitespace-nowrap"
                             >
                               {tag.replace(/-/g, ' ')}
                             </span>
-                          ))}
-                          {tool.tags.length > 6 && (
-                            <>
-                              <span className="text-xs text-gray-400">+{tool.tags.length - 6}</span>
-                              <div className="absolute left-0 top-full mt-2 w-80 bg-white dark:bg-gray-800 shadow-xl opacity-0 invisible group-hover:opacity-100 group-hover:visible z-50 transition-all duration-200 pointer-events-none max-h-64 overflow-y-auto relative">
-                                <div className="absolute left-0 top-0 bottom-0 w-px bg-gray-300 dark:bg-gray-600"></div>
-                                <div className="absolute right-0 top-0 bottom-0 w-px bg-gray-300 dark:bg-gray-600"></div>
-                                <div className="p-3 pl-5 pr-5">
-                                  <div className="flex flex-wrap gap-1">
-                                    {tool.tags.map((tag) => (
-                                      <span
-                                        key={tag}
-                                        className="text-xs px-2 py-1 rounded-full bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-400 whitespace-nowrap"
-                                      >
-                                        {tag.replace(/-/g, ' ')}
-                                      </span>
-                                    ))}
-                                  </div>
-                                </div>
-                              </div>
-                            </>
-                          )}
-                        </div>
-                      </td>
+                          ))
+                        ) : (
+                          <span className="text-xs text-gray-400">—</span>
+                        )}
+                      </div>
                     ))}
-                  </tr>
-                </tbody>
-              </table>
+                  </div>
+                );
+              })}
+
+              <div className="grid gap-4 items-start border-t border-gray-200 dark:border-gray-700 pt-4" style={{ gridTemplateColumns: comparisonGridTemplate }}>
+                <div className="text-sm font-semibold text-gray-700 dark:text-gray-300">
+                  All tags
+                </div>
+                {selectedTools.map((tool) => (
+                  <div key={`${tool.category}/${tool.slug}`} className="flex flex-wrap gap-1">
+                    {tool.tags.length > 0 ? (
+                      tool.tags.map((tag) => (
+                        <span
+                          key={tag}
+                          className="text-xs px-2 py-1 rounded-full bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-400 whitespace-nowrap"
+                        >
+                          {tag.replace(/-/g, ' ')}
+                        </span>
+                      ))
+                    ) : (
+                      <span className="text-xs text-gray-400">—</span>
+                    )}
+                  </div>
+                ))}
+              </div>
             </div>
           ) : bookmarkedResources.length === 0 ? (
             <div className="text-center py-12">
@@ -361,7 +286,7 @@ export function FavoritesModal({ allResources, onClose }: FavoritesModalProps) {
               </p>
             </div>
           ) : (
-            <div className="space-y-2">
+            <div className="space-y-3">
               {bookmarkedResources.map((resource) => {
                 const isSelected = selectedTools.some(t => t.slug === resource.slug && t.category === resource.category);
                 const canSelect = selectedTools.length < 3 || isSelected;
@@ -369,18 +294,31 @@ export function FavoritesModal({ allResources, onClose }: FavoritesModalProps) {
                 return (
                   <div
                     key={`${resource.category}/${resource.slug}`}
-                    className={`relative p-4 rounded-xl border transition-all ${
-                      isSelected
-                        ? 'border-blue-500 dark:border-blue-500 bg-blue-50 dark:bg-blue-900/20'
-                        : 'border-gray-200 dark:border-gray-700 hover:border-blue-500 dark:hover:border-blue-500 hover:bg-gray-50 dark:hover:bg-gray-700/50'
-                    }`}
+                    className="relative"
                   >
-                    {/* Selection checkbox */}
-                    <div className="absolute top-4 left-4">
+                    <CardLink
+                      href={`/${resource.category}/${resource.slug}`}
+                      className={`p-3 rounded-xl hover:shadow-sm group relative z-10 pr-10 ${isSelected ? 'ring-2 ring-blue-500 dark:ring-blue-500' : ''}`}
+                      onClick={onClose}
+                    >
+                      <h3 className="text-sm font-semibold text-gray-900 dark:text-gray-100 mb-1 group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors">
+                        {resource.title}
+                      </h3>
+                      <p className="text-xs text-gray-500 dark:text-gray-400 capitalize">
+                        {resource.category}
+                      </p>
+                    </CardLink>
+                    
+                    {/* Selection checkbox - positioned on the right */}
+                    <div className="absolute top-3 right-3 z-20">
                       <Button variant="ghost"
-                        onClick={() => handleSelectTool(resource)}
+                        onClick={(e) => {
+                          e.preventDefault();
+                          e.stopPropagation();
+                          handleSelectTool(resource);
+                        }}
                         disabled={!canSelect && !isSelected}
-                        className={`w-5 h-5 rounded border-2 flex items-center justify-center transition-colors ${
+                        className={`w-5 h-5 p-0 rounded-none border-2 flex items-center justify-center transition-colors ${
                           isSelected
                             ? 'bg-blue-600 border-blue-600'
                             : canSelect
@@ -396,42 +334,6 @@ export function FavoritesModal({ allResources, onClose }: FavoritesModalProps) {
                         )}
                       </Button>
                     </div>
-                    
-                    <PanelLink
-                      href={`/${resource.category}/${resource.slug}`}
-                      className="block ml-8 group"
-                      onClick={onClose}
-                    >
-                      <div className="flex items-start justify-between gap-4">
-                        <div className="flex-1 min-w-0">
-                          <h3 className="text-base font-semibold text-gray-900 dark:text-gray-100 mb-1 group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors">
-                            {resource.title}
-                          </h3>
-                          <p className="text-xs text-gray-500 dark:text-gray-400 capitalize mb-2">
-                            {resource.category}
-                          </p>
-                          {resource.overview && (
-                            <div 
-                              className="text-sm text-gray-600 dark:text-gray-400 line-clamp-2"
-                              dangerouslySetInnerHTML={{ __html: convertMarkdownLinksToHTML(resource.overview.substring(0, 150) + '...') }}
-                            />
-                          )}
-                        </div>
-                        <svg
-                          className="w-5 h-5 text-gray-400 group-hover:text-blue-500 transition-colors flex-shrink-0 mt-1"
-                          fill="none"
-                          stroke="currentColor"
-                          viewBox="0 0 24 24"
-                        >
-                          <path
-                            strokeLinecap="round"
-                            strokeLinejoin="round"
-                            strokeWidth={2}
-                            d="M9 5l7 7-7 7"
-                          />
-                        </svg>
-                      </div>
-                    </PanelLink>
                   </div>
                 );
               })}
@@ -439,6 +341,6 @@ export function FavoritesModal({ allResources, onClose }: FavoritesModalProps) {
           )}
         </div>
       </div>
-    </div>
-  );
+    </>
+  , document.body);
 }

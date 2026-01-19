@@ -12,12 +12,13 @@ interface ClickableTagProps {
 }
 
 export function ClickableTag({ tag, allResources, className = '', size = 'xs' }: ClickableTagProps) {
-  const { openTag, setOpenTag } = useTagModal();
+  const { openTag, setOpenTag, setOpenResourceTags } = useTagModal();
 
   const handleClick = (e: React.MouseEvent) => {
     e.preventDefault();
     e.stopPropagation();
     // Toggle: if already open, close it; otherwise open it
+    setOpenResourceTags(null);
     setOpenTag(openTag === tag ? null : tag);
   };
 

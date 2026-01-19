@@ -7,6 +7,8 @@ import { BookmarkButton } from './BookmarkButton';
 import { ProgressiveDisclosure } from './ProgressiveDisclosure';
 import { ScrollAnimation } from './ScrollAnimation';
 import { formatCardOverview } from '../lib/markdownLinks';
+import { Button } from '@/components/ui/button';
+import { useTagModal } from './TagModalContext';
 
 interface ResourceListItemProps {
   resource: ResourceMetadata;
@@ -15,6 +17,8 @@ interface ResourceListItemProps {
 }
 
 export function ResourceListItem({ resource, allResources, animationDelay = 0 }: ResourceListItemProps) {
+  const { setOpenResourceTags, setOpenTag } = useTagModal();
+
   return (
     <ScrollAnimation delay={animationDelay} direction="slide-up">
       <div className="relative group">
@@ -23,7 +27,7 @@ export function ResourceListItem({ resource, allResources, animationDelay = 0 }:
         className="p-5 pt-12"
       >
         {/* Button ribbon area */}
-        <div className="absolute top-3 right-3 flex items-center gap-2 z-10">
+        <div className="absolute top-5 right-5 flex items-center gap-2 z-10">
           <BookmarkButton resource={resource} size="sm" />
         </div>
         
@@ -50,9 +54,19 @@ export function ResourceListItem({ resource, allResources, animationDelay = 0 }:
                 />
               ))}
               {resource.tags.length > 8 && (
-                <span className="text-xs px-2 py-1 text-gray-500">
+                <Button
+                  type="button"
+                  variant="ghost"
+                  onClick={(event) => {
+                    event.preventDefault();
+                    event.stopPropagation();
+                    setOpenTag(null);
+                    setOpenResourceTags({ title: resource.title, tags: resource.tags });
+                  }}
+                  className="text-xs px-2 py-1 text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200"
+                >
                   +{resource.tags.length - 8} more
-                </span>
+                </Button>
               )}
             </div>
           </div>

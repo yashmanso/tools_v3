@@ -1,6 +1,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
+import { createPortal } from 'react-dom';
 import { ResourceMetadata } from '../lib/markdown';
 import { getRecentViewsAsResources, clearRecentViews } from '../lib/recentViews';
 import { CardLink } from './CardLink';
@@ -15,6 +16,11 @@ interface RecentViewsSidebarProps {
 
 export function RecentViewsSidebar({ allResources, isOpen, onClose }: RecentViewsSidebarProps) {
   const [recentResources, setRecentResources] = useState<ResourceMetadata[]>([]);
+  const [mounted, setMounted] = useState(false);
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
 
   useEffect(() => {
     const updateRecentViews = () => {
@@ -49,9 +55,9 @@ export function RecentViewsSidebar({ allResources, isOpen, onClose }: RecentView
     };
   }, [isOpen, onClose]);
 
-  if (!isOpen) return null;
+  if (!isOpen || !mounted) return null;
 
-  return (
+  return createPortal(
     <>
       {/* Overlay */}
       <div 
@@ -124,5 +130,5 @@ export function RecentViewsSidebar({ allResources, isOpen, onClose }: RecentView
       </div>
     </div>
     </>
-  );
+  , document.body);
 }

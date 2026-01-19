@@ -1,6 +1,7 @@
 'use client';
 
 import { useEffect, useRef, useState } from 'react';
+import { createPortal } from 'react-dom';
 import { usePanels } from './PanelContext';
 import { ContentWithHoverPreviews } from './ContentWithHoverPreviews';
 import { useTagModal } from './TagModalContext';
@@ -125,34 +126,37 @@ function PanelContent({ path }: { path: string }) {
 
 export function TagModal({ resources }: TagModalProps) {
   const { addPanel } = usePanels();
-  const { openTag, setOpenTag } = useTagModal();
+  const { openTag, setOpenTag, openResourceTags, setOpenResourceTags } = useTagModal();
+  const [mounted, setMounted] = useState(false);
 
-  // Filter resources by tag
   const filteredResources = openTag
     ? resources.filter((resource) => resource.tags.includes(openTag))
     : [];
 
-  // Close on Escape key
   useEffect(() => {
-    if (!openTag) return;
+    setMounted(true);
+  }, []);
+
+  useEffect(() => {
+    if (!openTag && !openResourceTags) return;
 
     const handleEscape = (e: KeyboardEvent) => {
       if (e.key === 'Escape') {
         setOpenTag(null);
+        setOpenResourceTags(null);
       }
     };
 
     document.addEventListener('keydown', handleEscape);
-    // Don't hide body overflow - let the modal handle its own scrolling
-
     return () => {
       document.removeEventListener('keydown', handleEscape);
     };
-  }, [openTag, setOpenTag]);
+  }, [openTag, openResourceTags, setOpenTag, setOpenResourceTags]);
 
   const handleResourceClick = (e: React.MouseEvent, resource: Resource) => {
     e.preventDefault();
-    setOpenTag(null); // Close modal when resource is clicked
+    setOpenTag(null);
+    setOpenResourceTags(null);
 
     const href = `/${resource.category}/${resource.slug}`;
     addPanel({
@@ -163,102 +167,95 @@ export function TagModal({ resources }: TagModalProps) {
     });
   };
 
-  if (!openTag) return null;
+  if ((!openTag && !openResourceTags) || !mounted) return null;
 
-  return (
-    <div
-      className="fixed inset-0 z-[100] flex items-center justify-center bg-black bg-opacity-50 p-4"
-      onClick={() => setOpenTag(null)}
-      onMouseDown={(e) => {
-        // Close when clicking on the overlay
-        if (e.target === e.currentTarget) {
-          setOpenTag(null);
-        }
-      }}
-    >
+  const title = openTag ? openTag : openResourceTags?.title || 'Tags';
+  const subtitle = openTag
+    ? `${filteredResources.length} ${filteredResources.length === 1 ? 'page' : 'pages'} found`
+    : `${openResourceTags?.tags.length || 0} tags`;
+
+  return createPortal(
+    <>
       <div
-        className="relative w-full max-w-lg max-h-[85vh] bg-white dark:bg-gray-800 rounded-3xl shadow-2xl flex flex-col"
-        onClick={(e) => e.stopPropagation()}
-        onMouseDown={(e) => e.stopPropagation()}
-      >
-        {/* Header - sticky */}
-        <div className="flex items-center justify-between p-4 border-b border-gray-200 dark:border-gray-700 flex-shrink-0">
-          <div>
-            <h2 className="text-xl font-bold text-gray-900 dark:text-gray-100">
-              {openTag}
-            </h2>
-            <p className="text-sm text-gray-600 dark:text-gray-400 mt-0.5">
-              {filteredResources.length} {filteredResources.length === 1 ? 'page' : 'pages'} found
-            </p>
-          </div>
-          <Button variant="ghost"
-            onClick={() => setOpenTag(null)}
-            className="p-2 rounded-full text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-100 hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors"
-            title="Close (Esc)"
-          >
-            <svg
-              className="w-5 h-5"
-              fill="none"
-              stroke="currentColor"
-              viewBox="0 0 24 24"
+        className="fixed inset-0 bg-black bg-opacity-50 z-[150]"
+        onMouseDown={(event) => {
+          if (event.target !== event.currentTarget) return;
+          setOpenTag(null);
+          setOpenResourceTags(null);
+        }}
+      />
+      <div className="fixed right-0 top-0 bottom-0 w-80 bg-[var(--bg-secondary)] border-l border-[var(--border)] z-[200] overflow-y-auto shadow-xl flex flex-col">
+        <div className="p-4 border-b border-[var(--border)] sticky top-0 bg-[var(--bg-secondary)] flex-shrink-0">
+          <div className="flex items-center justify-between mb-2">
+            <div>
+              <h2 className="text-lg font-semibold text-gray-900 dark:text-gray-100">
+                {title}
+              </h2>
+              <p className="text-xs text-gray-500 dark:text-gray-400 mt-0.5">
+                {subtitle}
+              </p>
+            </div>
+            <Button
+              variant="ghost"
+              onClick={() => {
+                setOpenTag(null);
+                setOpenResourceTags(null);
+              }}
+              className="p-1 rounded-full hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors"
+              aria-label="Close tag sidebar"
+              title="Close (Esc)"
             >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth={2}
-                d="M6 18L18 6M6 6l12 12"
-              />
-            </svg>
-          </Button>
+              <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+              </svg>
+            </Button>
+          </div>
         </div>
 
-        {/* Content - scrollable */}
-        <div className="flex-1 overflow-y-auto p-4">
-          {filteredResources.length === 0 ? (
-            <p className="text-center text-gray-500 dark:text-gray-400 py-8">
-              No pages found with this tag
-            </p>
+        <div className="p-4 space-y-3">
+          {openTag ? (
+            filteredResources.length === 0 ? (
+              <div className="text-center py-8 text-gray-500 dark:text-gray-400">
+                <p className="text-sm">No pages found with this tag</p>
+                <p className="text-xs mt-1">Try another tag</p>
+              </div>
+            ) : (
+              filteredResources.map((resource) => (
+                <div key={`${resource.category}/${resource.slug}`} className="relative z-10">
+                  <Button
+                    variant="ghost"
+                    type="button"
+                    onClick={(e) => handleResourceClick(e, resource)}
+                    className="w-full text-left block p-3 rounded-xl hover:shadow-sm group relative z-10"
+                  >
+                    <h3 className="text-sm font-semibold text-gray-900 dark:text-gray-100 mb-1 group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors">
+                      {resource.title}
+                    </h3>
+                  </Button>
+                </div>
+              ))
+            )
           ) : (
-            <div className="space-y-2">
-              {filteredResources.map((resource) => (
-                <Button variant="ghost"
-                  key={`${resource.category}-${resource.slug}`}
-                  type="button"
-                  onClick={(e) => handleResourceClick(e, resource)}
-                  className="w-full text-left block p-3 rounded-xl border border-gray-200 dark:border-gray-700
-                    hover:border-blue-500 dark:hover:border-blue-500 bg-white dark:bg-gray-800
-                    transition-colors group cursor-pointer"
-                >
-                  <div className="flex items-start justify-between gap-3">
-                    <div className="flex-1 min-w-0">
-                      <h3 className="text-base font-semibold text-gray-900 dark:text-gray-100
-                        group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors">
-                        {resource.title}
-                      </h3>
-                      <p className="text-xs text-gray-500 dark:text-gray-400 mt-0.5 capitalize">
-                        {resource.category}
-                      </p>
-                    </div>
-                    <svg
-                      className="w-4 h-4 text-gray-400 group-hover:text-blue-500 transition-colors flex-shrink-0 mt-1"
-                      fill="none"
-                      stroke="currentColor"
-                      viewBox="0 0 24 24"
-                    >
-                      <path
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        strokeWidth={2}
-                        d="M9 5l7 7-7 7"
-                      />
-                    </svg>
-                  </div>
-                </Button>
-              ))}
-            </div>
+            openResourceTags?.tags.map((tag) => (
+              <Button
+                key={tag}
+                variant="ghost"
+                type="button"
+                onClick={() => {
+                  setOpenResourceTags(null);
+                  setOpenTag(tag);
+                }}
+                className="w-full text-left block p-3 rounded-xl hover:shadow-sm group relative z-10"
+                title={`Click to see all pages with tag: ${tag}`}
+              >
+                <h3 className="text-sm font-semibold text-gray-900 dark:text-gray-100 group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors">
+                  {tag.replace(/-/g, ' ')}
+                </h3>
+              </Button>
+            ))
           )}
         </div>
       </div>
-    </div>
-  );
+    </>
+  , document.body);
 }

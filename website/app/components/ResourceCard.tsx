@@ -8,6 +8,7 @@ import { BookmarkButton } from './BookmarkButton';
 import { formatCardOverview } from '../lib/markdownLinks';
 import { ScrollAnimation } from './ScrollAnimation';
 import { Button } from '@/components/ui/button';
+import { useTagModal } from './TagModalContext';
 
 interface ResourceCardProps {
   resource: ResourceMetadata;
@@ -30,6 +31,7 @@ export function ResourceCard({
 }: ResourceCardProps) {
   const [isExpanded, setIsExpanded] = useState(false);
   const [mounted, setMounted] = useState(false);
+  const { setOpenResourceTags, setOpenTag } = useTagModal();
   
   useEffect(() => {
     setMounted(true);
@@ -50,10 +52,10 @@ export function ResourceCard({
       <div className="relative group h-full flex flex-col">
         <CardLink
           href={`/${resource.category}/${resource.slug}`}
-          className="p-6 pt-12 h-full flex flex-col min-h-[280px]"
+          className="p-6 pt-16 h-full flex flex-col min-h-[280px]"
         >
           {/* Button ribbon area */}
-          <div className="absolute top-3 right-3 flex items-center gap-2 z-10">
+          <div className="absolute top-6 right-6 flex items-center gap-2 z-10">
             {showSelectionButton && (
               <Button variant="ghost"
                 onClick={(e) => {
@@ -87,13 +89,19 @@ export function ResourceCard({
             <BookmarkButton resource={resource} size="sm" />
           </div>
           
-          <h3 className="text-lg font-semibold mb-2 text-gray-900 dark:text-gray-100" suppressHydrationWarning>
+          <h3
+            className="text-lg font-semibold mb-2 text-gray-900 dark:text-gray-100 line-clamp-2 min-h-[56px]"
+            suppressHydrationWarning
+          >
             {resource.title}
           </h3>
 
           {hasOverview && (
-            <div className="mb-3 flex-grow">
-              <p className="text-sm text-gray-600 dark:text-gray-400 leading-relaxed" suppressHydrationWarning>
+            <div className="mb-3 min-h-[112px]">
+              <p
+                className="text-sm text-gray-600 dark:text-gray-400 leading-relaxed line-clamp-5"
+                suppressHydrationWarning
+              >
                 {displaySummary}
               </p>
               {shouldTruncate && mounted && (
@@ -120,7 +128,7 @@ export function ResourceCard({
             </div>
           )}
 
-          <div className="flex flex-wrap gap-1 mt-auto">
+          <div className="flex flex-wrap gap-1 mt-auto min-h-[64px] overflow-hidden">
             {resource.tags.slice(0, 5).map((tag) => (
               <ClickableTag
                 key={tag}
@@ -130,9 +138,19 @@ export function ResourceCard({
               />
             ))}
             {resource.tags.length > 5 && (
-              <span className="text-xs px-2 py-1 text-gray-500">
+              <Button
+                type="button"
+                variant="ghost"
+                onClick={(event) => {
+                  event.preventDefault();
+                  event.stopPropagation();
+                  setOpenTag(null);
+                  setOpenResourceTags({ title: resource.title, tags: resource.tags });
+                }}
+                className="text-xs px-2 py-1 text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200"
+              >
                 +{resource.tags.length - 5} more
-              </span>
+              </Button>
             )}
           </div>
         </CardLink>

@@ -88,7 +88,7 @@ export function FilteredResourceList({
               return (
                 <div key={resource.slug} className="relative">
                   {isRelevant && index < 6 && (
-                    <div className="absolute top-2 left-2 bg-green-500 text-white text-[10px] font-semibold px-1.5 py-0.5 rounded-full shadow-lg z-10">
+                    <div className="absolute top-6 left-6 bg-green-500 text-white text-[10px] font-semibold px-1.5 py-0.5 rounded-full shadow-lg z-10">
                       Recommended
                     </div>
                   )}

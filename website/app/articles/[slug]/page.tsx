@@ -35,7 +35,7 @@ export default async function ArticlePage({ params }: PageProps) {
       <TrackPageView resource={resource} />
       <Breadcrumbs currentPageTitle={resource.title} />
       <PageHeader title={resource.title} resource={resource}>
-        <TagList tags={resource.tags} allResources={allResources} />
+        <TagList tags={resource.tags} allResources={allResources} resourceTitle={resource.title} />
       </PageHeader>
 
       <ContentWithHoverPreviews

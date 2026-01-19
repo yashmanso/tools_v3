@@ -9,12 +9,14 @@ interface PanelLinkProps {
   children: ReactNode;
   className?: string;
   openInPanel?: boolean;
+  onClick?: (event: MouseEvent<HTMLAnchorElement>) => void;
 }
 
-export function PanelLink({ href, children, className, openInPanel = true }: PanelLinkProps) {
+export function PanelLink({ href, children, className, openInPanel = true, onClick }: PanelLinkProps) {
   const { addPanel } = usePanels();
 
   const handleClick = (e: MouseEvent<HTMLAnchorElement>) => {
+    onClick?.(e);
     if (!openInPanel) {
       return; // Let default navigation happen
     }
