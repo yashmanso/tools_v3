@@ -32,7 +32,7 @@ export function Header({ allResources }: HeaderProps) {
   };
 
   return (
-    <header className="sticky top-0 z-50 backdrop-blur-sm bg-[var(--bg-primary)]/80 border-b border-[var(--border)]">
+    <header className="fixed top-0 left-0 right-0 z-50 backdrop-blur-md bg-[var(--bg-primary)]/90 border-b border-[var(--border)]">
       <div className="container mx-auto px-6 py-5 flex items-center justify-between max-w-5xl">
         <Link
           href="/"
@@ -93,6 +93,16 @@ export function Header({ allResources }: HeaderProps) {
             }`}
           >
             Submit a tool
+          </Link>
+          <Link
+            href="/auto-create-tool"
+            className={`px-3 py-1.5 text-sm font-medium rounded-full transition-colors ${
+              isActive('/auto-create-tool')
+                ? 'text-[var(--text-primary)]'
+                : 'text-[var(--text-secondary)] hover:text-[var(--text-primary)] hover:bg-[var(--border-subtle)]'
+            }`}
+          >
+            Auto create tool
           </Link>
 
           <div className="ml-2 pl-2 border-l border-[var(--border)] flex items-center gap-2">
