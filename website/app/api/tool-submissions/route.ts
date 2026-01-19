@@ -1,6 +1,7 @@
 import { NextResponse } from 'next/server';
 import path from 'path';
 import fs from 'fs/promises';
+import { writeFile } from 'fs/promises';
 import { slugify } from '@/app/lib/markdown';
 
 type DimensionPayload = { description: string; tags: string[] | string };
@@ -12,6 +13,7 @@ type SubmissionPayload = {
 };
 
 const TOOLS_DIR = path.join(process.cwd(), '..', '1 – Tools, methods, frameworks, or guides');
+const ATTACHMENTS_DIR = path.join(process.cwd(), 'public', 'attachments');
 
 const DIMENSION_LABELS: Record<string, string> = {
   resourceType: 'Resource type',
@@ -76,57 +78,105 @@ const buildDimensionBlock = (label: string, payload?: DimensionPayload) => {
   return lines.filter(Boolean).join('\n');
 };
 
-const buildResourcesSection = (resourcesRaw?: string) => {
+const buildResourcesSection = (resourcesRaw?: string, attachmentFilenames: string[] = []) => {
   const resources = (resourcesRaw || '')
     .split(/\n+/g)
     .map((line) => line.trim())
     .filter(Boolean);
 
-  if (resources.length === 0) {
+  const allResources = [
+    ...resources,
+    ...attachmentFilenames.map(filename => `![[${filename}]]`),
+  ];
+
+  if (allResources.length === 0) {
     return '';
   }
 
-  return resources.map((resource) => `- ${resource}`).join('\n');
+  return allResources.map((resource) => {
+    // If it's already a markdown attachment reference, use it as-is
+    if (resource.startsWith('![')) {
+      return resource;
+    }
+    // Otherwise, format as a list item
+    return `- ${resource}`;
+  }).join('\n');
 };
 
 const sanitizeFilename = (value: string) =>
   value.replace(/[\/\\?%*:|"<>]/g, '').trim();
 
-const ensureUniqueFilename = async (dir: string, baseName: string) => {
-  let candidate = baseName;
+const ensureUniqueFilename = async (dir: string, baseName: string, extension?: string) => {
+  const ext = extension || '.md';
+  const nameWithoutExt = baseName.replace(/\.[^.]+$/, '');
+  let candidate = `${nameWithoutExt}${ext}`;
   let index = 2;
+  
   while (true) {
+    const fullPath = path.join(dir, candidate);
     try {
-      await fs.access(path.join(dir, `${candidate}.md`));
-      candidate = `${baseName} (${index})`;
+      await fs.access(fullPath);
+      candidate = `${nameWithoutExt} (${index})${ext}`;
       index += 1;
     } catch {
-      return `${candidate}.md`;
+      return candidate;
     }
   }
 };
 
 export async function POST(request: Request) {
   try {
-    const payload = (await request.json()) as SubmissionPayload;
-    const title = payload.title ? normalizeWhitespace(payload.title) : '';
-    const overview = payload.overview ? normalizeParagraph(payload.overview) : '';
+    const formData = await request.formData();
+    const title = formData.get('title')?.toString() || '';
+    const overview = formData.get('overview')?.toString() || '';
+    const resources = formData.get('resources')?.toString() || '';
+    const dimensionsRaw = formData.get('dimensions')?.toString() || '{}';
+    const attachments = formData.getAll('attachments') as File[];
 
-    if (!title || !overview) {
+    const normalizedTitle = normalizeWhitespace(title);
+    const normalizedOverview = normalizeParagraph(overview);
+
+    if (!normalizedTitle || !normalizedOverview) {
       return NextResponse.json({ error: 'Title and overview are required.' }, { status: 400 });
     }
 
+    // Parse dimensions
+    let dimensions: Record<string, DimensionPayload> = {};
+    try {
+      dimensions = JSON.parse(dimensionsRaw);
+    } catch {
+      // If parsing fails, use empty object
+    }
+
+    // Save attachments
+    const attachmentFilenames: string[] = [];
+    if (attachments.length > 0) {
+      await fs.mkdir(ATTACHMENTS_DIR, { recursive: true });
+      
+      for (const file of attachments) {
+        const arrayBuffer = await file.arrayBuffer();
+        const buffer = Buffer.from(arrayBuffer);
+        const safeFilename = sanitizeFilename(file.name);
+        const ext = path.extname(file.name);
+        const nameWithoutExt = safeFilename.replace(/\.[^.]+$/, '') || `attachment-${Date.now()}`;
+        const filename = await ensureUniqueFilename(ATTACHMENTS_DIR, nameWithoutExt, ext);
+        const filePath = path.join(ATTACHMENTS_DIR, filename);
+        await writeFile(filePath, buffer);
+        attachmentFilenames.push(filename);
+      }
+    }
+
     const dimensionSections = Object.entries(DIMENSION_LABELS)
-      .map(([key, label]) => buildDimensionBlock(label, payload.dimensions?.[key]))
+      .map(([key, label]) => buildDimensionBlock(label, dimensions[key]))
       .filter(Boolean)
       .join('\n\n');
 
-    const resourcesSection = buildResourcesSection(payload.resources);
+    const resourcesSection = buildResourcesSection(resources, attachmentFilenames);
 
     const markdown = [
       '___',
       '# Overview',
-      overview,
+      normalizedOverview,
       '',
       '___',
       '# Dimensions',
@@ -141,11 +191,11 @@ export async function POST(request: Request) {
     ].join('\n');
 
     await fs.mkdir(TOOLS_DIR, { recursive: true });
-    const safeTitle = sanitizeFilename(title);
-    const filename = await ensureUniqueFilename(TOOLS_DIR, safeTitle || slugify(title) || 'New Tool');
+    const safeTitle = sanitizeFilename(normalizedTitle);
+    const filename = await ensureUniqueFilename(TOOLS_DIR, safeTitle || slugify(normalizedTitle) || 'New Tool');
     await fs.writeFile(path.join(TOOLS_DIR, filename), markdown, 'utf8');
 
-    return NextResponse.json({ ok: true, filename });
+    return NextResponse.json({ ok: true, filename, attachments: attachmentFilenames });
   } catch (error) {
     return NextResponse.json(
       { error: error instanceof Error ? error.message : 'Failed to submit tool.' },

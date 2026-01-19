@@ -50,6 +50,7 @@ export function ToolSubmissionSection() {
   const [title, setTitle] = useState('');
   const [overview, setOverview] = useState('');
   const [resources, setResources] = useState('');
+  const [attachments, setAttachments] = useState<File[]>([]);
   const [dimensions, setDimensions] = useState(DEFAULT_DIMENSIONS);
   const [submitting, setSubmitting] = useState(false);
   const [status, setStatus] = useState<{ type: 'success' | 'error'; message: string } | null>(null);
@@ -76,6 +77,15 @@ export function ToolSubmissionSection() {
     }));
   };
 
+  const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const files = Array.from(event.target.files || []);
+    setAttachments(files);
+  };
+
+  const handleRemoveFile = (index: number) => {
+    setAttachments(prev => prev.filter((_, i) => i !== index));
+  };
+
   const handleSubmit = async (event: React.FormEvent) => {
     event.preventDefault();
     setStatus(null);
@@ -85,15 +95,19 @@ export function ToolSubmissionSection() {
 
     setSubmitting(true);
     try {
+      const formData = new FormData();
+      formData.append('title', title);
+      formData.append('overview', overview);
+      formData.append('resources', resources);
+      formData.append('dimensions', JSON.stringify(dimensions));
+      
+      attachments.forEach((file) => {
+        formData.append('attachments', file);
+      });
+
       const response = await fetch('/api/tool-submissions', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          title,
-          overview,
-          resources,
-          dimensions,
-        }),
+        body: formData,
       });
 
       const payload = await response.json();
@@ -108,7 +122,13 @@ export function ToolSubmissionSection() {
       setTitle('');
       setOverview('');
       setResources('');
+      setAttachments([]);
       setDimensions(DEFAULT_DIMENSIONS);
+      // Reset file input
+      const fileInput = document.getElementById('tool-attachments') as HTMLInputElement;
+      if (fileInput) {
+        fileInput.value = '';
+      }
     } catch (error) {
       setStatus({
         type: 'error',
@@ -142,6 +162,45 @@ export function ToolSubmissionSection() {
               rows={3}
             />
           </div>
+        </div>
+
+        <div className="space-y-2">
+          <Label htmlFor="tool-attachments">Attachments (PDFs, images, documents)</Label>
+          <Input
+            id="tool-attachments"
+            type="file"
+            multiple
+            onChange={handleFileChange}
+            accept=".pdf,.png,.jpg,.jpeg,.gif,.svg,.webp,.doc,.docx,.xls,.xlsx,.ppt,.pptx"
+            className="cursor-pointer"
+          />
+          {attachments.length > 0 && (
+            <div className="mt-2 space-y-2">
+              <p className="text-xs text-gray-600 dark:text-gray-400">
+                Selected files ({attachments.length}):
+              </p>
+              <div className="flex flex-wrap gap-2">
+                {attachments.map((file, index) => (
+                  <div
+                    key={index}
+                    className="flex items-center gap-2 px-3 py-1.5 bg-gray-100 dark:bg-gray-800 rounded-lg text-sm"
+                  >
+                    <span className="text-gray-700 dark:text-gray-300">{file.name}</span>
+                    <button
+                      type="button"
+                      onClick={() => handleRemoveFile(index)}
+                      className="text-red-600 dark:text-red-400 hover:text-red-700 dark:hover:text-red-300"
+                      aria-label={`Remove ${file.name}`}
+                    >
+                      <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                      </svg>
+                    </button>
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
         </div>
 
         <div className="space-y-2">
