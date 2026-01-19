@@ -5,6 +5,7 @@ import { ResourceMetadata } from '../lib/markdown';
 import { Workflow, WorkflowStep, getAllWorkflows, saveWorkflow, deleteWorkflow, getWorkflowTemplates } from '../lib/workflows';
 import { PanelLink } from './PanelLink';
 import { generateWorkflowShareLink } from '../lib/workflows';
+import { Button } from '@/components/ui/button';
 
 interface WorkflowBuilderProps {
   allResources: ResourceMetadata[];
@@ -168,7 +169,7 @@ export function WorkflowBuilder({ allResources }: WorkflowBuilderProps) {
     return (
       <div className="max-w-7xl mx-auto">
         <div className="mb-6 flex items-center justify-between">
-          <button
+          <Button variant="ghost"
             onClick={() => {
               setIsCreating(false);
               setCurrentWorkflow(null);
@@ -178,10 +179,10 @@ export function WorkflowBuilder({ allResources }: WorkflowBuilderProps) {
             className="text-sm text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-100 inline-flex items-center gap-2"
           >
             ← Back to workflows
-          </button>
+          </Button>
           <div className="flex gap-2">
             {currentWorkflow.id && workflows.some(w => w.id === currentWorkflow.id) && (
-              <button
+              <Button variant="ghost"
                 onClick={() => {
                   setShareWorkflowId(currentWorkflow.id);
                   setShowShareModal(true);
@@ -189,15 +190,15 @@ export function WorkflowBuilder({ allResources }: WorkflowBuilderProps) {
                 className="px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-full hover:border-blue-500 dark:hover:border-blue-500 transition-colors"
               >
                 Share
-              </button>
+              </Button>
             )}
-            <button
+            <Button variant="ghost"
               onClick={handleSaveWorkflow}
               disabled={!workflowTitle.trim() || currentWorkflow.steps.length === 0}
               className="px-4 py-2 bg-blue-600 text-white rounded-full hover:bg-blue-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
             >
               Save workflow
-            </button>
+            </Button>
           </div>
         </div>
 
@@ -256,7 +257,7 @@ export function WorkflowBuilder({ allResources }: WorkflowBuilderProps) {
 
                         {/* Step Controls */}
                         <div className="flex items-center gap-2 mt-4">
-                          <button
+                          <Button variant="ghost"
                             onClick={() => handleMoveStep(index, 'up')}
                             disabled={index === 0}
                             className="p-2 rounded-lg border border-gray-300 dark:border-gray-600 hover:bg-gray-100 dark:hover:bg-gray-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
@@ -265,8 +266,8 @@ export function WorkflowBuilder({ allResources }: WorkflowBuilderProps) {
                             <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 15l7-7 7 7" />
                             </svg>
-                          </button>
-                          <button
+                          </Button>
+                          <Button variant="ghost"
                             onClick={() => handleMoveStep(index, 'down')}
                             disabled={index === currentWorkflow.steps.length - 1}
                             className="p-2 rounded-lg border border-gray-300 dark:border-gray-600 hover:bg-gray-100 dark:hover:bg-gray-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
@@ -275,8 +276,8 @@ export function WorkflowBuilder({ allResources }: WorkflowBuilderProps) {
                             <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
                             </svg>
-                          </button>
-                          <button
+                          </Button>
+                          <Button variant="ghost"
                             onClick={() => handleRemoveStep(index)}
                             className="p-2 rounded-lg border border-red-300 dark:border-red-600 text-red-600 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-900/20 transition-colors"
                             title="Remove"
@@ -284,7 +285,7 @@ export function WorkflowBuilder({ allResources }: WorkflowBuilderProps) {
                             <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
                             </svg>
-                          </button>
+                          </Button>
                           <PanelLink
                             href={`/${step.tool.category}/${step.tool.slug}`}
                             className="ml-auto px-4 py-2 text-sm border border-gray-300 dark:border-gray-600 rounded-full hover:border-blue-500 dark:hover:border-blue-500 transition-colors hover:no-underline"
@@ -366,7 +367,7 @@ export function WorkflowBuilder({ allResources }: WorkflowBuilderProps) {
                 <h3 className="text-xl font-semibold text-gray-900 dark:text-gray-100">
                   Share Workflow
                 </h3>
-                <button
+                <Button variant="ghost"
                   onClick={() => {
                     setShowShareModal(false);
                     setShareWorkflowId(null);
@@ -376,7 +377,7 @@ export function WorkflowBuilder({ allResources }: WorkflowBuilderProps) {
                   <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
                   </svg>
-                </button>
+                </Button>
               </div>
               <p className="text-sm text-gray-600 dark:text-gray-400 mb-4">
                 Copy this link to share your workflow:
@@ -388,7 +389,7 @@ export function WorkflowBuilder({ allResources }: WorkflowBuilderProps) {
                   value={generateWorkflowShareLink(shareWorkflowId)}
                   className="flex-1 px-4 py-2 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 text-sm"
                 />
-                <button
+                <Button variant="ghost"
                   onClick={() => {
                     navigator.clipboard.writeText(generateWorkflowShareLink(shareWorkflowId));
                     alert('Link copied to clipboard!');
@@ -396,7 +397,7 @@ export function WorkflowBuilder({ allResources }: WorkflowBuilderProps) {
                   className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
                 >
                   Copy
-                </button>
+                </Button>
               </div>
               <p className="text-xs text-gray-500 dark:text-gray-400">
                 Note: Shared workflows are read-only. Recipients can view but not edit.
@@ -417,12 +418,12 @@ export function WorkflowBuilder({ allResources }: WorkflowBuilderProps) {
             Create step-by-step workflows combining multiple tools for your sustainability projects
           </p>
         </div>
-        <button
+        <Button variant="ghost"
           onClick={handleCreateNew}
           className="px-6 py-3 bg-blue-600 text-white rounded-full hover:bg-blue-700 transition-colors"
         >
           + Create workflow
-        </button>
+        </Button>
       </div>
 
       {/* Templates Section */}
@@ -432,12 +433,12 @@ export function WorkflowBuilder({ allResources }: WorkflowBuilderProps) {
             <h3 className="text-xl font-semibold text-gray-900 dark:text-gray-100">
               Workflow Templates
             </h3>
-            <button
+            <Button variant="ghost"
               onClick={() => setShowTemplates(!showTemplates)}
               className="text-sm text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-100"
             >
               {showTemplates ? 'Hide' : 'Show'} templates
-            </button>
+            </Button>
           </div>
           <div className="grid md:grid-cols-3 gap-4">
             {templates.map((template) => (
@@ -477,12 +478,12 @@ export function WorkflowBuilder({ allResources }: WorkflowBuilderProps) {
             <p className="text-sm text-gray-400 dark:text-gray-500 mb-6">
               Create a new workflow or start from a template
             </p>
-            <button
+            <Button variant="ghost"
               onClick={handleCreateNew}
               className="px-6 py-3 bg-blue-600 text-white rounded-full hover:bg-blue-700 transition-colors"
             >
               Create your first workflow
-            </button>
+            </Button>
           </div>
         ) : (
           <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-4">
@@ -497,7 +498,7 @@ export function WorkflowBuilder({ allResources }: WorkflowBuilderProps) {
                     {workflow.title}
                   </h4>
                   <div className="flex gap-1" onClick={(e) => e.stopPropagation()}>
-                    <button
+                    <Button variant="ghost"
                       onClick={(e) => {
                         e.stopPropagation();
                         setShareWorkflowId(workflow.id);
@@ -509,8 +510,8 @@ export function WorkflowBuilder({ allResources }: WorkflowBuilderProps) {
                       <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8.684 13.342C8.886 12.938 9 12.482 9 12c0-.482-.114-.938-.316-1.342m0 2.684a3 3 0 110-2.684m0 2.684l6.632 3.316m-6.632-6l6.632-3.316m0 0a3 3 0 105.367-2.684 3 3 0 00-5.367 2.684zm0 9.316a3 3 0 105.368 2.684 3 3 0 00-5.368-2.684z" />
                       </svg>
-                    </button>
-                    <button
+                    </Button>
+                    <Button variant="ghost"
                       onClick={(e) => {
                         e.stopPropagation();
                         handleDeleteWorkflow(workflow.id);
@@ -521,7 +522,7 @@ export function WorkflowBuilder({ allResources }: WorkflowBuilderProps) {
                       <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
                       </svg>
-                    </button>
+                    </Button>
                   </div>
                 </div>
                 {workflow.description && (
@@ -551,7 +552,7 @@ export function WorkflowBuilder({ allResources }: WorkflowBuilderProps) {
               <h3 className="text-xl font-semibold text-gray-900 dark:text-gray-100">
                 Share Workflow
               </h3>
-              <button
+              <Button variant="ghost"
                 onClick={() => {
                   setShowShareModal(false);
                   setShareWorkflowId(null);
@@ -561,7 +562,7 @@ export function WorkflowBuilder({ allResources }: WorkflowBuilderProps) {
                 <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
                 </svg>
-              </button>
+              </Button>
             </div>
             <p className="text-sm text-gray-600 dark:text-gray-400 mb-4">
               Copy this link to share your workflow:
@@ -573,7 +574,7 @@ export function WorkflowBuilder({ allResources }: WorkflowBuilderProps) {
                 value={generateWorkflowShareLink(shareWorkflowId)}
                 className="flex-1 px-4 py-2 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 text-sm"
               />
-              <button
+              <Button variant="ghost"
                 onClick={() => {
                   navigator.clipboard.writeText(generateWorkflowShareLink(shareWorkflowId));
                   alert('Link copied to clipboard!');
@@ -581,7 +582,7 @@ export function WorkflowBuilder({ allResources }: WorkflowBuilderProps) {
                 className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
               >
                 Copy
-              </button>
+              </Button>
             </div>
             <p className="text-xs text-gray-500 dark:text-gray-400">
               Note: Shared workflows are read-only. Recipients can view but not edit.

@@ -3,6 +3,7 @@
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { ResourceMetadata } from '../lib/markdown';
+import { Button } from '@/components/ui/button';
 
 interface WelcomePopupProps {
   allResources: ResourceMetadata[];
@@ -141,7 +142,7 @@ export function WelcomePopup({ allResources }: WelcomePopupProps) {
                   Let's personalize your experience
                 </p>
               </div>
-              <button
+              <Button variant="ghost"
                 onClick={handleSkip}
                 className="p-2 text-gray-400 hover:text-gray-600 dark:hover:text-gray-300 transition-colors"
                 aria-label="Skip"
@@ -149,7 +150,7 @@ export function WelcomePopup({ allResources }: WelcomePopupProps) {
                 <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
                 </svg>
-              </button>
+              </Button>
             </div>
           </div>
 
@@ -200,18 +201,18 @@ export function WelcomePopup({ allResources }: WelcomePopupProps) {
           {/* Footer */}
           <div className="p-4 border-t border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-900/50">
             <div className="flex items-center justify-end gap-3">
-              <button
+              <Button variant="ghost"
                 onClick={handleSkip}
                 className="text-sm text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-100 px-4 py-2"
               >
                 Skip for now
-              </button>
-              <button
+              </Button>
+              <Button variant="ghost"
                 onClick={handleStart}
                 className="px-6 py-2 bg-blue-600 text-white rounded-full hover:bg-blue-700 transition-colors font-medium"
               >
                 Get Started
-              </button>
+              </Button>
             </div>
           </div>
         </div>
@@ -240,7 +241,7 @@ export function WelcomePopup({ allResources }: WelcomePopupProps) {
                 Let's personalize your experience
               </p>
             </div>
-            <button
+            <Button variant="ghost"
               onClick={handleSkip}
               className="p-2 text-gray-400 hover:text-gray-600 dark:hover:text-gray-300 transition-colors"
               aria-label="Skip"
@@ -248,7 +249,7 @@ export function WelcomePopup({ allResources }: WelcomePopupProps) {
               <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
               </svg>
-            </button>
+            </Button>
           </div>
 
           {/* Progress bar */}
@@ -274,7 +275,7 @@ export function WelcomePopup({ allResources }: WelcomePopupProps) {
 
           <div className="grid sm:grid-cols-2 gap-3">
             {currentQuestion.options.map((option) => (
-              <button
+              <Button variant="ghost"
                 key={option.value}
                 onClick={() => handleAnswer(currentQuestion.id, option.value)}
                 className={`p-4 rounded-xl border-2 text-left transition-all ${
@@ -286,7 +287,7 @@ export function WelcomePopup({ allResources }: WelcomePopupProps) {
                 <div className="font-medium text-gray-900 dark:text-gray-100">
                   {option.label}
                 </div>
-              </button>
+              </Button>
             ))}
           </div>
         </div>
@@ -295,7 +296,7 @@ export function WelcomePopup({ allResources }: WelcomePopupProps) {
         <div className="p-4 border-t border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-900/50">
           <div className="flex items-center justify-between">
             {currentStep > 0 && (
-              <button
+              <Button variant="ghost"
                 onClick={() => {
                   setCurrentStep(currentStep - 1);
                   setIsAnimating(false);
@@ -303,15 +304,15 @@ export function WelcomePopup({ allResources }: WelcomePopupProps) {
                 className="text-sm text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-100"
               >
                 ← Previous
-              </button>
+              </Button>
             )}
             <div className="flex-1" />
-            <button
+            <Button variant="ghost"
               onClick={handleSkip}
               className="text-sm text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-100"
             >
               Skip for now
-            </button>
+            </Button>
           </div>
         </div>
       </div>

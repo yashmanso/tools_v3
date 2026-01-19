@@ -12,6 +12,7 @@ interface ProgressiveDisclosureProps {
 }
 
 import { convertMarkdownLinksToHTML } from '../lib/markdownLinks';
+import { Button } from '@/components/ui/button';
 
 export function ProgressiveDisclosure({
   summary,
@@ -39,7 +40,7 @@ export function ProgressiveDisclosure({
         dangerouslySetInnerHTML={{ __html: isExpanded ? fullSummaryWithLinks : summaryWithLinks }}
       />
       {shouldTruncate && (
-        <button
+        <Button variant="ghost"
           onClick={() => setIsExpanded(!isExpanded)}
           className="mt-2 inline-flex items-center gap-1 text-xs text-blue-600 dark:text-blue-400 hover:text-blue-700 dark:hover:text-blue-300 font-medium transition-colors"
         >
@@ -52,7 +53,7 @@ export function ProgressiveDisclosure({
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
             </svg>
           )}
-        </button>
+        </Button>
       )}
     </div>
   );

@@ -11,6 +11,7 @@ interface FavoritesModalProps {
 }
 
 import { convertMarkdownLinksToHTML } from '../lib/markdownLinks';
+import { Button } from '@/components/ui/button';
 
 export function FavoritesModal({ allResources, onClose }: FavoritesModalProps) {
   const [bookmarkedResources, setBookmarkedResources] = useState<ResourceMetadata[]>([]);
@@ -139,25 +140,25 @@ export function FavoritesModal({ allResources, onClose }: FavoritesModalProps) {
           </div>
           <div className="flex items-center gap-2">
             {showComparison ? (
-              <button
+              <Button variant="ghost"
                 onClick={handleResetComparison}
                 className="px-4 py-2 text-sm border border-gray-300 dark:border-gray-600 rounded-full hover:border-blue-500 dark:hover:border-blue-500 transition-colors"
               >
                 Back to favorites
-              </button>
+              </Button>
             ) : (
               <>
                 {selectedTools.length >= 2 && (
-                  <button
+                  <Button variant="ghost"
                     onClick={handleCompare}
                     className="px-4 py-2 text-sm bg-blue-600 text-white rounded-full hover:bg-blue-700 transition-colors"
                   >
                     Compare ({selectedTools.length})
-                  </button>
+                  </Button>
                 )}
               </>
             )}
-            <button
+            <Button variant="ghost"
               onClick={onClose}
               className="p-2 rounded-full hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors"
               aria-label="Close"
@@ -165,7 +166,7 @@ export function FavoritesModal({ allResources, onClose }: FavoritesModalProps) {
               <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
               </svg>
-            </button>
+            </Button>
           </div>
         </div>
 
@@ -376,7 +377,7 @@ export function FavoritesModal({ allResources, onClose }: FavoritesModalProps) {
                   >
                     {/* Selection checkbox */}
                     <div className="absolute top-4 left-4">
-                      <button
+                      <Button variant="ghost"
                         onClick={() => handleSelectTool(resource)}
                         disabled={!canSelect && !isSelected}
                         className={`w-5 h-5 rounded border-2 flex items-center justify-center transition-colors ${
@@ -393,7 +394,7 @@ export function FavoritesModal({ allResources, onClose }: FavoritesModalProps) {
                             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M5 13l4 4L19 7" />
                           </svg>
                         )}
-                      </button>
+                      </Button>
                     </div>
                     
                     <PanelLink

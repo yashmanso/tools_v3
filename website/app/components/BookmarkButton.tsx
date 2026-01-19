@@ -3,6 +3,7 @@
 import { useState, useEffect } from 'react';
 import { ResourceMetadata } from '../lib/markdown';
 import { isBookmarked, toggleBookmark } from '../lib/bookmarks';
+import { Button } from '@/components/ui/button';
 
 interface BookmarkButtonProps {
   resource: ResourceMetadata;
@@ -50,7 +51,7 @@ export function BookmarkButton({ resource, size = 'md', className = '' }: Bookma
   const isInPanelHeader = className.includes('page-header');
   
   return (
-    <button
+    <Button variant="ghost"
       onClick={handleClick}
       className={`${sizeClasses[size]} rounded-full transition-colors ${className} ${
         bookmarked
@@ -75,6 +76,6 @@ export function BookmarkButton({ resource, size = 'md', className = '' }: Bookma
           d="M5 5a2 2 0 012-2h10a2 2 0 012 2v16l-7-3.5L5 21V5z"
         />
       </svg>
-    </button>
+    </Button>
   );
 }

@@ -2,6 +2,7 @@
 
 import { useTagModal } from './TagModalContext';
 import { ResourceMetadata } from '../lib/markdown';
+import { Button } from '@/components/ui/button';
 
 interface ClickableTagProps {
   tag: string;
@@ -26,14 +27,14 @@ export function ClickableTag({ tag, allResources, className = '', size = 'xs' }:
   };
 
   return (
-    <button
+    <Button variant="ghost"
       type="button"
       onClick={handleClick}
       className={`tag cursor-pointer hover:bg-blue-50 hover:border-blue-500 hover:text-blue-700 dark:hover:bg-blue-900/30 dark:hover:border-blue-400 dark:hover:text-blue-300 transition-all duration-200 active:scale-95 ${sizeClasses[size]} ${className}`}
       title={`Click to see all pages with tag: ${tag}`}
     >
       {tag}
-    </button>
+    </Button>
   );
 }
 

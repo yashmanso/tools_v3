@@ -5,6 +5,7 @@ import { useRouter } from 'next/navigation';
 import { ResourceMetadata } from '../lib/markdown';
 import { BookmarkButton } from './BookmarkButton';
 import { ShareButton } from './ShareButton';
+import { Button } from '@/components/ui/button';
 
 interface PageHeaderProps {
   title: string;
@@ -49,7 +50,7 @@ export function PageHeader({ title, children, resource }: PageHeaderProps) {
         {/* Action buttons */}
         <div className="flex gap-2 flex-shrink-0">
           {/* Expand/Collapse button */}
-          <button
+          <Button variant="ghost"
             onClick={handleToggleExpand}
             className="p-2 rounded-full bg-[var(--bg-secondary)] hover:bg-[var(--border)] border border-[var(--border)] transition-colors"
             aria-label={isExpanded ? 'Collapse page' : 'Expand page'}
@@ -86,7 +87,7 @@ export function PageHeader({ title, children, resource }: PageHeaderProps) {
                 />
               </svg>
             )}
-          </button>
+          </Button>
 
           {/* Bookmark button */}
           {resource && (
@@ -99,7 +100,7 @@ export function PageHeader({ title, children, resource }: PageHeaderProps) {
           )}
           
           {/* Close button */}
-          <button
+          <Button variant="ghost"
             onClick={handleClose}
             className="p-2 rounded-full bg-[var(--bg-secondary)] hover:bg-[var(--border)] border border-[var(--border)] transition-colors"
             aria-label="Close page"
@@ -118,7 +119,7 @@ export function PageHeader({ title, children, resource }: PageHeaderProps) {
                 d="M6 18L18 6M6 6l12 12"
               />
             </svg>
-          </button>
+          </Button>
         </div>
       </div>
 

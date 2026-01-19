@@ -4,6 +4,7 @@ import { useState, useEffect } from 'react';
 import { getBookmarks } from '../lib/bookmarks';
 import { FavoritesModal } from './FavoritesModal';
 import { ResourceMetadata } from '../lib/markdown';
+import { Button } from '@/components/ui/button';
 
 interface FavoritesIconProps {
   allResources: ResourceMetadata[];
@@ -31,7 +32,7 @@ export function FavoritesIcon({ allResources }: FavoritesIconProps) {
 
   return (
     <>
-      <button
+      <Button variant="ghost"
         onClick={() => setIsModalOpen(true)}
         className="relative p-1.5 rounded-full text-[var(--text-secondary)] hover:text-[var(--text-primary)] hover:bg-[var(--border-subtle)] transition-colors"
         aria-label={`View favorites (${bookmarkCount} saved)`}
@@ -50,7 +51,7 @@ export function FavoritesIcon({ allResources }: FavoritesIconProps) {
             {bookmarkCount > 99 ? '99+' : bookmarkCount}
           </span>
         )}
-      </button>
+      </Button>
       {isModalOpen && <FavoritesModal allResources={allResources} onClose={() => setIsModalOpen(false)} />}
     </>
   );

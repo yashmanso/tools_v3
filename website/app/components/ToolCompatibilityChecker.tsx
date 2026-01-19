@@ -3,6 +3,7 @@
 import { useState, useMemo } from 'react';
 import { ResourceMetadata } from '../lib/markdown';
 import { analyzeCompatibility, CompatibilityResult } from '../lib/compatibility';
+import { Button } from '@/components/ui/button';
 
 interface ToolCompatibilityCheckerProps {
   allResources: ResourceMetadata[];
@@ -97,12 +98,12 @@ export function ToolCompatibilityChecker({ allResources }: ToolCompatibilityChec
             <h3 className="text-lg font-semibold text-gray-900 dark:text-gray-100">
               Selected Tools ({selectedTools.length}/5)
             </h3>
-            <button
+            <Button variant="ghost"
               onClick={() => setSelectedTools([])}
               className="text-sm text-gray-600 dark:text-gray-400 hover:text-red-600 dark:hover:text-red-400"
             >
               Clear all
-            </button>
+            </Button>
           </div>
           <div className="flex flex-wrap gap-3">
             {selectedTools.map((tool) => (
@@ -113,14 +114,14 @@ export function ToolCompatibilityChecker({ allResources }: ToolCompatibilityChec
                 <span className="text-sm font-medium text-blue-900 dark:text-blue-100">
                   {tool.title}
                 </span>
-                <button
+                <Button variant="ghost"
                   onClick={() => handleRemoveTool(tool.slug)}
                   className="text-blue-600 dark:text-blue-400 hover:text-blue-800 dark:hover:text-blue-200"
                 >
                   <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
                   </svg>
-                </button>
+                </Button>
               </div>
             ))}
           </div>
@@ -242,12 +243,12 @@ export function ToolCompatibilityChecker({ allResources }: ToolCompatibilityChec
                               </span>
                             </div>
                           </div>
-                          <button
+                          <Button variant="ghost"
                             onClick={() => handleToggleTool(result.tool)}
                             className="px-3 py-1 text-xs border border-current rounded-full hover:bg-opacity-20 transition-colors"
                           >
                             {selectedTools.some(t => t.slug === result.tool.slug) ? 'Remove' : 'Add'}
-                          </button>
+                          </Button>
                         </div>
                         {result.reasons.length > 0 && (
                           <ul className="text-xs space-y-1 mb-2">

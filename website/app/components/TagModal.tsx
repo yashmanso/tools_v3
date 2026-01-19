@@ -4,6 +4,7 @@ import { useEffect, useRef, useState } from 'react';
 import { usePanels } from './PanelContext';
 import { ContentWithHoverPreviews } from './ContentWithHoverPreviews';
 import { useTagModal } from './TagModalContext';
+import { Button } from '@/components/ui/button';
 
 interface Resource {
   slug: string;
@@ -190,7 +191,7 @@ export function TagModal({ resources }: TagModalProps) {
               {filteredResources.length} {filteredResources.length === 1 ? 'page' : 'pages'} found
             </p>
           </div>
-          <button
+          <Button variant="ghost"
             onClick={() => setOpenTag(null)}
             className="p-2 rounded-full text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-100 hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors"
             title="Close (Esc)"
@@ -208,7 +209,7 @@ export function TagModal({ resources }: TagModalProps) {
                 d="M6 18L18 6M6 6l12 12"
               />
             </svg>
-          </button>
+          </Button>
         </div>
 
         {/* Content - scrollable */}
@@ -220,7 +221,7 @@ export function TagModal({ resources }: TagModalProps) {
           ) : (
             <div className="space-y-2">
               {filteredResources.map((resource) => (
-                <button
+                <Button variant="ghost"
                   key={`${resource.category}-${resource.slug}`}
                   type="button"
                   onClick={(e) => handleResourceClick(e, resource)}
@@ -252,7 +253,7 @@ export function TagModal({ resources }: TagModalProps) {
                       />
                     </svg>
                   </div>
-                </button>
+                </Button>
               ))}
             </div>
           )}

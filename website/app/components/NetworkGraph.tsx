@@ -5,6 +5,7 @@ import { GraphNode, GraphEdge } from '../lib/graph';
 import { ResourceMetadata } from '../lib/markdown';
 import { PanelLink } from './PanelLink';
 import { usePanels } from './PanelContext';
+import { Button } from '@/components/ui/button';
 
 interface NetworkGraphProps {
   allResources: ResourceMetadata[];
@@ -563,7 +564,7 @@ export function NetworkGraph({ allResources, graphData }: NetworkGraphProps) {
         <div className="flex-1 overflow-y-auto p-2">
           {Object.entries(resourcesByCategory).map(([category, resources]) => (
             <div key={category} className="mb-2">
-              <button
+              <Button variant="ghost"
                 onClick={() => toggleSection(category)}
                 className="w-full flex items-center justify-between px-3 py-2 text-sm font-medium text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-lg transition-colors"
               >
@@ -576,7 +577,7 @@ export function NetworkGraph({ allResources, graphData }: NetworkGraphProps) {
                 >
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
                 </svg>
-              </button>
+              </Button>
               
               {expandedSections.has(category) && (
                 <div className="ml-4 mt-1 space-y-1">
@@ -584,7 +585,7 @@ export function NetworkGraph({ allResources, graphData }: NetworkGraphProps) {
                     const nodeId = `${resource.category}/${resource.slug}`;
                     const isSelected = selectedNodes.has(nodeId);
                     return (
-                      <button
+                      <Button variant="ghost"
                         key={resource.slug}
                         onClick={() => handleNodeClick(nodeId)}
                         className={`w-full text-left px-3 py-1.5 text-xs rounded-lg transition-colors flex items-center gap-2 ${
@@ -597,7 +598,7 @@ export function NetworkGraph({ allResources, graphData }: NetworkGraphProps) {
                           {getNodeIcon({ slug: resource.slug, title: resource.title, category: resource.category, tags: resource.tags })}
                         </span>
                         <span className="truncate flex-1">{resource.title}</span>
-                      </button>
+                      </Button>
                     );
                   })}
                   {resources.length > 20 && (
@@ -779,7 +780,7 @@ export function NetworkGraph({ allResources, graphData }: NetworkGraphProps) {
 
         {/* Top-right zoom controls */}
         <div className="absolute top-4 right-4 flex flex-col gap-2 bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700 shadow-lg p-2">
-          <button
+          <Button variant="ghost"
             onClick={handleZoomIn}
             className="p-2 hover:bg-gray-100 dark:hover:bg-gray-700 rounded transition-colors"
             title="Zoom in"
@@ -787,8 +788,8 @@ export function NetworkGraph({ allResources, graphData }: NetworkGraphProps) {
             <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
             </svg>
-          </button>
-          <button
+          </Button>
+          <Button variant="ghost"
             onClick={handleZoomOut}
             className="p-2 hover:bg-gray-100 dark:hover:bg-gray-700 rounded transition-colors"
             title="Zoom out"
@@ -796,8 +797,8 @@ export function NetworkGraph({ allResources, graphData }: NetworkGraphProps) {
             <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M20 12H4" />
             </svg>
-          </button>
-          <button
+          </Button>
+          <Button variant="ghost"
             onClick={handleFitView}
             className="p-2 hover:bg-gray-100 dark:hover:bg-gray-700 rounded transition-colors"
             title="Fit to view"
@@ -805,12 +806,12 @@ export function NetworkGraph({ allResources, graphData }: NetworkGraphProps) {
             <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 8V4m0 0h4M4 4l5 5m11-1V4m0 0h-4m4 0l-5 5M4 16v4m0 0h4m-4 0l5-5m11 5l-5-5m5 5v-4m0 4h-4" />
             </svg>
-          </button>
+          </Button>
         </div>
 
         {/* Bottom-right controls */}
         <div className="absolute bottom-4 right-4 flex items-center gap-2 bg-white dark:bg-gray-800 rounded-lg px-3 py-2 border border-gray-200 dark:border-gray-700 shadow-lg">
-          <button
+          <Button variant="ghost"
             onClick={handleReset}
             className="p-1 hover:bg-gray-100 dark:hover:bg-gray-700 rounded transition-colors"
             title="Reset view"
@@ -818,7 +819,7 @@ export function NetworkGraph({ allResources, graphData }: NetworkGraphProps) {
             <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
             </svg>
-          </button>
+          </Button>
           <div className="text-xs text-gray-600 dark:text-gray-400 px-2">
             Zoom: {Math.round(transform.k * 100)}%
           </div>
@@ -831,7 +832,7 @@ export function NetworkGraph({ allResources, graphData }: NetworkGraphProps) {
               <h3 className="text-sm font-semibold text-gray-900 dark:text-gray-100">
                 Selected ({selectedNodes.size})
               </h3>
-              <button
+              <Button variant="ghost"
                 onClick={() => setSelectedNodes(new Set())}
                 className="text-gray-400 hover:text-gray-600 dark:hover:text-gray-300"
                 title="Clear selection"
@@ -839,9 +840,9 @@ export function NetworkGraph({ allResources, graphData }: NetworkGraphProps) {
                 <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
                 </svg>
-              </button>
+              </Button>
             </div>
-            <button
+            <Button variant="ghost"
               onClick={handleOpenAll}
               className="w-full mb-3 px-3 py-2 bg-blue-600 hover:bg-blue-700 text-white text-xs font-medium rounded-full transition-colors flex items-center justify-center gap-2"
             >
@@ -849,7 +850,7 @@ export function NetworkGraph({ allResources, graphData }: NetworkGraphProps) {
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
               </svg>
               Open all in panels
-            </button>
+            </Button>
             <div className="space-y-2 max-h-64 overflow-y-auto">
               {Array.from(selectedNodes).map((nodeId) => {
                 const node = nodes.get(nodeId);

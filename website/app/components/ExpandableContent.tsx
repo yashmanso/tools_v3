@@ -1,6 +1,7 @@
 'use client';
 
 import { useState, useEffect, useRef } from 'react';
+import { Button } from '@/components/ui/button';
 
 interface ExpandableContentProps {
   children: React.ReactNode;
@@ -42,12 +43,12 @@ export function ExpandableContent({
         {children}
       </div>
       {shouldShowButton && (
-        <button
+        <Button variant="ghost"
           onClick={() => setIsExpanded(!isExpanded)}
           className="mt-2 text-sm text-blue-600 dark:text-blue-400 hover:underline font-medium"
         >
           {isExpanded ? collapseLabel : expandLabel}
-        </button>
+        </Button>
       )}
     </div>
   );

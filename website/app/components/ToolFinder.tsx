@@ -4,6 +4,7 @@ import { useState } from 'react';
 import { ResourceMetadata } from '../lib/markdown';
 import { ResourceCard } from './ResourceCard';
 import Link from 'next/link';
+import { Button } from '@/components/ui/button';
 
 interface ToolFinderProps {
   allResources: ResourceMetadata[];
@@ -207,12 +208,12 @@ export function ToolFinder({ allResources }: ToolFinderProps) {
                 }
               </p>
             </div>
-            <button
+            <Button variant="ghost"
               onClick={handleReset}
               className="px-4 py-2 text-sm border border-gray-300 dark:border-gray-600 rounded-full hover:border-blue-500 dark:hover:border-blue-500 transition-colors"
             >
               Start Over
-            </button>
+            </Button>
           </div>
 
           {/* Show selected answers */}
@@ -305,12 +306,12 @@ export function ToolFinder({ allResources }: ToolFinderProps) {
             Question {currentStep + 1} of {QUESTIONS.length}
           </span>
           {currentStep > 0 && (
-            <button
+            <Button variant="ghost"
               onClick={handleBack}
               className="text-sm text-blue-600 dark:text-blue-400 hover:underline"
             >
               ← Back
-            </button>
+            </Button>
           )}
         </div>
         <div className="w-full bg-gray-200 dark:bg-gray-700 rounded-full h-2">
@@ -328,7 +329,7 @@ export function ToolFinder({ allResources }: ToolFinderProps) {
 
         <div className="grid sm:grid-cols-2 gap-3">
           {currentQuestion.options.map((option) => (
-            <button
+            <Button variant="ghost"
               key={option.value}
               onClick={() => handleAnswer(currentQuestion.id, option.value)}
               className={`p-4 rounded-lg border-2 text-left transition-all ${
@@ -347,14 +348,14 @@ export function ToolFinder({ allResources }: ToolFinderProps) {
                   </div>
                 )}
               </div>
-            </button>
+            </Button>
           ))}
         </div>
       </div>
 
       {/* Skip option */}
       <div className="text-center">
-        <button
+        <Button variant="ghost"
           onClick={() => {
             if (currentStep < QUESTIONS.length - 1) {
               setCurrentStep(currentStep + 1);
@@ -365,7 +366,7 @@ export function ToolFinder({ allResources }: ToolFinderProps) {
           className="text-sm text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-100"
         >
           Skip this question →
-        </button>
+        </Button>
       </div>
     </div>
   );

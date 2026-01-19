@@ -2,6 +2,7 @@
 
 import { useState, useMemo, useEffect } from 'react';
 import { ResourceMetadata } from '../lib/markdown';
+import { Button } from '@/components/ui/button';
 
 export interface FilterState {
   searchQuery: string;
@@ -144,14 +145,14 @@ export function QuickFiltersSidebar({ resources, onFiltersChange, initialFilters
             <h2 className="text-lg font-semibold text-gray-900 dark:text-gray-100">Filters</h2>
             <div className="flex items-center gap-2">
               {hasActiveFilters && (
-                <button
+                <Button variant="ghost"
                   onClick={clearFilters}
                   className="text-xs text-blue-600 dark:text-blue-400 hover:underline"
                 >
                   Clear
-                </button>
+                </Button>
               )}
-              <button
+              <Button variant="ghost"
                 onClick={onClose}
                 className="p-1 hover:bg-gray-100 dark:hover:bg-gray-700 rounded transition-colors"
                 aria-label="Close filters"
@@ -159,7 +160,7 @@ export function QuickFiltersSidebar({ resources, onFiltersChange, initialFilters
                 <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
                 </svg>
-              </button>
+              </Button>
             </div>
           </div>
 
@@ -184,7 +185,7 @@ export function QuickFiltersSidebar({ resources, onFiltersChange, initialFilters
 
               return (
                 <div key={category} className="border-b border-gray-200 dark:border-gray-700 pb-4 last:border-0">
-                  <button
+                  <Button variant="ghost"
                     onClick={() => toggleSection(category)}
                     className="w-full flex items-center justify-between mb-2 text-sm font-medium text-gray-700 dark:text-gray-300 hover:text-gray-900 dark:hover:text-gray-100 transition-colors"
                   >
@@ -204,14 +205,14 @@ export function QuickFiltersSidebar({ resources, onFiltersChange, initialFilters
                     >
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
                     </svg>
-                  </button>
+                  </Button>
 
                   {isExpanded && (
                     <div className="flex flex-wrap gap-2 mt-2">
                       {tags.map((tag) => {
                         const isSelected = filters.selectedTags.has(tag);
                         return (
-                          <button
+                          <Button variant="ghost"
                             key={tag}
                             onClick={() => toggleTag(tag)}
                             className={`text-xs px-3 py-1.5 rounded-full transition-colors ${
@@ -221,7 +222,7 @@ export function QuickFiltersSidebar({ resources, onFiltersChange, initialFilters
                             }`}
                           >
                             {tag.replace(/-/g, ' ')}
-                          </button>
+                          </Button>
                         );
                       })}
                     </div>

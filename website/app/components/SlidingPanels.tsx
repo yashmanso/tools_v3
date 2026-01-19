@@ -6,6 +6,7 @@ import { ResourceMetadata } from '../lib/markdown';
 import { BookmarkButton } from './BookmarkButton';
 import { ShareButton } from './ShareButton';
 import { addRecentView } from '../lib/recentViews';
+import { Button } from '@/components/ui/button';
 
 interface SlidingPanelsProps {
   children: React.ReactNode;
@@ -126,7 +127,7 @@ export function SlidingPanels({ children, allResources = [] }: SlidingPanelsProp
                 {/* Panel header with expand and close buttons */}
                 <div className="sticky top-0 z-10 flex justify-end gap-2 p-4 bg-[var(--bg-secondary)]">
                   {/* Expand/Collapse button */}
-                  <button
+                  <Button variant="ghost"
                     onClick={() => togglePanelExpand(panel.id)}
                     className="p-2 rounded-full bg-[var(--bg-primary)] hover:bg-[var(--border)] border border-[var(--border)] transition-colors"
                     aria-label={isPanelExpanded ? 'Collapse panel' : 'Expand panel'}
@@ -163,7 +164,7 @@ export function SlidingPanels({ children, allResources = [] }: SlidingPanelsProp
                         />
                       </svg>
                     )}
-                  </button>
+                  </Button>
 
                   {/* Bookmark button */}
                   {(() => {
@@ -182,7 +183,7 @@ export function SlidingPanels({ children, allResources = [] }: SlidingPanelsProp
                   })()}
 
                   {/* Close button */}
-                  <button
+                  <Button variant="ghost"
                     onClick={() => removePanel(panel.id)}
                     className="p-2 rounded-full bg-[var(--bg-primary)] hover:bg-[var(--border)] border border-[var(--border)] transition-colors"
                     aria-label="Close panel"
@@ -201,7 +202,7 @@ export function SlidingPanels({ children, allResources = [] }: SlidingPanelsProp
                         d="M6 18L18 6M6 6l12 12"
                       />
                     </svg>
-                  </button>
+                  </Button>
                 </div>
 
                 <div className={`px-6 pb-8 ${isPanelExpanded ? 'max-w-4xl mx-auto' : ''}`}>

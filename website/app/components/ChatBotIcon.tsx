@@ -3,6 +3,7 @@
 import { useState, useEffect } from 'react';
 import { ResourceMetadata } from '../lib/markdown';
 import { ChatBot } from './ChatBot';
+import { Button } from '@/components/ui/button';
 
 interface ChatBotIconProps {
   allResources?: ResourceMetadata[];
@@ -20,7 +21,7 @@ export function ChatBotIcon({ allResources = [] }: ChatBotIconProps) {
 
   return (
     <>
-      <button
+      <Button variant="ghost"
         onClick={() => setIsOpen(!isOpen)}
         className="p-1.5 rounded-full text-[var(--text-secondary)] hover:text-[var(--text-primary)] hover:bg-[var(--border-subtle)] transition-colors"
         aria-label="Open chat"
@@ -44,7 +45,7 @@ export function ChatBotIcon({ allResources = [] }: ChatBotIconProps) {
           // Placeholder during SSR to maintain layout
           <div className="w-4 h-4" />
         )}
-      </button>
+      </Button>
       {isOpen && allResources.length > 0 && (
         <ChatBot allResources={allResources} isOpen={isOpen} onClose={() => setIsOpen(false)} />
       )}

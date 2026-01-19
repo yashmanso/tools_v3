@@ -2,6 +2,7 @@
 
 import { useState, useRef, useEffect } from 'react';
 import { ResourceMetadata } from '../lib/markdown';
+import { Button } from '@/components/ui/button';
 
 interface ShareButtonProps {
   resource: ResourceMetadata;
@@ -72,7 +73,7 @@ export function ShareButton({ resource, size = 'md', className = '' }: ShareButt
 
   return (
     <div className={`relative ${className}`} ref={dropdownRef}>
-      <button
+      <Button variant="ghost"
         onClick={() => setShowMenu(!showMenu)}
         className={`${sizeClasses[size]} rounded-full transition-colors ${
           isInPanelHeader
@@ -95,12 +96,12 @@ export function ShareButton({ resource, size = 'md', className = '' }: ShareButt
             d="M8.684 13.342C8.886 12.938 9 12.482 9 12c0-.482-.114-.938-.316-1.342m0 2.684a3 3 0 110-2.684m0 2.684l6.632 3.316m-6.632-6l6.632-3.316m0 0a3 3 0 105.367-2.684 3 3 0 00-5.367 2.684zm0 9.316a3 3 0 105.368 2.684 3 3 0 00-5.368-2.684z"
           />
         </svg>
-      </button>
+      </Button>
 
       {showMenu && (
         <div className="absolute right-0 top-full mt-2 w-48 bg-white dark:bg-gray-800 rounded-xl shadow-xl border border-gray-200 dark:border-gray-700 z-50 overflow-hidden">
           <div className="p-2">
-            <button
+            <Button variant="ghost"
               onClick={handleCopyLink}
               className="w-full text-left px-3 py-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors flex items-center gap-2 text-sm text-gray-700 dark:text-gray-300"
             >
@@ -119,8 +120,8 @@ export function ShareButton({ resource, size = 'md', className = '' }: ShareButt
                   Copy link
                 </>
               )}
-            </button>
-            <button
+            </Button>
+            <Button variant="ghost"
               onClick={handleEmailShare}
               className="w-full text-left px-3 py-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors flex items-center gap-2 text-sm text-gray-700 dark:text-gray-300"
             >
@@ -128,7 +129,7 @@ export function ShareButton({ resource, size = 'md', className = '' }: ShareButt
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
               </svg>
               Share via email
-            </button>
+            </Button>
           </div>
         </div>
       )}

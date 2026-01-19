@@ -1,5 +1,7 @@
 'use client';
 
+import { Button } from '@/components/ui/button';
+
 interface FilterButtonProps {
   onClick: () => void;
   isActive?: boolean;
@@ -8,7 +10,7 @@ interface FilterButtonProps {
 
 export function FilterButton({ onClick, isActive = false, activeFilterCount = 0 }: FilterButtonProps) {
   return (
-    <button
+    <Button variant="ghost"
       onClick={onClick}
       className={`relative px-4 py-2 rounded-full border transition-colors flex items-center gap-2 ${
         isActive
@@ -26,6 +28,6 @@ export function FilterButton({ onClick, isActive = false, activeFilterCount = 0 
           {activeFilterCount}
         </span>
       )}
-    </button>
+    </Button>
   );
 }

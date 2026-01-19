@@ -7,6 +7,7 @@ import { ResourceListItem } from './ResourceListItem';
 import { ViewToggle } from './ViewToggle';
 import { FilterState } from './QuickFiltersSidebar';
 import { getWelcomeAnswers, scoreResourceByWelcomeAnswers } from '../lib/welcomeAnswers';
+import { Button } from '@/components/ui/button';
 
 interface FilteredResourceListProps {
   resources: ResourceMetadata[];
@@ -113,7 +114,7 @@ export function FilteredResourceList({
               return (
                 <div key={resource.slug} className="relative">
                   {onToolSelect && (
-                    <button
+                    <Button variant="ghost"
                       onClick={() => onToolSelect(resource)}
                       disabled={!canSelect && !isSelected}
                       className={`absolute top-4 right-4 z-10 p-2 rounded-full transition-colors ${
@@ -134,7 +135,7 @@ export function FilteredResourceList({
                           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
                         </svg>
                       )}
-                    </button>
+                    </Button>
                   )}
                   <ResourceListItem resource={resource} allResources={allResources} animationDelay={index * 50} />
                 </div>

@@ -2,6 +2,7 @@
 
 import { useState, useRef } from 'react';
 import { useTagModal } from './TagModalContext';
+import { Button } from '@/components/ui/button';
 
 interface Resource {
   slug: string;
@@ -43,7 +44,7 @@ export function TagList({ tags, allResources }: TagListProps) {
       <div className="flex flex-wrap gap-2 items-center">
         {/* Visible tags */}
         {visibleTags.map((tag, index) => (
-          <button
+          <Button variant="ghost"
             key={`${tag}-${index}`}
             type="button"
             onClick={() => handleTagClick(tag)}
@@ -51,12 +52,12 @@ export function TagList({ tags, allResources }: TagListProps) {
             title={`Click to see all pages with tag: ${tag}`}
           >
             {tag}
-          </button>
+          </Button>
         ))}
 
         {/* Expand button */}
         {hasMoreTags && (
-          <button
+          <Button variant="ghost"
             type="button"
             onClick={() => setIsExpanded(true)}
             className="flex items-center gap-1 px-3 py-1.5 text-sm text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-100 border border-gray-300 dark:border-gray-600 rounded-full hover:border-blue-500 dark:hover:border-blue-500 transition-all duration-200"
@@ -76,12 +77,12 @@ export function TagList({ tags, allResources }: TagListProps) {
                 d="M19 9l-7 7-7-7"
               />
             </svg>
-          </button>
+          </Button>
         )}
 
         {/* Collapse button when expanded */}
         {isExpanded && tags.length > INITIAL_VISIBLE_COUNT && (
-          <button
+          <Button variant="ghost"
             type="button"
             onClick={() => setIsExpanded(false)}
             className="flex items-center gap-1 px-3 py-1.5 text-sm text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-100 border border-gray-300 dark:border-gray-600 rounded-full hover:border-blue-500 dark:hover:border-blue-500 transition-all duration-200"
@@ -101,7 +102,7 @@ export function TagList({ tags, allResources }: TagListProps) {
                 d="M19 9l-7 7-7-7"
               />
             </svg>
-          </button>
+          </Button>
         )}
       </div>
     </div>

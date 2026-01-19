@@ -5,6 +5,7 @@ import { ResourceMetadata } from '../lib/markdown';
 import { PanelLink } from './PanelLink';
 import { ResourceCard } from './ResourceCard';
 import { convertMarkdownLinksToHTML } from '../lib/markdownLinks';
+import { Button } from '@/components/ui/button';
 
 interface CompareToolsProps {
   allResources: ResourceMetadata[];
@@ -91,12 +92,12 @@ export function CompareTools({ allResources }: CompareToolsProps) {
       <div className="max-w-7xl mx-auto">
         <div className="mb-6 flex items-center justify-between">
           <h2 className="text-2xl font-bold">Compare tools</h2>
-          <button
+          <Button variant="ghost"
             onClick={handleReset}
             className="px-4 py-2 text-sm border border-gray-300 dark:border-gray-600 rounded-full hover:border-blue-500 dark:hover:border-blue-500 transition-colors"
           >
             Start over
-          </button>
+          </Button>
         </div>
 
         {/* Comparison table */}
@@ -300,12 +301,12 @@ export function CompareTools({ allResources }: CompareToolsProps) {
               Selected tools ({selectedTools.length}/3)
             </h3>
             {selectedTools.length >= 2 && (
-              <button
+              <Button variant="ghost"
                 onClick={handleCompare}
                 className="px-4 py-2 bg-blue-600 text-white rounded-full hover:bg-blue-700 transition-colors text-sm"
               >
                 Compare selected tools
-              </button>
+              </Button>
             )}
           </div>
           <div className="flex flex-wrap gap-2">
@@ -317,7 +318,7 @@ export function CompareTools({ allResources }: CompareToolsProps) {
                 <span className="text-sm font-medium text-gray-900 dark:text-gray-100">
                   {tool.title}
                 </span>
-                <button
+                <Button variant="ghost"
                   onClick={() => handleRemoveTool(tool.slug)}
                   className="text-blue-600 dark:text-blue-400 hover:text-blue-800 dark:hover:text-blue-300"
                   aria-label="Remove tool"
@@ -330,7 +331,7 @@ export function CompareTools({ allResources }: CompareToolsProps) {
                       d="M6 18L18 6M6 6l12 12"
                     />
                   </svg>
-                </button>
+                </Button>
               </div>
             ))}
           </div>

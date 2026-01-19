@@ -1,5 +1,7 @@
 'use client';
 
+import { Button } from '@/components/ui/button';
+
 export function ContactForm() {
   const handleContactClick = () => {
     // Create a mailto link that opens the user's default email client
@@ -11,7 +13,7 @@ export function ContactForm() {
   };
 
   return (
-    <button
+    <Button variant="ghost"
       onClick={handleContactClick}
       className="px-4 py-2 rounded-full bg-blue-600 text-white hover:bg-blue-700 transition-colors text-sm font-medium flex items-center gap-2"
       aria-label="Contact us via email"
@@ -30,6 +32,6 @@ export function ContactForm() {
         />
       </svg>
       Contact us
-    </button>
+    </Button>
   );
 }

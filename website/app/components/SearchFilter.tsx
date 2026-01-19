@@ -3,6 +3,7 @@
 import { useState, useMemo } from 'react';
 import { ResourceMetadata } from '../lib/markdown';
 import { ResourceCard } from './ResourceCard';
+import { Button } from '@/components/ui/button';
 
 interface SearchFilterProps {
   resources: ResourceMetadata[];
@@ -78,17 +79,17 @@ export function SearchFilter({ resources, allResources, onToolSelect, selectedTo
               Filter by tags:
             </h3>
             {(searchQuery || selectedTags.size > 0) && (
-              <button
+              <Button variant="ghost"
                 onClick={clearFilters}
                 className="text-sm text-blue-600 dark:text-blue-400 hover:underline"
               >
                 Clear filters
-              </button>
+              </Button>
             )}
           </div>
           <div className="flex flex-wrap gap-2">
             {allTags.slice(0, 20).map((tag) => (
-              <button
+              <Button variant="ghost"
                 key={tag}
                 onClick={() => toggleTag(tag)}
                 className={`text-xs px-3 py-1 rounded-full transition-colors ${
@@ -98,7 +99,7 @@ export function SearchFilter({ resources, allResources, onToolSelect, selectedTo
                 }`}
               >
                 {tag}
-              </button>
+              </Button>
             ))}
           </div>
         </div>
