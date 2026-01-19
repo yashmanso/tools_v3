@@ -3,8 +3,9 @@
 import { useState, useEffect } from 'react';
 import { ResourceMetadata } from '../lib/markdown';
 import { getRecentViewsAsResources, clearRecentViews } from '../lib/recentViews';
-import { PanelLink } from './PanelLink';
+import { CardLink } from './CardLink';
 import { ScrollAnimation } from './ScrollAnimation';
+import { Button } from '@/components/ui/button';
 
 interface RecentViewsSidebarProps {
   allResources: ResourceMetadata[];
@@ -51,7 +52,7 @@ export function RecentViewsSidebar({ allResources, isOpen, onClose }: RecentView
           <h2 className="text-lg font-semibold text-gray-900 dark:text-gray-100">
             Recently viewed
           </h2>
-          <button
+          <Button variant="ghost"
             onClick={onClose}
             className="p-1 rounded-full hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors"
             aria-label="Close sidebar"
@@ -59,15 +60,15 @@ export function RecentViewsSidebar({ allResources, isOpen, onClose }: RecentView
             <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
             </svg>
-          </button>
+          </Button>
         </div>
         {recentResources.length > 0 && (
-          <button
+          <Button variant="ghost"
             onClick={clearRecentViews}
             className="text-xs text-gray-500 hover:text-gray-700 dark:hover:text-gray-300 transition-colors"
           >
             Clear history
-          </button>
+          </Button>
         )}
       </div>
 
@@ -93,9 +94,9 @@ export function RecentViewsSidebar({ allResources, isOpen, onClose }: RecentView
         ) : (
           recentResources.map((resource, index) => (
             <div key={`${resource.category}/${resource.slug}`} className="relative z-10">
-              <PanelLink
+              <CardLink
                 href={`/${resource.category}/${resource.slug}`}
-                className="block p-3 rounded-xl border border-gray-200 dark:border-gray-700 hover:border-blue-500 dark:hover:border-blue-500 transition-all hover:shadow-sm hover:no-underline group relative z-10"
+                className="p-3 rounded-xl hover:shadow-sm group relative z-10"
               >
                 <h3 className="text-sm font-semibold text-gray-900 dark:text-gray-100 mb-1 group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors">
                   {resource.title}
@@ -103,7 +104,7 @@ export function RecentViewsSidebar({ allResources, isOpen, onClose }: RecentView
                 <p className="text-xs text-gray-500 dark:text-gray-400 capitalize">
                   {resource.category}
                 </p>
-              </PanelLink>
+              </CardLink>
             </div>
           ))
         )}

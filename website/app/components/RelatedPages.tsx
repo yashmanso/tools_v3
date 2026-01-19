@@ -1,8 +1,6 @@
 'use client';
 
-import Link from 'next/link';
-import { usePanels } from './PanelContext';
-import { ContentWithHoverPreviews } from './ContentWithHoverPreviews';
+import { CardLink } from './CardLink';
 
 interface RelatedPage {
   slug: string;
@@ -18,24 +16,9 @@ interface RelatedPagesProps {
 }
 
 export function RelatedPages({ pages, currentCategory }: RelatedPagesProps) {
-  const { addPanel } = usePanels();
-
   if (pages.length === 0) {
     return null;
   }
-
-  const handleClick = (e: React.MouseEvent, page: RelatedPage) => {
-    e.preventDefault();
-    const href = `/${page.category}/${page.slug}`;
-
-    // Add panel with loading content (will be populated by PanelLink)
-    addPanel({
-      id: `${href}-${Date.now()}`,
-      title: page.title,
-      path: href,
-      content: <PanelContent path={href} />,
-    });
-  };
 
   return (
     <div className="mt-12 pt-8 border-t border-gray-200 dark:border-gray-700">
@@ -62,13 +45,10 @@ export function RelatedPages({ pages, currentCategory }: RelatedPagesProps) {
 
       <div className="grid gap-3">
         {pages.map((page) => (
-          <a
+          <CardLink
             key={`${page.category}-${page.slug}`}
             href={`/${page.category}/${page.slug}`}
-            onClick={(e) => handleClick(e, page)}
-            className="group block p-4 rounded-3xl border border-gray-200 dark:border-gray-700
-              hover:border-blue-500 dark:hover:border-blue-500 bg-white dark:bg-gray-800
-              transition-all hover:shadow-md cursor-pointer"
+            className="group p-4"
           >
             <div className="flex items-start justify-between gap-4">
               <div className="flex-1 min-w-0">
@@ -119,7 +99,7 @@ export function RelatedPages({ pages, currentCategory }: RelatedPagesProps) {
                 </svg>
               </div>
             </div>
-          </a>
+          </CardLink>
         ))}
       </div>
     </div>
@@ -135,116 +115,3 @@ function getRelevanceColor(score: number): string {
   if (score >= 2) return '#f59e0b'; // amber - somewhat relevant
   return '#9ca3af'; // gray - loosely related
 }
-
-// Component to fetch and display panel content
-function PanelContent({ path }: { path: string }) {
-  const [html, setHtml] = React.useState<string>('');
-  const [loading, setLoading] = React.useState(true);
-  const [error, setError] = React.useState<string | null>(null);
-  const { addPanel } = usePanels();
-
-  React.useEffect(() => {
-    async function fetchContent() {
-      try {
-        setLoading(true);
-        // Try multiple path formats for compatibility with different hosting configs
-        // 1. Clean URL (no extension) - works with Vercel cleanUrls: true
-        // 2. With .html extension - works with basic static hosting
-        let response = await fetch(path);
-        if (!response.ok) {
-          response = await fetch(`${path}.html`);
-        }
-        if (!response.ok) {
-          throw new Error('Page not found');
-        }
-
-        const htmlText = await response.text();
-        const parser = new DOMParser();
-        const doc = parser.parseFromString(htmlText, 'text/html');
-        const mainContent = doc.querySelector('article') || doc.querySelector('main');
-
-        if (mainContent) {
-          // Remove the PageHeader buttons (first child div with the buttons)
-          const headerDiv = mainContent.querySelector('div.mb-8');
-          if (headerDiv) {
-            // Keep only the h1 and tag list, remove the button container
-            const buttonContainer = headerDiv.querySelector('div.flex.gap-2');
-            if (buttonContainer) {
-              buttonContainer.remove();
-            }
-          }
-          setHtml(mainContent.innerHTML);
-        } else {
-          setHtml(htmlText);
-        }
-
-        setLoading(false);
-      } catch (err) {
-        setError(err instanceof Error ? err.message : 'Failed to load content');
-        setLoading(false);
-      }
-    }
-
-    fetchContent();
-  }, [path]);
-
-  // Note: Link click handling for opening in panels is now handled
-  // by ContentWithHoverPreviews component which wraps the content
-
-  if (loading) {
-    return (
-      <div className="flex items-center justify-center py-12">
-        <div className="text-sm text-[var(--text-secondary)]">Loading...</div>
-      </div>
-    );
-  }
-
-  if (error) {
-    return (
-      <div className="flex items-center justify-center py-12">
-        <div className="text-sm text-red-500">{error}</div>
-      </div>
-    );
-  }
-
-  const wrapperRef = React.useRef<HTMLDivElement>(null);
-
-  // Handle link clicks to open in panels
-  React.useEffect(() => {
-    if (!wrapperRef.current) return;
-
-    const handleLinkClick = (e: MouseEvent) => {
-      const target = e.target as HTMLElement;
-      const link = target.closest('a');
-      if (!link) return;
-
-      const href = link.getAttribute('href');
-      if (!href || href.startsWith('http') || href.startsWith('#')) return;
-
-      e.preventDefault();
-      addPanel({
-        id: `${href}-${Date.now()}`,
-        title: href.split('/').pop() || href,
-        path: href,
-        content: <PanelContent path={href} />,
-      });
-    };
-
-    wrapperRef.current.addEventListener('click', handleLinkClick);
-    return () => {
-      wrapperRef.current?.removeEventListener('click', handleLinkClick);
-    };
-  }, [html, addPanel]);
-
-  return (
-    <div ref={wrapperRef}>
-      <ContentWithHoverPreviews
-        html={html}
-        className="prose prose-neutral dark:prose-invert max-w-none prose-sm"
-      />
-    </div>
-  );
-}
-
-// Import React for the useState/useEffect
-import React from 'react';

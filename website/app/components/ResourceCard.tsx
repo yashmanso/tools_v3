@@ -2,11 +2,12 @@
 
 import { useState } from 'react';
 import { ResourceMetadata } from '../lib/markdown';
-import { PanelLink } from './PanelLink';
+import { CardLink } from './CardLink';
 import { ClickableTag } from './ClickableTag';
 import { BookmarkButton } from './BookmarkButton';
-import { convertMarkdownLinksToHTML } from '../lib/markdownLinks';
+import { formatCardOverview } from '../lib/markdownLinks';
 import { ScrollAnimation } from './ScrollAnimation';
+import { Button } from '@/components/ui/button';
 
 interface ResourceCardProps {
   resource: ResourceMetadata;
@@ -29,28 +30,26 @@ export function ResourceCard({
 }: ResourceCardProps) {
   const [isExpanded, setIsExpanded] = useState(false);
   
-  const hasOverview = resource.overview && resource.overview.length > 0;
+  const normalizedOverview = formatCardOverview(resource.overview || '');
+  const hasOverview = normalizedOverview.length > 0;
   const summaryLength = 200; // Increased from 100 to show more text
-  const shouldTruncate = hasOverview && resource.overview!.length > summaryLength;
-  const fullOverview = resource.overview || '';
+  const shouldTruncate = hasOverview && normalizedOverview.length > summaryLength;
+  const fullOverview = normalizedOverview;
   const displaySummary = shouldTruncate && !isExpanded
     ? fullOverview.substring(0, summaryLength) + '...'
     : fullOverview;
-  
-  // Convert markdown links to HTML
-  const overviewWithLinks = convertMarkdownLinksToHTML(displaySummary);
 
   return (
     <ScrollAnimation delay={animationDelay} direction="slide-up" className="h-full">
       <div className="relative group h-full flex flex-col">
-        <PanelLink
+        <CardLink
           href={`/${resource.category}/${resource.slug}`}
-          className="block p-6 pt-12 rounded-3xl border border-gray-200 dark:border-gray-700 hover:border-blue-500 dark:hover:border-blue-500 transition-all hover:shadow-md h-full flex flex-col min-h-[280px] hover:no-underline hover-lift"
+          className="p-6 pt-12 h-full flex flex-col min-h-[280px]"
         >
           {/* Button ribbon area */}
           <div className="absolute top-3 right-3 flex items-center gap-2 z-10">
             {showSelectionButton && (
-              <button
+              <Button variant="ghost"
                 onClick={(e) => {
                   e.preventDefault();
                   e.stopPropagation();
@@ -77,7 +76,7 @@ export function ResourceCard({
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
                   </svg>
                 )}
-              </button>
+              </Button>
             )}
             <BookmarkButton resource={resource} size="sm" />
           </div>
@@ -88,13 +87,11 @@ export function ResourceCard({
 
           {hasOverview && (
             <div className="mb-3 flex-grow">
-              <div 
-                className="text-sm text-gray-600 dark:text-gray-400 leading-relaxed"
-                dangerouslySetInnerHTML={{ __html: overviewWithLinks }}
-                suppressHydrationWarning
-              />
+              <p className="text-sm text-gray-600 dark:text-gray-400 leading-relaxed">
+                {displaySummary}
+              </p>
               {shouldTruncate && (
-                <button
+                <Button variant="ghost"
                   onClick={(e) => {
                     e.preventDefault();
                     e.stopPropagation();
@@ -111,7 +108,8 @@ export function ResourceCard({
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
                     </svg>
                   )}
-                </button>
+                  {isExpanded ? 'Show less' : 'Show more'}
+                </Button>
               )}
             </div>
           )}
@@ -131,7 +129,7 @@ export function ResourceCard({
               </span>
             )}
           </div>
-        </PanelLink>
+        </CardLink>
       </div>
     </ScrollAnimation>
   );

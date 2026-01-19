@@ -1,7 +1,7 @@
 'use client';
 
 import { ResourceMetadata } from '../lib/markdown';
-import { PanelLink } from './PanelLink';
+import { CardLink } from './CardLink';
 import { ClickableTag } from './ClickableTag';
 
 interface FeaturedToolCardProps {
@@ -11,9 +11,9 @@ interface FeaturedToolCardProps {
 
 export function FeaturedToolCard({ tool, allResources }: FeaturedToolCardProps) {
   return (
-    <PanelLink
+    <CardLink
       href={`/${tool.category}/${tool.slug}`}
-      className="block p-4 rounded-3xl border border-gray-200 dark:border-gray-700 hover:border-blue-500 dark:hover:border-blue-500 transition-colors hover:no-underline"
+      className="p-4"
     >
       <h3 className="font-semibold mb-2">{tool.title}</h3>
       <div className="mt-2 flex flex-wrap gap-1">
@@ -26,7 +26,7 @@ export function FeaturedToolCard({ tool, allResources }: FeaturedToolCardProps) 
           />
         ))}
       </div>
-    </PanelLink>
+    </CardLink>
   );
 }
 

@@ -1,11 +1,12 @@
 'use client';
 
 import { ResourceMetadata } from '../lib/markdown';
-import { PanelLink } from './PanelLink';
+import { CardLink } from './CardLink';
 import { ClickableTag } from './ClickableTag';
 import { BookmarkButton } from './BookmarkButton';
 import { ProgressiveDisclosure } from './ProgressiveDisclosure';
 import { ScrollAnimation } from './ScrollAnimation';
+import { formatCardOverview } from '../lib/markdownLinks';
 
 interface ResourceListItemProps {
   resource: ResourceMetadata;
@@ -17,9 +18,9 @@ export function ResourceListItem({ resource, allResources, animationDelay = 0 }:
   return (
     <ScrollAnimation delay={animationDelay} direction="slide-up">
       <div className="relative group">
-        <PanelLink
+        <CardLink
         href={`/${resource.category}/${resource.slug}`}
-        className="block p-5 pt-12 rounded-3xl border border-gray-200 dark:border-gray-700 hover:border-blue-500 dark:hover:border-blue-500 transition-all hover:shadow-md hover:no-underline"
+        className="p-5 pt-12"
       >
         {/* Button ribbon area */}
         <div className="absolute top-3 right-3 flex items-center gap-2 z-10">
@@ -33,8 +34,8 @@ export function ResourceListItem({ resource, allResources, animationDelay = 0 }:
             </h3>
             {resource.overview && (
               <ProgressiveDisclosure
-                summary={resource.overview}
-                details={resource.overview}
+                summary={formatCardOverview(resource.overview)}
+                details={formatCardOverview(resource.overview)}
                 summaryLength={200}
                 className="mb-3"
               />
@@ -56,7 +57,7 @@ export function ResourceListItem({ resource, allResources, animationDelay = 0 }:
             </div>
           </div>
         </div>
-      </PanelLink>
+      </CardLink>
       </div>
     </ScrollAnimation>
   );

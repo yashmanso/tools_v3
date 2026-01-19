@@ -1,9 +1,9 @@
 'use client';
-
-import { useState } from 'react';
 import { ResourceMetadata } from '../lib/markdown';
 import { getPrerequisitesForTool } from '../lib/prerequisites';
 import { PanelLink } from './PanelLink';
+import { Badge } from '@/components/ui/badge';
+import { Button } from '@/components/ui/button';
 
 interface ToolPrerequisitesProps {
   tool: ResourceMetadata;
@@ -11,7 +11,6 @@ interface ToolPrerequisitesProps {
 }
 
 export function ToolPrerequisites({ tool, allResources }: ToolPrerequisitesProps) {
-  const [isExpanded, setIsExpanded] = useState(false);
   const prerequisites = getPrerequisitesForTool(tool.slug);
 
   // Show section if prerequisites exist, even if the array is empty (to show notes)
@@ -51,51 +50,44 @@ export function ToolPrerequisites({ tool, allResources }: ToolPrerequisitesProps
     }) || null;
   };
 
-  const handleToggle = (e: React.MouseEvent<HTMLButtonElement>) => {
-    e.preventDefault();
-    e.stopPropagation();
-    setIsExpanded(prev => !prev);
-  };
-
   return (
-    <div className="mt-8 pt-8 border-t border-gray-200 dark:border-gray-700 relative z-10" style={{ pointerEvents: 'auto' }}>
-      <button
-        type="button"
-        onClick={handleToggle}
-        className="w-full flex items-center justify-between p-4 rounded-xl border border-gray-200 dark:border-gray-700 hover:border-blue-500 dark:hover:border-blue-500 transition-all bg-[var(--bg-secondary)] cursor-pointer relative z-20"
-        style={{ pointerEvents: 'auto', position: 'relative' }}
-        aria-expanded={isExpanded}
-        aria-label="Toggle prerequisites information"
-      >
-        <div className="flex items-center gap-3">
-          <div className="w-10 h-10 rounded-full bg-blue-100 dark:bg-blue-900/20 flex items-center justify-center">
-            <svg className="w-5 h-5 text-blue-600 dark:text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
-            </svg>
-          </div>
-          <div className="text-left">
-            <h3 className="text-lg font-semibold text-gray-900 dark:text-gray-100">
-              Before using this tool, you should know...
-            </h3>
-            <p className="text-sm text-gray-600 dark:text-gray-400">
-              {prerequisites.prerequisites.length > 0 
-                ? `${prerequisites.prerequisites.length} prerequisite${prerequisites.prerequisites.length !== 1 ? 's' : ''} • ${prerequisites.skillLevelRequired} level`
-                : `No prerequisites required • ${prerequisites.skillLevelRequired} level`
-              }
-            </p>
-          </div>
-        </div>
+    <div className="mt-8 pt-8 border-t border-gray-200 dark:border-gray-700 relative z-10">
+      <details className="group">
+        <Button
+          asChild
+          variant="outline"
+          className="w-full justify-between p-4 h-auto rounded-xl border-gray-200 dark:border-gray-700 hover:border-blue-500 dark:hover:border-blue-500 bg-[var(--bg-secondary)]"
+        >
+          <summary className="list-none cursor-pointer [&::-webkit-details-marker]:hidden flex items-center justify-between">
+            <span className="flex items-center gap-3">
+              <span className="w-10 h-10 rounded-full bg-blue-100 dark:bg-blue-900/20 flex items-center justify-center">
+                <svg className="w-5 h-5 text-blue-600 dark:text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                </svg>
+              </span>
+              <span className="text-left">
+                <span className="block text-lg font-semibold text-gray-900 dark:text-gray-100">
+                  Before using this tool, you should know...
+                </span>
+                <span className="block text-sm text-gray-600 dark:text-gray-400">
+                  {prerequisites.prerequisites.length > 0 
+                    ? `${prerequisites.prerequisites.length} prerequisite${prerequisites.prerequisites.length !== 1 ? 's' : ''} • ${prerequisites.skillLevelRequired} level`
+                    : `No prerequisites required • ${prerequisites.skillLevelRequired} level`
+                  }
+                </span>
+              </span>
+            </span>
         <svg
-          className={`w-5 h-5 text-gray-600 dark:text-gray-400 transition-transform duration-200 ${isExpanded ? 'rotate-180' : ''}`}
+          className="w-5 h-5 text-gray-600 dark:text-gray-400 transition-transform duration-200 group-open:rotate-180"
           fill="none"
           stroke="currentColor"
           viewBox="0 0 24 24"
         >
           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
         </svg>
-      </button>
+          </summary>
+        </Button>
 
-      {isExpanded && (
         <div className="mt-4 space-y-4">
           {/* Skill Level Requirement */}
           <div className={`p-4 rounded-xl border ${getSkillLevelColor(prerequisites.skillLevelRequired)}`}>
@@ -149,9 +141,9 @@ export function ToolPrerequisites({ tool, allResources }: ToolPrerequisitesProps
                           )}
                         </div>
                         {prereq.skillLevel && (
-                          <span className={`px-2 py-1 text-xs font-medium rounded-full border ${getSkillLevelColor(prereq.skillLevel)}`}>
+                          <Badge className={getSkillLevelColor(prereq.skillLevel)}>
                             {prereq.skillLevel}
-                          </span>
+                          </Badge>
                         )}
                       </div>
                       {relatedTool && (
@@ -185,7 +177,7 @@ export function ToolPrerequisites({ tool, allResources }: ToolPrerequisitesProps
             </div>
           )}
         </div>
-      )}
+      </details>
     </div>
   );
 }

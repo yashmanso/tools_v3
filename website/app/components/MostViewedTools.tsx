@@ -3,8 +3,9 @@
 import { useEffect, useState } from 'react';
 import { ResourceMetadata } from '../lib/markdown';
 import { getMostViewedResources } from '../lib/viewCounter';
-import { PanelLink } from './PanelLink';
+import { CardLink } from './CardLink';
 import { ScrollAnimation } from './ScrollAnimation';
+import { formatCardOverview } from '../lib/markdownLinks';
 
 interface MostViewedToolsProps {
   allResources: ResourceMetadata[];
@@ -56,7 +57,7 @@ export function MostViewedTools({ allResources }: MostViewedToolsProps) {
       <ScrollAnimation direction="fade" delay={0}>
         <div className="mb-6">
           <h2 className="text-2xl font-bold mb-2 text-center">
-            Most Viewed Tools
+            Most viewed tools
           </h2>
           <p className="text-sm text-gray-600 dark:text-gray-400 text-center">
             Discover the tools our community is exploring most
@@ -66,22 +67,22 @@ export function MostViewedTools({ allResources }: MostViewedToolsProps) {
         <div className="grid md:grid-cols-3 gap-6">
           {mostViewed.map((tool, index) => (
             <ScrollAnimation key={`${tool.category}/${tool.slug}`} direction="slide-up" delay={index * 100}>
-              <PanelLink
+              <CardLink
                 href={`/${tool.category}/${tool.slug}`}
-                className="block p-6 rounded-3xl border border-gray-200 dark:border-gray-700 hover:border-blue-500 dark:hover:border-blue-500 transition-all hover:no-underline bg-[var(--bg-secondary)] hover-lift h-full flex flex-col"
+                className="p-6 h-full flex flex-col"
               >
                 <h3 className="text-lg font-semibold mb-2 text-[var(--text-primary)] line-clamp-2">
                   {tool.title}
                 </h3>
                 {tool.overview && (
                   <p className="text-sm text-[var(--text-secondary)] line-clamp-3 flex-grow">
-                    {tool.overview}
+                    {formatCardOverview(tool.overview)}
                   </p>
                 )}
                 <div className="mt-4 text-blue-600 dark:text-blue-400 text-sm font-medium">
                   View tool →
                 </div>
-              </PanelLink>
+              </CardLink>
             </ScrollAnimation>
           ))}
         </div>

@@ -8,3 +8,13 @@ export function convertMarkdownLinksToHTML(text: string): string {
     return `<a href="${url}" class="text-blue-600 dark:text-blue-400 hover:underline" target="_blank" rel="noopener noreferrer">${linkText}</a>`;
   });
 }
+
+/**
+ * Normalize card preview text by stripping markdown links and bare URLs.
+ */
+export function formatCardOverview(text: string): string {
+  if (!text) return '';
+  const withoutMarkdownLinks = text.replace(/\[([^\]]+)\]\(([^)]+)\)/g, '$1');
+  const withoutUrls = withoutMarkdownLinks.replace(/https?:\/\/\S+|www\.\S+/gi, '');
+  return withoutUrls.replace(/\s+/g, ' ').trim();
+}

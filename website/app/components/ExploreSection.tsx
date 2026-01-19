@@ -10,6 +10,8 @@ import { NetworkGraph } from './NetworkGraph';
 import { WorkflowBuilder } from './WorkflowBuilder';
 import { ToolCompatibilityChecker } from './ToolCompatibilityChecker';
 import { VisualToolSelector } from './VisualToolSelector';
+import { Button } from '@/components/ui/button';
+import { CardButton } from './CardButton';
 
 interface ExploreSectionProps {
   allResources: ResourceMetadata[];
@@ -26,12 +28,12 @@ export function ExploreSection({ allResources, graphData }: ExploreSectionProps)
     return (
       <section className="text-center py-8 bg-[var(--bg-primary)]">
         <div className="mb-6">
-          <button
+          <Button variant="ghost"
             onClick={() => setMode('select')}
             className="text-sm text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-100 mb-4 inline-flex items-center gap-2"
           >
             ← Back to options
-          </button>
+          </Button>
           <h2 className="text-2xl font-bold mb-4">Browse our collection</h2>
           <p className="text-gray-600 dark:text-gray-400 mb-6 max-w-2xl mx-auto">
             Explore our comprehensive collection of tools, methods, frameworks, and resources. 
@@ -66,12 +68,12 @@ export function ExploreSection({ allResources, graphData }: ExploreSectionProps)
     return (
       <section className="py-8 bg-[var(--bg-primary)]">
         <div className="mb-6">
-          <button
+          <Button variant="ghost"
             onClick={() => setMode('select')}
             className="text-sm text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-100 mb-4 inline-flex items-center gap-2"
           >
             ← Back to options
-          </button>
+          </Button>
         </div>
         <ToolFinder allResources={allResources} />
       </section>
@@ -82,12 +84,12 @@ export function ExploreSection({ allResources, graphData }: ExploreSectionProps)
     return (
       <section className="py-8 bg-[var(--bg-primary)]">
         <div className="mb-6">
-          <button
+          <Button variant="ghost"
             onClick={() => setMode('select')}
             className="text-sm text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-100 mb-4 inline-flex items-center gap-2"
           >
             ← Back to options
-          </button>
+          </Button>
         </div>
         <CompareTools allResources={allResources} />
       </section>
@@ -98,12 +100,12 @@ export function ExploreSection({ allResources, graphData }: ExploreSectionProps)
     return (
       <section className="py-8 bg-[var(--bg-primary)]">
         <div className="mb-6">
-          <button
+          <Button variant="ghost"
             onClick={() => setMode('select')}
             className="text-sm text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-100 mb-4 inline-flex items-center gap-2"
           >
             ← Back to options
-          </button>
+          </Button>
         </div>
         <TimelineView allResources={allResources} />
       </section>
@@ -114,12 +116,12 @@ export function ExploreSection({ allResources, graphData }: ExploreSectionProps)
     return (
       <section className="py-8 bg-[var(--bg-primary)]">
         <div className="mb-6">
-          <button
+          <Button variant="ghost"
             onClick={() => setMode('select')}
             className="text-sm text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-100 mb-4 inline-flex items-center gap-2"
           >
             ← Back to options
-          </button>
+          </Button>
         </div>
         {graphData ? (
           <NetworkGraph allResources={allResources} graphData={graphData} />
@@ -136,12 +138,12 @@ export function ExploreSection({ allResources, graphData }: ExploreSectionProps)
     return (
       <section className="py-8 bg-[var(--bg-primary)]">
         <div className="mb-6">
-          <button
+          <Button variant="ghost"
             onClick={() => setMode('select')}
             className="text-sm text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-100 mb-4 inline-flex items-center gap-2"
           >
             ← Back to options
-          </button>
+          </Button>
         </div>
         <WorkflowBuilder allResources={allResources} />
       </section>
@@ -152,12 +154,12 @@ export function ExploreSection({ allResources, graphData }: ExploreSectionProps)
     return (
       <section className="py-8 bg-[var(--bg-primary)]">
         <div className="mb-6">
-          <button
+          <Button variant="ghost"
             onClick={() => setMode('select')}
             className="text-sm text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-100 mb-4 inline-flex items-center gap-2"
           >
             ← Back to options
-          </button>
+          </Button>
         </div>
         <ToolCompatibilityChecker allResources={allResources} />
       </section>
@@ -168,12 +170,12 @@ export function ExploreSection({ allResources, graphData }: ExploreSectionProps)
     return (
       <section className="py-8 bg-[var(--bg-primary)]">
         <div className="mb-6">
-          <button
+          <Button variant="ghost"
             onClick={() => setMode('select')}
             className="text-sm text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-100 mb-4 inline-flex items-center gap-2"
           >
             ← Back to options
-          </button>
+          </Button>
         </div>
         <VisualToolSelector allResources={allResources} />
       </section>
@@ -189,140 +191,132 @@ export function ExploreSection({ allResources, graphData }: ExploreSectionProps)
       
       <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6 max-w-6xl mx-auto">
         {/* Browse Option */}
-        <button
-          onClick={() => setMode('browse')}
-          className="group p-8 rounded-3xl border border-gray-200 dark:border-gray-700 hover:border-gray-300 dark:hover:border-gray-600 transition-all text-left bg-[var(--bg-secondary)]"
-        >
-          <h3 className="text-xl font-semibold mb-3 text-[var(--text-primary)]">
+        <CardButton onClick={() => setMode('browse')} className="group p-8 min-h-[240px]">
+          <div className="flex w-full flex-col h-full">
+            <h3 className="text-xl font-semibold mb-3 text-[var(--text-primary)]">
             Browse & explore
-          </h3>
-          <p className="text-sm text-[var(--text-secondary)] leading-relaxed">
+            </h3>
+            <p className="text-sm text-[var(--text-secondary)] leading-relaxed break-words">
             Explore our full collection at your own pace. Browse by category, search by keywords, 
             or filter by tags. Perfect for discovering what's available and getting inspired.
-          </p>
-          <div className="mt-4 text-blue-600 dark:text-blue-400 text-sm font-medium">
+            </p>
+            <div className="mt-auto pt-4 text-blue-600 dark:text-blue-400 text-sm font-medium">
             Start browsing →
+            </div>
           </div>
-        </button>
+        </CardButton>
 
         {/* Find Tool Option */}
-        <button
-          onClick={() => setMode('find')}
-          className="group p-8 rounded-3xl border border-gray-200 dark:border-gray-700 hover:border-gray-300 dark:hover:border-gray-600 transition-all text-left bg-[var(--bg-secondary)]"
-        >
-          <h3 className="text-xl font-semibold mb-3 text-[var(--text-primary)]">
+        <CardButton onClick={() => setMode('find')} className="group p-8 min-h-[240px]">
+          <div className="flex w-full flex-col h-full">
+            <h3 className="text-xl font-semibold mb-3 text-[var(--text-primary)]">
             Find your tool
-          </h3>
-          <p className="text-sm text-[var(--text-secondary)] leading-relaxed">
+            </h3>
+            <p className="text-sm text-[var(--text-secondary)] leading-relaxed break-words">
             Answer a few quick questions about your needs, context, and goals. 
             We'll recommend the most relevant tools tailored to your specific situation.
-          </p>
-          <div className="mt-4 text-blue-600 dark:text-blue-400 text-sm font-medium">
+            </p>
+            <div className="mt-auto pt-4 text-blue-600 dark:text-blue-400 text-sm font-medium">
             Start questionnaire →
+            </div>
           </div>
-        </button>
+        </CardButton>
 
         {/* Compare Tools Option */}
-        <button
-          onClick={() => setMode('compare')}
-          className="group p-8 rounded-3xl border border-gray-200 dark:border-gray-700 hover:border-gray-300 dark:hover:border-gray-600 transition-all text-left bg-[var(--bg-secondary)]"
-        >
-          <h3 className="text-xl font-semibold mb-3 text-[var(--text-primary)]">
+        <CardButton onClick={() => setMode('compare')} className="group p-8 min-h-[240px]">
+          <div className="flex w-full flex-col h-full">
+            <h3 className="text-xl font-semibold mb-3 text-[var(--text-primary)]">
             Compare tools
-          </h3>
-          <p className="text-sm text-[var(--text-secondary)] leading-relaxed">
+            </h3>
+            <p className="text-sm text-[var(--text-secondary)] leading-relaxed break-words">
             Select up to 3 tools and see how they differ across dimensions, features, and use cases. 
             Perfect for choosing the right tool for your needs.
-          </p>
-          <div className="mt-4 text-blue-600 dark:text-blue-400 text-sm font-medium">
+            </p>
+            <div className="mt-auto pt-4 text-blue-600 dark:text-blue-400 text-sm font-medium">
             Start comparing →
+            </div>
           </div>
-        </button>
+        </CardButton>
 
         {/* Timeline View Option */}
-        <button
-          onClick={() => setMode('timeline')}
-          className="group p-8 rounded-3xl border border-gray-200 dark:border-gray-700 hover:border-gray-300 dark:hover:border-gray-600 transition-all text-left bg-[var(--bg-secondary)]"
-        >
-          <h3 className="text-xl font-semibold mb-3 text-[var(--text-primary)]">
+        <CardButton onClick={() => setMode('timeline')} className="group p-8 min-h-[240px]">
+          <div className="flex w-full flex-col h-full">
+            <h3 className="text-xl font-semibold mb-3 text-[var(--text-primary)]">
             View by stage
-          </h3>
-          <p className="text-sm text-[var(--text-secondary)] leading-relaxed">
+            </h3>
+            <p className="text-sm text-[var(--text-secondary)] leading-relaxed break-words">
             Explore tools organized by innovation process stages, from ideation through implementation. 
             See where each tool fits in your innovation journey.
-          </p>
-          <div className="mt-4 text-blue-600 dark:text-blue-400 text-sm font-medium">
+            </p>
+            <div className="mt-auto pt-4 text-blue-600 dark:text-blue-400 text-sm font-medium">
             View timeline →
+            </div>
           </div>
-        </button>
+        </CardButton>
 
         {/* Network Graph Option */}
-        <button
-          onClick={() => setMode('network')}
-          className="group p-8 rounded-3xl border border-gray-200 dark:border-gray-700 hover:border-gray-300 dark:hover:border-gray-600 transition-all text-left bg-[var(--bg-secondary)]"
-        >
-          <h3 className="text-xl font-semibold mb-3 text-[var(--text-primary)]">
+        <CardButton onClick={() => setMode('network')} className="group p-8 min-h-[240px]">
+          <div className="flex w-full flex-col h-full">
+            <h3 className="text-xl font-semibold mb-3 text-[var(--text-primary)]">
             Network graph
-          </h3>
-          <p className="text-sm text-[var(--text-secondary)] leading-relaxed">
+            </h3>
+            <p className="text-sm text-[var(--text-secondary)] leading-relaxed break-words">
             Visualize how tools are connected through shared tags and relationships. 
             Explore the network of interconnected resources and discover unexpected connections.
-          </p>
-          <div className="mt-4 text-blue-600 dark:text-blue-400 text-sm font-medium">
+            </p>
+            <div className="mt-auto pt-4 text-blue-600 dark:text-blue-400 text-sm font-medium">
             View network →
+            </div>
           </div>
-        </button>
+        </CardButton>
 
         {/* Workflow Builder Option */}
-        <button
-          onClick={() => setMode('workflows')}
-          className="group p-8 rounded-3xl border border-gray-200 dark:border-gray-700 hover:border-gray-300 dark:hover:border-gray-600 transition-all text-left bg-[var(--bg-secondary)] hover-lift"
-        >
-          <h3 className="text-xl font-semibold mb-3 text-[var(--text-primary)]">
+        <CardButton onClick={() => setMode('workflows')} className="group p-8 min-h-[240px]">
+          <div className="flex w-full flex-col h-full">
+            <h3 className="text-xl font-semibold mb-3 text-[var(--text-primary)]">
             Build workflows
-          </h3>
-          <p className="text-sm text-[var(--text-secondary)] leading-relaxed">
+            </h3>
+            <p className="text-sm text-[var(--text-secondary)] leading-relaxed break-words">
             Create step-by-step workflows combining multiple tools. Design custom processes 
             for your sustainability projects and save them for future use.
-          </p>
-          <div className="mt-4 text-blue-600 dark:text-blue-400 text-sm font-medium">
+            </p>
+            <div className="mt-auto pt-4 text-blue-600 dark:text-blue-400 text-sm font-medium">
             Create workflow →
+            </div>
           </div>
-        </button>
+        </CardButton>
 
         {/* Compatibility Checker Option */}
-        <button
-          onClick={() => setMode('compatibility')}
-          className="group p-8 rounded-3xl border border-gray-200 dark:border-gray-700 hover:border-gray-300 dark:hover:border-gray-600 transition-all text-left bg-[var(--bg-secondary)] hover-lift"
-        >
-          <h3 className="text-xl font-semibold mb-3 text-[var(--text-primary)]">
+        <CardButton onClick={() => setMode('compatibility')} className="group p-8 min-h-[240px]">
+          <div className="flex w-full flex-col h-full">
+            <h3 className="text-xl font-semibold mb-3 text-[var(--text-primary)]">
             Check compatibility
-          </h3>
-          <p className="text-sm text-[var(--text-secondary)] leading-relaxed">
+            </h3>
+            <p className="text-sm text-[var(--text-secondary)] leading-relaxed break-words">
             See which tools work well together, identify complementary tools, and get warnings 
             about potential conflicts or overlaps in your tool selection.
-          </p>
-          <div className="mt-4 text-blue-600 dark:text-blue-400 text-sm font-medium">
+            </p>
+            <div className="mt-auto pt-4 text-blue-600 dark:text-blue-400 text-sm font-medium">
             Check compatibility →
+            </div>
           </div>
-        </button>
+        </CardButton>
 
         {/* Visual Tool Selector Option */}
-        <button
-          onClick={() => setMode('visual')}
-          className="group p-8 rounded-3xl border border-gray-200 dark:border-gray-700 hover:border-gray-300 dark:hover:border-gray-600 transition-all text-left bg-[var(--bg-secondary)] hover-lift"
-        >
-          <h3 className="text-xl font-semibold mb-3 text-[var(--text-primary)]">
+        <CardButton onClick={() => setMode('visual')} className="group p-8 min-h-[240px]">
+          <div className="flex w-full flex-col h-full">
+            <h3 className="text-xl font-semibold mb-3 text-[var(--text-primary)]">
             Visual tool selector
-          </h3>
-          <p className="text-sm text-[var(--text-secondary)] leading-relaxed">
+            </h3>
+            <p className="text-sm text-[var(--text-secondary)] leading-relaxed break-words">
             Interactive decision tree with visual filters. Answer questions about your goal, 
             audience, and timeline, then refine with sliders and toggles.
-          </p>
-          <div className="mt-4 text-blue-600 dark:text-blue-400 text-sm font-medium">
+            </p>
+            <div className="mt-auto pt-4 text-blue-600 dark:text-blue-400 text-sm font-medium">
             Start selecting →
+            </div>
           </div>
-        </button>
+        </CardButton>
       </div>
     </section>
   );

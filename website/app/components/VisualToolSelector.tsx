@@ -4,6 +4,7 @@ import { useState, useMemo } from 'react';
 import { ResourceMetadata } from '../lib/markdown';
 import { PanelLink } from './PanelLink';
 import { ResourceCard } from './ResourceCard';
+import { Button } from '@/components/ui/button';
 
 interface VisualToolSelectorProps {
   allResources: ResourceMetadata[];
@@ -180,23 +181,25 @@ export function VisualToolSelector({ allResources }: VisualToolSelectorProps) {
               </div>
               <div className="grid grid-cols-2 md:grid-cols-4 gap-3 ml-11">
                 {GOALS.map((goal) => (
-                  <button
+                  <Button variant="ghost"
                     key={goal.id}
                     onClick={() => handleGoalSelect(goal.id)}
-                    className={`p-4 rounded-xl border-2 transition-all text-left ${
+                    className={`p-4 rounded-xl border-2 transition-all text-left whitespace-normal h-auto items-start justify-start ${
                       decisionState.goal === goal.id
                         ? 'border-blue-500 bg-blue-50 dark:bg-blue-900/20'
                         : 'border-gray-200 dark:border-gray-700 hover:border-blue-300 dark:hover:border-blue-600'
                     }`}
                   >
-                    <div className="text-2xl mb-2">{goal.icon}</div>
-                    <div className="font-semibold text-sm text-gray-900 dark:text-gray-100 mb-1">
-                      {goal.label}
+                    <div className="flex flex-col items-start gap-2 w-full">
+                      <div className="text-2xl">{goal.icon}</div>
+                      <div className="font-semibold text-sm text-gray-900 dark:text-gray-100 leading-tight break-words">
+                        {goal.label}
+                      </div>
+                      <div className="text-xs text-gray-600 dark:text-gray-400 leading-snug break-words">
+                        {goal.description}
+                      </div>
                     </div>
-                    <div className="text-xs text-gray-600 dark:text-gray-400">
-                      {goal.description}
-                    </div>
-                  </button>
+                  </Button>
                 ))}
               </div>
             </div>
@@ -223,20 +226,22 @@ export function VisualToolSelector({ allResources }: VisualToolSelectorProps) {
                 </div>
                 <div className="grid grid-cols-2 md:grid-cols-4 gap-3 ml-11">
                   {AUDIENCES.map((audience) => (
-                    <button
+                    <Button variant="ghost"
                       key={audience.id}
                       onClick={() => handleAudienceSelect(audience.id)}
-                      className={`p-3 rounded-xl border-2 transition-all text-center ${
+                      className={`p-3 rounded-xl border-2 transition-all text-center whitespace-normal h-auto items-center justify-center ${
                         decisionState.audience === audience.id
                           ? 'border-blue-500 bg-blue-50 dark:bg-blue-900/20'
                           : 'border-gray-200 dark:border-gray-700 hover:border-blue-300 dark:hover:border-blue-600'
                       }`}
                     >
-                      <div className="text-xl mb-1">{audience.icon}</div>
-                      <div className="font-medium text-xs text-gray-900 dark:text-gray-100">
-                        {audience.label}
+                      <div className="flex flex-col items-center gap-1 w-full">
+                        <div className="text-xl">{audience.icon}</div>
+                        <div className="font-medium text-xs text-gray-900 dark:text-gray-100 leading-tight break-words">
+                          {audience.label}
+                        </div>
                       </div>
-                    </button>
+                    </Button>
                   ))}
                 </div>
               </div>
@@ -262,20 +267,22 @@ export function VisualToolSelector({ allResources }: VisualToolSelectorProps) {
                 </div>
                 <div className="grid grid-cols-2 md:grid-cols-4 gap-3 ml-11">
                   {TIMELINES.map((timeline) => (
-                    <button
+                    <Button variant="ghost"
                       key={timeline.id}
                       onClick={() => handleTimelineSelect(timeline.id)}
-                      className={`p-3 rounded-xl border-2 transition-all text-center ${
+                      className={`p-3 rounded-xl border-2 transition-all text-center whitespace-normal h-auto items-center justify-center ${
                         decisionState.timeline === timeline.id
                           ? 'border-blue-500 bg-blue-50 dark:bg-blue-900/20'
                           : 'border-gray-200 dark:border-gray-700 hover:border-blue-300 dark:hover:border-blue-600'
                       }`}
                     >
-                      <div className="text-xl mb-1">{timeline.icon}</div>
-                      <div className="font-medium text-xs text-gray-900 dark:text-gray-100">
-                        {timeline.label}
+                      <div className="flex flex-col items-center gap-1 w-full">
+                        <div className="text-xl">{timeline.icon}</div>
+                        <div className="font-medium text-xs text-gray-900 dark:text-gray-100 leading-tight break-words">
+                          {timeline.label}
+                        </div>
                       </div>
-                    </button>
+                    </Button>
                   ))}
                 </div>
               </div>
@@ -284,12 +291,12 @@ export function VisualToolSelector({ allResources }: VisualToolSelectorProps) {
             {/* Reset Button */}
             {(decisionState.goal || decisionState.audience || decisionState.timeline) && (
               <div className="mt-6 flex justify-end">
-                <button
+                <Button variant="ghost"
                   onClick={resetFilters}
                   className="px-4 py-2 text-sm text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-100"
                 >
                   Reset all
-                </button>
+                </Button>
               </div>
             )}
           </div>
@@ -304,12 +311,12 @@ export function VisualToolSelector({ allResources }: VisualToolSelectorProps) {
             {filteredTools.length === 0 ? (
               <div className="text-center py-12 bg-[var(--bg-secondary)] rounded-3xl border border-gray-200 dark:border-gray-700 border-dashed">
                 <p className="text-gray-500 dark:text-gray-400 mb-2">No tools match your criteria</p>
-                <button
+                <Button variant="ghost"
                   onClick={resetFilters}
                   className="text-sm text-blue-600 dark:text-blue-400 hover:underline"
                 >
                   Reset filters
-                </button>
+                </Button>
               </div>
             ) : (
               <div className="grid md:grid-cols-2 gap-4">

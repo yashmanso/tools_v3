@@ -9,6 +9,7 @@ import { ChatBotIcon } from './ChatBotIcon';
 import { FavoritesIcon } from './FavoritesIcon';
 import { RecentViewsSidebar } from './RecentViewsSidebar';
 import { ResourceMetadata } from '../lib/markdown';
+import { Button } from '@/components/ui/button';
 
 interface HeaderProps {
   allResources: ResourceMetadata[];
@@ -83,9 +84,19 @@ export function Header({ allResources }: HeaderProps) {
           >
             Articles
           </Link>
+          <Link
+            href="/submit-tool"
+            className={`px-3 py-1.5 text-sm font-medium rounded-full transition-colors ${
+              isActive('/submit-tool')
+                ? 'text-[var(--text-primary)]'
+                : 'text-[var(--text-secondary)] hover:text-[var(--text-primary)] hover:bg-[var(--border-subtle)]'
+            }`}
+          >
+            Submit a tool
+          </Link>
 
           <div className="ml-2 pl-2 border-l border-[var(--border)] flex items-center gap-2">
-            <button
+            <Button variant="ghost"
               onClick={() => setRecentViewsOpen(!recentViewsOpen)}
               className="p-1.5 rounded-full text-[var(--text-secondary)] hover:text-[var(--text-primary)] hover:bg-[var(--border-subtle)] transition-colors relative"
               aria-label="Recent views"
@@ -94,11 +105,11 @@ export function Header({ allResources }: HeaderProps) {
               <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
               </svg>
-            </button>
+            </Button>
             <FavoritesIcon allResources={allResources} />
             <ChatBotIcon allResources={allResources} />
             {mounted && (
-              <button
+              <Button variant="ghost"
                 onClick={toggleTheme}
                 className="p-1.5 rounded-full text-[var(--text-secondary)] hover:text-[var(--text-primary)] hover:bg-[var(--border-subtle)] transition-colors"
                 aria-label="Toggle theme"
@@ -112,7 +123,7 @@ export function Header({ allResources }: HeaderProps) {
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z" />
                   </svg>
                 )}
-              </button>
+              </Button>
             )}
           </div>
         </nav>

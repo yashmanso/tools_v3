@@ -4,6 +4,7 @@ import matter from 'gray-matter';
 import { remark } from 'remark';
 import html from 'remark-html';
 import gfm from 'remark-gfm';
+import { slugify } from './slugify';
 
 const contentDirectory = path.join(process.cwd(), '..');
 
@@ -80,15 +81,8 @@ function getCategory(filePath: string): string {
   return 'tools';
 }
 
-// Create URL-friendly slug
-export function slugify(text: string): string {
-  return text
-    .toLowerCase()
-    .replace(/[^\w\s-]/g, '')
-    .replace(/\s+/g, '-')
-    .replace(/--+/g, '-')
-    .trim();
-}
+// Re-export slugify for convenience
+export { slugify };
 
 // Extract tags from content
 function extractTags(content: string): string[] {
