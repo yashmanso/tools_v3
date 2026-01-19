@@ -166,6 +166,35 @@ export function ChatBot({ allResources, isOpen: externalIsOpen, onClose }: ChatB
     }
   }, [isOpen]);
 
+  // Close on ESC key or click outside
+  useEffect(() => {
+    if (!isOpen) return;
+
+    const handleEscape = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') {
+        handleClose();
+      }
+    };
+
+    const handleClickOutside = (e: MouseEvent) => {
+      const target = e.target as HTMLElement;
+      const chatBotElement = target.closest('[data-chatbot]');
+      
+      // Close if clicking outside the chatbot
+      if (!chatBotElement) {
+        handleClose();
+      }
+    };
+
+    document.addEventListener('keydown', handleEscape);
+    document.addEventListener('mousedown', handleClickOutside);
+
+    return () => {
+      document.removeEventListener('keydown', handleEscape);
+      document.removeEventListener('mousedown', handleClickOutside);
+    };
+  }, [isOpen, handleClose]);
+
   useEffect(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
   }, [messages]);
@@ -203,7 +232,12 @@ export function ChatBot({ allResources, isOpen: externalIsOpen, onClose }: ChatB
   if (!isOpen) return null;
 
   return (
-    <div className="fixed top-24 right-6 z-50 w-96 h-[600px] bg-white dark:bg-gray-800 rounded-3xl shadow-2xl flex flex-col border border-gray-200 dark:border-gray-700">
+    <div 
+      data-chatbot
+      className="fixed top-24 right-6 z-50 w-96 h-[600px] bg-white dark:bg-gray-800 rounded-3xl shadow-2xl flex flex-col border border-gray-200 dark:border-gray-700"
+      onClick={(e) => e.stopPropagation()}
+      onMouseDown={(e) => e.stopPropagation()}
+    >
           {/* Header */}
           <div className="flex items-center justify-between p-4 border-b border-gray-200 dark:border-gray-700">
             <div>

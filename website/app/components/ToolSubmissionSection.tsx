@@ -19,8 +19,7 @@ type DimensionKey =
   | 'skillDevelopment'
   | 'sourceCredibility'
   | 'prerequisites'
-  | 'collaborationLevel'
-  | 'additionalTags';
+  | 'collaborationLevel';
 
 const DIMENSIONS: Array<{ key: DimensionKey; label: string; description: string }> = [
   { key: 'resourceType', label: 'Resource type', description: 'What kind of resource is this tool?' },
@@ -35,7 +34,6 @@ const DIMENSIONS: Array<{ key: DimensionKey; label: string; description: string 
   { key: 'sourceCredibility', label: 'Source and credibility', description: 'Where does it come from and why is it credible?' },
   { key: 'prerequisites', label: 'Prerequisites and requirements', description: 'Knowledge or resources needed to use it.' },
   { key: 'collaborationLevel', label: 'Collaboration level', description: 'Individual, team, cross-team, etc.' },
-  { key: 'additionalTags', label: 'Additional tags', description: 'Any extra tags that help discovery.' },
 ];
 
 const DEFAULT_DIMENSIONS: Record<DimensionKey, { description: string; tags: string[] }> = DIMENSIONS.reduce(

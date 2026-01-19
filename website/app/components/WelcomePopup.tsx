@@ -120,6 +120,35 @@ export function WelcomePopup({ allResources }: WelcomePopupProps) {
     setIsOpen(false);
   };
 
+  // Close on ESC key or click outside
+  useEffect(() => {
+    if (!isOpen) return;
+
+    const handleEscape = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') {
+        handleSkip();
+      }
+    };
+
+    const handleClickOutside = (e: MouseEvent) => {
+      const target = e.target as HTMLElement;
+      const popupContent = target.closest('[data-welcome-popup]');
+      
+      // Close if clicking outside the popup content
+      if (!popupContent) {
+        handleSkip();
+      }
+    };
+
+    document.addEventListener('keydown', handleEscape);
+    document.addEventListener('mousedown', handleClickOutside);
+
+    return () => {
+      document.removeEventListener('keydown', handleEscape);
+      document.removeEventListener('mousedown', handleClickOutside);
+    };
+  }, [isOpen]);
+
   if (!isOpen) return null;
 
   // Intro screen
@@ -127,9 +156,12 @@ export function WelcomePopup({ allResources }: WelcomePopupProps) {
     return (
       <div className="fixed inset-0 z-[200] flex items-center justify-center bg-black bg-opacity-75 p-4">
         <div
+          data-welcome-popup
           className={`relative w-full max-w-2xl bg-white dark:bg-gray-800 rounded-3xl shadow-2xl overflow-hidden transition-all duration-300 ${
             isAnimating ? 'opacity-0 scale-95' : 'opacity-100 scale-100'
           }`}
+          onClick={(e) => e.stopPropagation()}
+          onMouseDown={(e) => e.stopPropagation()}
         >
           {/* Header */}
           <div className="p-6 border-b border-gray-200 dark:border-gray-700">
@@ -226,9 +258,12 @@ export function WelcomePopup({ allResources }: WelcomePopupProps) {
   return (
     <div className="fixed inset-0 z-[200] flex items-center justify-center bg-black bg-opacity-75 p-4">
       <div
+        data-welcome-popup
         className={`relative w-full max-w-2xl bg-white dark:bg-gray-800 rounded-3xl shadow-2xl overflow-hidden transition-all duration-300 ${
           isAnimating ? 'opacity-0 scale-95' : 'opacity-100 scale-100'
         }`}
+        onClick={(e) => e.stopPropagation()}
+        onMouseDown={(e) => e.stopPropagation()}
       >
         {/* Header */}
         <div className="p-6 border-b border-gray-200 dark:border-gray-700">

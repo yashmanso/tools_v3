@@ -19,20 +19,28 @@ export function ShareButton({ resource, size = 'md', className = '' }: ShareButt
     ? `${window.location.origin}/${resource.category}/${resource.slug}`
     : '';
 
-  // Close dropdown when clicking outside
+  // Close dropdown when clicking outside or pressing ESC
   useEffect(() => {
+    if (!showMenu) return;
+
     const handleClickOutside = (event: MouseEvent) => {
       if (dropdownRef.current && !dropdownRef.current.contains(event.target as Node)) {
         setShowMenu(false);
       }
     };
 
-    if (showMenu) {
-      document.addEventListener('mousedown', handleClickOutside);
-    }
+    const handleEscape = (event: KeyboardEvent) => {
+      if (event.key === 'Escape') {
+        setShowMenu(false);
+      }
+    };
+
+    document.addEventListener('mousedown', handleClickOutside);
+    document.addEventListener('keydown', handleEscape);
 
     return () => {
       document.removeEventListener('mousedown', handleClickOutside);
+      document.removeEventListener('keydown', handleEscape);
     };
   }, [showMenu]);
 

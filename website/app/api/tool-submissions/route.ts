@@ -28,7 +28,6 @@ const DIMENSION_LABELS: Record<string, string> = {
   sourceCredibility: 'Source and credibility',
   prerequisites: 'Prerequisites and requirements',
   collaborationLevel: 'Collaboration level',
-  additionalTags: 'Additional tags',
 };
 
 const normalizeWhitespace = (value: string) =>

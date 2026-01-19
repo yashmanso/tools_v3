@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { ResourceMetadata } from '../lib/markdown';
 import { CardLink } from './CardLink';
 import { ClickableTag } from './ClickableTag';
@@ -29,12 +29,18 @@ export function ResourceCard({
   onSelect
 }: ResourceCardProps) {
   const [isExpanded, setIsExpanded] = useState(false);
+  const [mounted, setMounted] = useState(false);
+  
+  useEffect(() => {
+    setMounted(true);
+  }, []);
   
   const normalizedOverview = formatCardOverview(resource.overview || '');
   const hasOverview = normalizedOverview.length > 0;
   const summaryLength = 200; // Increased from 100 to show more text
   const shouldTruncate = hasOverview && normalizedOverview.length > summaryLength;
   const fullOverview = normalizedOverview;
+  // Truncation logic - same on server and client (isExpanded starts as false)
   const displaySummary = shouldTruncate && !isExpanded
     ? fullOverview.substring(0, summaryLength) + '...'
     : fullOverview;
@@ -87,10 +93,10 @@ export function ResourceCard({
 
           {hasOverview && (
             <div className="mb-3 flex-grow">
-              <p className="text-sm text-gray-600 dark:text-gray-400 leading-relaxed">
+              <p className="text-sm text-gray-600 dark:text-gray-400 leading-relaxed" suppressHydrationWarning>
                 {displaySummary}
               </p>
-              {shouldTruncate && (
+              {shouldTruncate && mounted && (
                 <Button variant="ghost"
                   onClick={(e) => {
                     e.preventDefault();

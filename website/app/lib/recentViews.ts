@@ -80,7 +80,7 @@ export function getRecentViews(): RecentView[] {
 /**
  * Add a resource to recently viewed
  */
-export function addRecentView(resource: ResourceMetadata) {
+export function addRecentView(resource: Pick<ResourceMetadata, 'category' | 'slug' | 'title'>) {
   if (typeof window === 'undefined') {
     return;
   }
@@ -130,18 +130,32 @@ export function clearRecentViews() {
  */
 export function getRecentViewsAsResources(allResources: ResourceMetadata[]): ResourceMetadata[] {
   const recentViews = getRecentViews();
-  
-  const recentMap = new Map<string, RecentView>();
-  
-  recentViews.forEach(view => {
-    recentMap.set(`${view.category}/${view.slug}`, view);
+
+  if (!allResources || allResources.length === 0) {
+    return recentViews.map((view) => ({
+      category: view.category,
+      slug: view.slug,
+      title: view.title,
+      tags: [],
+      overview: '',
+    }));
+  }
+
+  const resourceMap = new Map<string, ResourceMetadata>();
+  allResources.forEach((resource) => {
+    resourceMap.set(`${resource.category}/${resource.slug}`, resource);
   });
-  
-  return allResources
-    .filter(resource => recentMap.has(`${resource.category}/${resource.slug}`))
-    .sort((a, b) => {
-      const viewA = recentViews.find(v => v.slug === a.slug && v.category === a.category);
-      const viewB = recentViews.find(v => v.slug === b.slug && v.category === b.category);
-      return (viewB?.viewedAt || 0) - (viewA?.viewedAt || 0);
-    });
+
+  return recentViews.map((view) => {
+    const key = `${view.category}/${view.slug}`;
+    return (
+      resourceMap.get(key) || {
+        category: view.category,
+        slug: view.slug,
+        title: view.title,
+        tags: [],
+        overview: '',
+      }
+    );
+  });
 }

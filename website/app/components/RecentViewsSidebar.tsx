@@ -19,9 +19,6 @@ export function RecentViewsSidebar({ allResources, isOpen, onClose }: RecentView
   useEffect(() => {
     const updateRecentViews = () => {
       const recent = getRecentViewsAsResources(allResources);
-      console.log('RecentViewsSidebar - updating with', recent.length, 'items');
-      console.log('RecentViewsSidebar - allResources count:', allResources.length);
-      console.log('RecentViewsSidebar - recent resources:', recent.map(r => `${r.category}/${r.slug}: ${r.title}`));
       setRecentResources(recent);
     };
 
@@ -35,6 +32,22 @@ export function RecentViewsSidebar({ allResources, isOpen, onClose }: RecentView
       window.removeEventListener('recent-views-changed', updateRecentViews);
     };
   }, [allResources]);
+
+  // Close on ESC key
+  useEffect(() => {
+    if (!isOpen) return;
+
+    const handleEscape = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') {
+        onClose();
+      }
+    };
+
+    document.addEventListener('keydown', handleEscape);
+    return () => {
+      document.removeEventListener('keydown', handleEscape);
+    };
+  }, [isOpen, onClose]);
 
   if (!isOpen) return null;
 

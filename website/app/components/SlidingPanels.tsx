@@ -14,7 +14,7 @@ interface SlidingPanelsProps {
 }
 
 export function SlidingPanels({ children, allResources = [] }: SlidingPanelsProps) {
-  const { panels, removePanel, expandedPanelId, togglePanelExpand } = usePanels();
+  const { panels, removePanel, expandedPanelId, togglePanelExpand, collapsePanel } = usePanels();
   const containerRef = useRef<HTMLDivElement>(null);
   
   // Helper to get resource from panel path
@@ -38,9 +38,8 @@ export function SlidingPanels({ children, allResources = [] }: SlidingPanelsProp
     }
   }, [panels.length, expandedPanelId]);
 
-  // Track page views when panels are opened
-  const trackedPanelIdsRef = useRef<Set<string>>(new Set());
-  const previousPanelCountRef = useRef<number>(0);
+  // Track page views when panels are opened or focused
+  const lastTrackedPanelIdRef = useRef<string | null>(null);
   const allResourcesRef = useRef(allResources);
   
   // Keep allResources ref up to date
@@ -49,40 +48,72 @@ export function SlidingPanels({ children, allResources = [] }: SlidingPanelsProp
   }, [allResources]);
   
   useEffect(() => {
-    // Only track when panels count increases (new panel added)
-    if (panels.length > previousPanelCountRef.current && allResourcesRef.current.length > 0) {
-      previousPanelCountRef.current = panels.length;
-      
-      // Get the most recently added panel
-      const latestPanel = panels[panels.length - 1];
-      
-      if (latestPanel && !trackedPanelIdsRef.current.has(latestPanel.id)) {
-        trackedPanelIdsRef.current.add(latestPanel.id);
-        
-        // Helper function to find resource from path
-        const pathParts = latestPanel.path.split('/').filter(Boolean);
-        if (pathParts.length >= 2) {
-          const category = pathParts[0];
-          const slug = pathParts[1];
-          const resource = allResourcesRef.current.find(r => r.category === category && r.slug === slug);
-          
-          if (resource) {
-            addRecentView(resource);
-          }
-        }
-      }
-    } else if (panels.length < previousPanelCountRef.current) {
-      // Panel was removed, update count
-      previousPanelCountRef.current = panels.length;
-      // Clear tracked IDs for removed panels
-      const currentPanelIds = new Set(panels.map(p => p.id));
-      trackedPanelIdsRef.current = new Set(
-        Array.from(trackedPanelIdsRef.current).filter(id => currentPanelIds.has(id))
-      );
+    if (panels.length === 0) {
+      lastTrackedPanelIdRef.current = null;
+      return;
     }
-  }, [panels.length]);
+
+    // Track the most recently focused/visible panel
+    const latestPanel = panels[panels.length - 1];
+    if (!latestPanel || latestPanel.id === lastTrackedPanelIdRef.current) {
+      return;
+    }
+
+    lastTrackedPanelIdRef.current = latestPanel.id;
+
+    const pathParts = latestPanel.path.split('/').filter(Boolean);
+    if (pathParts.length >= 2) {
+      const category = pathParts[0];
+      const slug = pathParts[1];
+      const resource = allResourcesRef.current.find(r => r.category === category && r.slug === slug);
+
+      if (resource) {
+        addRecentView(resource);
+      } else {
+        // Fallback: record a minimal recent view so the sidebar can still show it
+        addRecentView({
+          category,
+          slug,
+          title: latestPanel.title || slug,
+        });
+      }
+    }
+  }, [panels]);
 
   const isExpanded = expandedPanelId !== null;
+
+  // Close expanded panel on ESC key or click outside
+  useEffect(() => {
+    if (!isExpanded) return;
+
+    const handleEscape = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') {
+        collapsePanel();
+      }
+    };
+
+    const handleClickOutside = (e: MouseEvent) => {
+      // Only close if clicking outside the expanded panel
+      const target = e.target as HTMLElement;
+      const expandedPanelElement = containerRef.current?.querySelector(`[data-panel-id="${expandedPanelId}"]`);
+      
+      if (expandedPanelElement && !expandedPanelElement.contains(target)) {
+        // Check if click is not on a button or interactive element
+        const isInteractive = target.closest('button, a, input, textarea, select');
+        if (!isInteractive) {
+          collapsePanel();
+        }
+      }
+    };
+
+    document.addEventListener('keydown', handleEscape);
+    document.addEventListener('mousedown', handleClickOutside);
+
+    return () => {
+      document.removeEventListener('keydown', handleEscape);
+      document.removeEventListener('mousedown', handleClickOutside);
+    };
+  }, [isExpanded, expandedPanelId, collapsePanel]);
 
   return (
     <div className="flex-1 flex overflow-hidden">
@@ -115,6 +146,7 @@ export function SlidingPanels({ children, allResources = [] }: SlidingPanelsProp
             return (
               <div
                 key={panel.id}
+                data-panel-id={panel.id}
                 className={`flex-shrink-0 overflow-y-auto border-r border-[var(--border)] bg-[var(--bg-secondary)] relative transition-all duration-300 ${
                   isPanelExpanded ? 'w-full' : isHidden ? 'w-0 opacity-0 overflow-hidden' : 'w-[500px]'
                 }`}
