@@ -1,9 +1,15 @@
 import type { Metadata } from 'next';
 import './globals.css';
 import { ThemeProvider } from './components/ThemeProvider';
-import { Header } from './components/Header';
+import { HeaderWrapper } from './components/HeaderWrapper';
 import { PanelProvider } from './components/PanelContext';
+import { TagModalProvider } from './components/TagModalContext';
 import { SlidingPanels } from './components/SlidingPanels';
+import { CursorAnimation } from './components/CursorAnimation';
+import { ContactForm } from './components/ContactForm';
+import { TagModal } from './components/TagModal';
+import { WelcomePopup } from './components/WelcomePopup';
+import { getAllResources } from './lib/markdown';
 
 export const metadata: Metadata = {
   title: 'Sustainability Atlas',
@@ -15,24 +21,24 @@ export default function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  const allResources = getAllResources();
+  
   return (
     <html lang="en" suppressHydrationWarning>
       <body className="antialiased">
+        <CursorAnimation />
         <ThemeProvider>
           <PanelProvider>
-            <div className="min-h-screen flex flex-col">
-              <Header />
-              <SlidingPanels>
-                <main className="flex-1 container mx-auto px-4 py-8 max-w-6xl">
+            <TagModalProvider>
+              <div className="bg-[var(--bg-primary)]" style={{ height: '100vh', overflow: 'hidden' }}>
+                <HeaderWrapper />
+                <SlidingPanels allResources={allResources}>
                   {children}
-                </main>
-              </SlidingPanels>
-              <footer className="border-t border-gray-200 dark:border-gray-700 py-6 mt-12">
-                <div className="container mx-auto px-4 text-center text-sm text-gray-600 dark:text-gray-400">
-                  Sustainability Atlas - Tools and methods for sustainable entrepreneurship and innovation
-                </div>
-              </footer>
-            </div>
+                </SlidingPanels>
+                <TagModal resources={allResources} />
+                <WelcomePopup allResources={allResources} />
+              </div>
+            </TagModalProvider>
           </PanelProvider>
         </ThemeProvider>
       </body>

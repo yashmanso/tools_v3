@@ -1,18 +1,32 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
+import type { ResourceMetadata } from '../lib/markdown';
+import { BookmarkButton } from './BookmarkButton';
+import { ShareButton } from './ShareButton';
+import { Button } from '@/components/ui/button';
 
 interface PageHeaderProps {
   title: string;
   children?: React.ReactNode;
+  resource?: ResourceMetadata;
 }
 
-export function PageHeader({ title, children }: PageHeaderProps) {
+export function PageHeader({ title, children, resource }: PageHeaderProps) {
   const [isExpanded, setIsExpanded] = useState(false);
   const router = useRouter();
 
+  // Clean up expanded state on unmount
+  useEffect(() => {
+    return () => {
+      document.documentElement.classList.remove('page-expanded');
+    };
+  }, []);
+
   const handleClose = () => {
+    // Remove expanded class before navigating
+    document.documentElement.classList.remove('page-expanded');
     // Navigate back to the category page
     router.back();
   };
@@ -36,7 +50,7 @@ export function PageHeader({ title, children }: PageHeaderProps) {
         {/* Action buttons */}
         <div className="flex gap-2 flex-shrink-0">
           {/* Expand/Collapse button */}
-          <button
+          <Button variant="ghost"
             onClick={handleToggleExpand}
             className="p-2 rounded-full bg-[var(--bg-secondary)] hover:bg-[var(--border)] border border-[var(--border)] transition-colors"
             aria-label={isExpanded ? 'Collapse page' : 'Expand page'}
@@ -73,10 +87,20 @@ export function PageHeader({ title, children }: PageHeaderProps) {
                 />
               </svg>
             )}
-          </button>
+          </Button>
 
+          {/* Bookmark button */}
+          {resource && (
+            <BookmarkButton resource={resource} size="md" className="page-header" />
+          )}
+          
+          {/* Share button */}
+          {resource && (
+            <ShareButton resource={resource} />
+          )}
+          
           {/* Close button */}
-          <button
+          <Button variant="ghost"
             onClick={handleClose}
             className="p-2 rounded-full bg-[var(--bg-secondary)] hover:bg-[var(--border)] border border-[var(--border)] transition-colors"
             aria-label="Close page"
@@ -95,7 +119,7 @@ export function PageHeader({ title, children }: PageHeaderProps) {
                 d="M6 18L18 6M6 6l12 12"
               />
             </svg>
-          </button>
+          </Button>
         </div>
       </div>
 

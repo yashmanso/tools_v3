@@ -4,51 +4,51 @@ The Sustainable Value Analysis Tool is designed to aid manufacturers in recogniz
 ___
 # Dimensions
 
-**Resource Type**
+**Resource type:**
 This tool provides a structured approach and visual aids to help companies identify and leverage uncaptured value.
 - Tags: #tool, #framework, #method
 
-**Objective**
+**Objective:**
 The primary goal of this resource is to map out and assess the captured and uncaptured value throughout the product life cycle to make sure that the organization is aligned with sustainable practices.
 - Tags: #map, #assess, #align
 
-**Target Audience**
+**Target audience:**
 The tool is designed for stakeholders in the manufacturing sector, including entrepreneurs and companies focused on sustainability.
 - Tags: #entrepreneurs, #practitioners, #corporations, #manufacturing
 
-**Sustainability Focus**
+**Sustainability focus:**
 It addresses all three pillars of sustainability by considering environmental, social, and economic dimensions in value analysis at the same time and in relation to each other.
 - Tags: #environmental-sustainability, #social-sustainability, #economic-sustainability
 
-**Innovation Type**
+**Innovation type:**
 The tool supports innovation in product life cycles and business models by identifying new opportunities for sustainable value creation. The tool itself is mostly designed to assess the sustainability relevance thoroughout the life cycle.
 - Tags: #product-innovation, #business-model-innovation
 
-**Entrepreneurship Stage**
+**Entrepreneurship stage:**
 This resource is applicable across various stages of entrepreneurship, particularly in the design, development, and implementation phases where sustainable value creation is crucial. Similar to other tools, the sooner the assessment is done, the better an organization can react to align within principles of sustainability.
 - Tags: #design, #development, #implementation
 
-**Scope of Relevance**
+**Scope of relevance:**
 There is no explicit reference to the scope, but the focus on the manufacturing sector signals its relevance both to local as well as global contexts.
 - Tags: #global, #local 
 
-**Methodological Approach**
+**Methodological approach:**
 The tool employs a systematic, life cycle-based approach to value analysis, which is both qualitative and strategic in nature.
 - Tags: #qualitative-research, #theoretical-frameworks
 
-**Skill Development**
+**Skill development:**
 Users of this tool will enhance their skills in systems thinking, environmental awareness, and innovative thinking for sustainable entrepreneurship.
 - Tags: #systems-thinking, #environmental-awareness, #innovative-thinking, #resource-management
 
-**Source and Credibility**
+**Source and credibility:**
 The tool is based on academic research and by researchers at the University of Cambridge and is based in the foundations of sustaunable development goals (SDGs).
 - Tags: #academic-institutions, #recognized-experts
 
-**Prerequisites and Requirements**
+**Prerequisites and requirements:**
 The tool is designed for users with at least an intermediate level of understanding of sustainability and life cycle analysis in a business context.
 - Tags: #intermediate-level, #specific-educational-background
 
-**Collaboration Level**
+**Collaboration level:**
 The tool encourages collaboration among different stakeholders involved in the product life cycle, from design to disposal.
 - Tags: #team, #cross-sector-partnerships
 

@@ -4,6 +4,11 @@ import { getRelatedPages } from '@/app/lib/graph';
 import { TagList } from '@/app/components/TagList';
 import { PageHeader } from '@/app/components/PageHeader';
 import { RelatedPages } from '@/app/components/RelatedPages';
+import { ContentWithHoverPreviews } from '@/app/components/ContentWithHoverPreviews';
+import { Breadcrumbs } from '@/app/components/Breadcrumbs';
+import { TrackPageView } from '@/app/components/TrackPageView';
+import { ToolCompatibility } from '@/app/components/ToolCompatibility';
+import { ToolPrerequisites } from '@/app/components/ToolPrerequisites';
 
 interface PageProps {
   params: Promise<{ slug: string }>;
@@ -29,11 +34,14 @@ export default async function ToolPage({ params }: PageProps) {
 
   return (
     <article className="max-w-4xl mx-auto">
-      <PageHeader title={resource.title}>
-        <TagList tags={resource.tags} allResources={allResources} />
+      <TrackPageView resource={resource} />
+      <Breadcrumbs currentPageTitle={resource.title} />
+      <PageHeader title={resource.title} resource={resource}>
+        <TagList tags={resource.tags} allResources={allResources} resourceTitle={resource.title} />
       </PageHeader>
 
-      <div
+      <ContentWithHoverPreviews
+        html={resource.contentHtml}
         className="prose prose-gray dark:prose-invert max-w-none
           prose-headings:font-bold
           prose-h1:text-3xl prose-h1:mb-4
@@ -44,9 +52,12 @@ export default async function ToolPage({ params }: PageProps) {
           prose-li:mb-2
           prose-a:text-blue-600 dark:prose-a:text-blue-400 prose-a:no-underline hover:prose-a:underline
           prose-strong:font-semibold
-          prose-img:rounded-lg prose-img:shadow-md"
-        dangerouslySetInnerHTML={{ __html: resource.contentHtml }}
+          prose-img:rounded-3xl prose-img:shadow-md"
       />
+
+      <ToolPrerequisites tool={resource} allResources={allResources} />
+
+      <ToolCompatibility currentTool={resource} allResources={allResources} />
 
       <RelatedPages pages={relatedPages} currentCategory="tools" />
     </article>

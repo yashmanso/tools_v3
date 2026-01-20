@@ -5,10 +5,20 @@ import Link from 'next/link';
 import { useTheme } from './ThemeProvider';
 import { usePathname } from 'next/navigation';
 import { usePanels } from './PanelContext';
+import { ChatBotIcon } from './ChatBotIcon';
+import { FavoritesIcon } from './FavoritesIcon';
+import { RecentViewsSidebar } from './RecentViewsSidebar';
+import type { ResourceMetadata } from '../lib/markdown';
+import { Button } from '@/components/ui/button';
 
-export function Header() {
+interface HeaderProps {
+  allResources: ResourceMetadata[];
+}
+
+export function Header({ allResources }: HeaderProps) {
   const { theme, toggleTheme } = useTheme();
   const [mounted, setMounted] = useState(false);
+  const [recentViewsOpen, setRecentViewsOpen] = useState(false);
   const pathname = usePathname();
   const { clearPanels } = usePanels();
 
@@ -22,7 +32,7 @@ export function Header() {
   };
 
   return (
-    <header className="sticky top-0 z-50 backdrop-blur-sm bg-[var(--bg-primary)]/80 border-b border-[var(--border)]">
+    <header className="fixed top-0 left-0 right-0 z-50 backdrop-blur-md bg-[var(--bg-primary)]/90 border-b border-[var(--border)]">
       <div className="container mx-auto px-6 py-5 flex items-center justify-between max-w-5xl">
         <Link
           href="/"
@@ -32,11 +42,11 @@ export function Header() {
           Sustainability Atlas
         </Link>
 
-        <nav className="flex items-center gap-1">
+        <nav className="flex items-center gap-2 px-3 py-2 rounded-full bg-[var(--bg-secondary)] border border-[var(--border)]">
           <Link
             href="/"
             onClick={clearPanels}
-            className={`px-3 py-1.5 text-sm font-medium rounded-md transition-colors ${
+            className={`px-3 py-1.5 text-sm font-medium rounded-full transition-colors ${
               isActive('/') && pathname === '/'
                 ? 'text-[var(--text-primary)]'
                 : 'text-[var(--text-secondary)] hover:text-[var(--text-primary)] hover:bg-[var(--border-subtle)]'
@@ -46,7 +56,7 @@ export function Header() {
           </Link>
           <Link
             href="/tools"
-            className={`px-3 py-1.5 text-sm font-medium rounded-md transition-colors ${
+            className={`px-3 py-1.5 text-sm font-medium rounded-full transition-colors ${
               isActive('/tools')
                 ? 'text-[var(--text-primary)]'
                 : 'text-[var(--text-secondary)] hover:text-[var(--text-primary)] hover:bg-[var(--border-subtle)]'
@@ -56,7 +66,7 @@ export function Header() {
           </Link>
           <Link
             href="/collections"
-            className={`px-3 py-1.5 text-sm font-medium rounded-md transition-colors ${
+            className={`px-3 py-1.5 text-sm font-medium rounded-full transition-colors ${
               isActive('/collections')
                 ? 'text-[var(--text-primary)]'
                 : 'text-[var(--text-secondary)] hover:text-[var(--text-primary)] hover:bg-[var(--border-subtle)]'
@@ -66,7 +76,7 @@ export function Header() {
           </Link>
           <Link
             href="/articles"
-            className={`px-3 py-1.5 text-sm font-medium rounded-md transition-colors ${
+            className={`px-3 py-1.5 text-sm font-medium rounded-full transition-colors ${
               isActive('/articles')
                 ? 'text-[var(--text-primary)]'
                 : 'text-[var(--text-secondary)] hover:text-[var(--text-primary)] hover:bg-[var(--border-subtle)]'
@@ -74,12 +84,44 @@ export function Header() {
           >
             Articles
           </Link>
+          <Link
+            href="/submit-tool"
+            className={`px-3 py-1.5 text-sm font-medium rounded-full transition-colors ${
+              isActive('/submit-tool')
+                ? 'text-[var(--text-primary)]'
+                : 'text-[var(--text-secondary)] hover:text-[var(--text-primary)] hover:bg-[var(--border-subtle)]'
+            }`}
+          >
+            Submit a tool
+          </Link>
+          <Link
+            href="/auto-create-tool"
+            className={`px-3 py-1.5 text-sm font-medium rounded-full transition-colors ${
+              isActive('/auto-create-tool')
+                ? 'text-[var(--text-primary)]'
+                : 'text-[var(--text-secondary)] hover:text-[var(--text-primary)] hover:bg-[var(--border-subtle)]'
+            }`}
+          >
+            Auto create tool
+          </Link>
 
-          <div className="ml-2 pl-2 border-l border-[var(--border)]">
+          <div className="ml-2 pl-2 border-l border-[var(--border)] flex items-center gap-2">
+            <Button variant="ghost"
+              onClick={() => setRecentViewsOpen(!recentViewsOpen)}
+              className="p-1.5 rounded-full text-[var(--text-secondary)] hover:text-[var(--text-primary)] hover:bg-[var(--border-subtle)] transition-colors relative"
+              aria-label="Recent views"
+              title="Recent views"
+            >
+              <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+              </svg>
+            </Button>
+            <FavoritesIcon allResources={allResources} />
+            <ChatBotIcon allResources={allResources} />
             {mounted && (
-              <button
+              <Button variant="ghost"
                 onClick={toggleTheme}
-                className="p-1.5 rounded-md text-[var(--text-secondary)] hover:text-[var(--text-primary)] hover:bg-[var(--border-subtle)] transition-colors"
+                className="p-1.5 rounded-full text-[var(--text-secondary)] hover:text-[var(--text-primary)] hover:bg-[var(--border-subtle)] transition-colors"
                 aria-label="Toggle theme"
               >
                 {theme === 'light' ? (
@@ -91,11 +133,16 @@ export function Header() {
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z" />
                   </svg>
                 )}
-              </button>
+              </Button>
             )}
           </div>
         </nav>
       </div>
+      <RecentViewsSidebar 
+        allResources={allResources} 
+        isOpen={recentViewsOpen} 
+        onClose={() => setRecentViewsOpen(false)} 
+      />
     </header>
   );
 }

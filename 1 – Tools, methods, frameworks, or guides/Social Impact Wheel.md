@@ -5,51 +5,51 @@ ____
 ____
 # Dimensions
 
-**Resource Type**
+**Resource type:**
 This tool is a methodological framework that guides organizations in evaluating and aligning their strategies with sustainable goals. 
 - Tags: #framework, #tool
 
-**Objective**
+**Objective:**
 The primary goal of the Social Impact Wheel is to assess an organization's impact on the SDGs and to align innovation strategies with social responsibility.
 - Tags: #assess, #align
 
-**Target Audience**
+**Target audience:**
 The Social Impact Wheel is intended for organizations that are actively seeking to innovate in a socially responsible manner, including businesses of all sizes and sectors.
 - Tags: #entrepreneurs, #corporations, #SMEs, #startups, #policy-makers, #practitioners
 
-**Sustainability Focus**
+**Sustainability focus:**
 The tool focuses on evaluating and improving the organization's impact on all three pillars of sustainability, with a particular emphasis on social aspects as it relates to the SDGs.
 - Tags: #social-sustainability, #environmental-sustainability, #economic-sustainability, #SDGs
 
-**Innovation Type**
+**Innovation type:**
 It supports organizations in developing innovations that are socially responsible and sustainable, which can include product, process, or business model innovations.
 - Tags: #social-innovation, #business-model-innovation, #product-innovation, #process-innovation
 
-**Entrepreneurship Stage**
+**Entrepreneurship stage:**
 The Social Impact Wheel is applicable across various stages of entrepreneurship, from the initial ideation to the implementation and growth phases.
 - Tags: #ideation, #design, #development, #implementation, #growth
 
-**Scope of Relevance**
+**Scope of relevance:**
 While the tool can be used globally, it is particularly relevant for organizations aiming to address local and national sustainability challenges.
 - Tags: #global, #national, #local
 
-**Methodological Approach**
+**Methodological approach:**
 The Social Impact Wheel is based on a structured, strategic approach that incorporates existing design criteria from the SDGs.
 - Tags: #theoretical-frameworks, #strategic-planning
 
-**Skill Development**
+**Skill development:**
 Using this tool can enhance an organization's skills in systems thinking, holistic thinking, and environmental awareness, as well as their ability to innovate with a focus on sustainability.
 - Tags: #systems-thinking, #holistic-thinking, #environmental-awareness, #innovative-thinking
 
-**Source and Credibility**
+**Source and credibility:**
 The tool is developed with a foundation in sustainable development goals, ensuring its credibility for organizations looking to make a verifiable impact.
 - Tags: #recognized-experts, #practice, #research
 
-**Prerequisites and Requirements**
+**Prerequisites and requirements:**
 No specific prerequisites are required to use the Social Impact Wheel, making it accessible to a wide range of users.
 - Tags: #none
 
-**Collaboration Level**
+**Collaboration level:**
 The tool encourages collaboration within teams and across departments within an organization to ensure a comprehensive assessment of social impact.
 - Tags: #team, #community
 

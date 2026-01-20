@@ -3,8 +3,8 @@
 @tailwind utilities;
 
 :root {
-  --bg-primary: #fafafa;
-  --bg-secondary: #ffffff;
+  --bg-primary: #D2B48C;
+  --bg-secondary: #D2B48C;
   --text-primary: #171717;
   --text-secondary: #737373;
   --text-muted: #a3a3a3;
@@ -32,6 +32,7 @@
 
 html {
   scroll-behavior: smooth;
+  background-color: var(--bg-primary);
 }
 
 html,
@@ -54,19 +55,74 @@ h1, h2, h3, h4, h5, h6 {
   font-weight: 600;
 }
 
+/* Hero typography - large, bold, dramatic */
+h1 {
+  letter-spacing: -0.03em;
+  font-weight: 700;
+}
+
+/* Large display text */
+.text-display {
+  font-size: clamp(3rem, 8vw, 8rem);
+  font-weight: 800;
+  letter-spacing: -0.04em;
+  line-height: 1;
+}
+
+/* Elegant left-aligned text */
+p {
+  text-align: left;
+}
+
+/* Center text for headings and specific contexts */
+h1, h2, h3, h4, h5, h6,
+.text-center,
+.text-center p {
+  text-align: center;
+}
+
 a {
   color: var(--text-primary);
   text-decoration: none;
-  transition: color 0.2s ease;
+  transition: color 0.3s cubic-bezier(0.4, 0, 0.2, 1), transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 a:hover {
   color: var(--text-secondary);
 }
 
-/* Minimal tag style */
+/* Enhanced hover animations for cards */
+.hover-lift {
+  transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1), 
+              box-shadow 0.4s cubic-bezier(0.16, 1, 0.3, 1),
+              border-color 0.3s ease;
+}
+
+.hover-lift:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+}
+
+.dark .hover-lift:hover {
+  box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.3), 0 10px 10px -5px rgba(0, 0, 0, 0.2);
+}
+
+/* Enhanced button hover effects */
+button, .btn {
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+button:hover, .btn:hover {
+  transform: scale(1.02);
+}
+
+button:active, .btn:active {
+  transform: scale(0.98);
+}
+
+/* Minimal tag style with rounded edges */
 .tag {
-  @apply inline-flex items-center px-2.5 py-1 text-xs font-medium rounded-md
+  @apply inline-flex items-center px-2.5 py-1 text-xs font-medium rounded-full
          bg-transparent border border-gray-200 dark:border-gray-800
          text-gray-700 dark:text-gray-300
          transition-colors duration-200;
@@ -91,6 +147,7 @@ a:hover {
 
 .content-section p {
   @apply mb-4 leading-relaxed text-gray-600 dark:text-gray-400;
+  text-align: left;
 }
 
 .content-section ul {
@@ -117,6 +174,26 @@ a:hover {
   animation: fade-in 0.15s ease-out;
 }
 
+/* Blinking cursor animation */
+@keyframes blink {
+  0%, 50% {
+    opacity: 1;
+  }
+  51%, 100% {
+    opacity: 0;
+  }
+}
+
+.blinking-cursor {
+  display: inline-block;
+  width: 0.15em;
+  height: 1em;
+  margin-left: 0.1em;
+  background-color: currentColor;
+  animation: blink 1s infinite;
+  vertical-align: baseline;
+}
+
 /* Page expanded mode */
 html.page-expanded header,
 html.page-expanded footer {
@@ -131,4 +208,148 @@ html.page-expanded main {
 html.page-expanded article {
   max-width: 4xl;
   margin: 0 auto;
+}
+
+/* Very rounded edges for cards and containers - matching reference site */
+.card,
+.rounded-container {
+  border-radius: 2rem;
+}
+
+/* Very rounded corners for buttons - pill-like style */
+button,
+.btn {
+  border-radius: 9999px;
+}
+
+/* Rounded edges for images */
+img {
+  border-radius: 1rem;
+}
+
+/* Border frame style for hover previews and tooltips */
+.border-frame {
+  position: relative;
+}
+
+.border-frame::before,
+.border-frame::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  width: 1px;
+  background-color: rgb(209 213 219); /* gray-300 */
+}
+
+.dark .border-frame::before,
+.dark .border-frame::after {
+  background-color: rgb(75 85 99); /* gray-600 */
+}
+
+.border-frame::before {
+  left: 0;
+}
+
+.border-frame::after {
+  right: 0;
+}
+
+/* Cursor styles - hide default cursor on desktop only */
+@media (min-width: 768px) {
+  * {
+    cursor: none !important;
+  }
+  
+  a, button, [role="button"], input, textarea, select {
+    cursor: none !important;
+  }
+}
+
+/* Show default cursor on mobile */
+@media (max-width: 767px) {
+  * {
+    cursor: auto !important;
+  }
+}
+
+@layer base {
+  :root {
+    --background: 0 0% 100%;
+    --foreground: 0 0% 3.9%;
+    --card: 0 0% 100%;
+    --card-foreground: 0 0% 3.9%;
+    --popover: 0 0% 100%;
+    --popover-foreground: 0 0% 3.9%;
+    --primary: 0 0% 9%;
+    --primary-foreground: 0 0% 98%;
+    --secondary: 0 0% 96.1%;
+    --secondary-foreground: 0 0% 9%;
+    --muted: 0 0% 96.1%;
+    --muted-foreground: 0 0% 45.1%;
+    --accent: 0 0% 96.1%;
+    --accent-foreground: 0 0% 9%;
+    --destructive: 0 84.2% 60.2%;
+    --destructive-foreground: 0 0% 98%;
+    --border: 0 0% 89.8%;
+    --input: 0 0% 89.8%;
+    --ring: 0 0% 3.9%;
+    --chart-1: 12 76% 61%;
+    --chart-2: 173 58% 39%;
+    --chart-3: 197 37% 24%;
+    --chart-4: 43 74% 66%;
+    --chart-5: 27 87% 67%;
+    --radius: 0.5rem;
+    --sidebar-background: 0 0% 98%;
+    --sidebar-foreground: 240 5.3% 26.1%;
+    --sidebar-primary: 240 5.9% 10%;
+    --sidebar-primary-foreground: 0 0% 98%;
+    --sidebar-accent: 240 4.8% 95.9%;
+    --sidebar-accent-foreground: 240 5.9% 10%;
+    --sidebar-border: 220 13% 91%;
+    --sidebar-ring: 217.2 91.2% 59.8%;
+  }
+  .dark {
+    --background: 0 0% 3.9%;
+    --foreground: 0 0% 98%;
+    --card: 0 0% 3.9%;
+    --card-foreground: 0 0% 98%;
+    --popover: 0 0% 3.9%;
+    --popover-foreground: 0 0% 98%;
+    --primary: 0 0% 98%;
+    --primary-foreground: 0 0% 9%;
+    --secondary: 0 0% 14.9%;
+    --secondary-foreground: 0 0% 98%;
+    --muted: 0 0% 14.9%;
+    --muted-foreground: 0 0% 63.9%;
+    --accent: 0 0% 14.9%;
+    --accent-foreground: 0 0% 98%;
+    --destructive: 0 62.8% 30.6%;
+    --destructive-foreground: 0 0% 98%;
+    --border: 0 0% 14.9%;
+    --input: 0 0% 14.9%;
+    --ring: 0 0% 83.1%;
+    --chart-1: 220 70% 50%;
+    --chart-2: 160 60% 45%;
+    --chart-3: 30 80% 55%;
+    --chart-4: 280 65% 60%;
+    --chart-5: 340 75% 55%;
+    --sidebar-background: 240 5.9% 10%;
+    --sidebar-foreground: 240 4.8% 95.9%;
+    --sidebar-primary: 224.3 76.3% 48%;
+    --sidebar-primary-foreground: 0 0% 100%;
+    --sidebar-accent: 240 3.7% 15.9%;
+    --sidebar-accent-foreground: 240 4.8% 95.9%;
+    --sidebar-border: 240 3.7% 15.9%;
+    --sidebar-ring: 217.2 91.2% 59.8%;
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+  body {
+    @apply bg-background text-foreground;
+  }
 }
