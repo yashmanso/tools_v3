@@ -1,9 +1,9 @@
 'use client';
 
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { createPortal } from 'react-dom';
 import { usePanels } from './PanelContext';
-import { ContentWithHoverPreviews } from './ContentWithHoverPreviews';
+import { ResourcePanelContent } from './ResourcePanelContent';
 import { useTagModal } from './TagModalContext';
 import { Button } from '@/components/ui/button';
 
@@ -16,112 +16,6 @@ interface Resource {
 
 interface TagModalProps {
   resources: Resource[];
-}
-
-// Panel content component for fetching page content (shared with PanelLink pattern)
-function PanelContent({ path }: { path: string }) {
-  const [html, setHtml] = useState<string>('');
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
-  const wrapperRef = useRef<HTMLDivElement>(null);
-  const { addPanel } = usePanels();
-
-  useEffect(() => {
-    async function fetchContent() {
-      try {
-        setLoading(true);
-        // Try multiple path formats for compatibility with different hosting configs
-        let response = await fetch(path);
-        if (!response.ok) {
-          response = await fetch(`${path}.html`);
-        }
-        if (!response.ok) {
-          throw new Error('Page not found');
-        }
-
-        const htmlText = await response.text();
-
-        // Extract just the main content from the fetched HTML
-        const parser = new DOMParser();
-        const doc = parser.parseFromString(htmlText, 'text/html');
-        const mainContent = doc.querySelector('article') || doc.querySelector('main');
-
-        if (mainContent) {
-          // Remove the PageHeader buttons (first child div with the buttons)
-          const headerDiv = mainContent.querySelector('div.mb-8');
-          if (headerDiv) {
-            // Keep only the h1 and tag list, remove the button container
-            const buttonContainer = headerDiv.querySelector('div.flex.gap-2');
-            if (buttonContainer) {
-              buttonContainer.remove();
-            }
-          }
-          setHtml(mainContent.innerHTML);
-        } else {
-          setHtml(htmlText);
-        }
-
-        setLoading(false);
-      } catch (err) {
-        setError(err instanceof Error ? err.message : 'Failed to load content');
-        setLoading(false);
-      }
-    }
-
-    fetchContent();
-  }, [path]);
-
-  // Handle link clicks to open in panels
-  useEffect(() => {
-    if (!wrapperRef.current) return;
-
-    const handleLinkClick = (e: MouseEvent) => {
-      const target = e.target as HTMLElement;
-      const link = target.closest('a');
-      if (!link) return;
-
-      const href = link.getAttribute('href');
-      if (!href || href.startsWith('http') || href.startsWith('#')) return;
-
-      e.preventDefault();
-      addPanel({
-        id: `${href}-${Date.now()}`,
-        title: href.split('/').pop() || href,
-        path: href,
-        content: <PanelContent path={href} />,
-      });
-    };
-
-    wrapperRef.current.addEventListener('click', handleLinkClick);
-    return () => {
-      wrapperRef.current?.removeEventListener('click', handleLinkClick);
-    };
-  }, [html, addPanel]);
-
-  if (loading) {
-    return (
-      <div className="flex items-center justify-center py-12">
-        <div className="text-sm text-[var(--text-secondary)]">Loading...</div>
-      </div>
-    );
-  }
-
-  if (error) {
-    return (
-      <div className="flex items-center justify-center py-12">
-        <div className="text-sm text-red-500">{error}</div>
-      </div>
-    );
-  }
-
-  return (
-    <div ref={wrapperRef}>
-      <ContentWithHoverPreviews
-        html={html}
-        className="prose prose-neutral dark:prose-invert max-w-none prose-sm"
-      />
-    </div>
-  );
 }
 
 export function TagModal({ resources }: TagModalProps) {
@@ -163,7 +57,7 @@ export function TagModal({ resources }: TagModalProps) {
       id: `${href}-${Date.now()}`,
       title: resource.title,
       path: href,
-      content: <PanelContent path={href} />,
+      content: <ResourcePanelContent path={href} />,
     });
   };
 

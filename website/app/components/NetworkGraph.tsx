@@ -1,10 +1,11 @@
 'use client';
 
-import { useState, useEffect, useRef, useMemo, useCallback } from 'react';
+import { useState, useMemo, useCallback } from 'react';
 import { GraphNode, GraphEdge } from '../lib/graph';
 import type { ResourceMetadata } from '../lib/markdown';
 import { PanelLink } from './PanelLink';
 import { usePanels } from './PanelContext';
+import { ResourcePanelContent } from './ResourcePanelContent';
 import { Button } from '@/components/ui/button';
 
 interface NetworkGraphProps {
@@ -41,106 +42,6 @@ const getNodeColor = (node: GraphNode, isSelected: boolean): string => {
   if (node.category === 'articles') return '#10b981'; // green
   return '#6b7280'; // gray
 };
-
-// PanelContent component for fetching page content
-function PanelContent({ path }: { path: string }) {
-  const [html, setHtml] = useState<string>('');
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
-  const wrapperRef = useRef<HTMLDivElement>(null);
-  const { addPanel } = usePanels();
-
-  useEffect(() => {
-    async function fetchContent() {
-      try {
-        setLoading(true);
-        let response = await fetch(path);
-        if (!response.ok) {
-          response = await fetch(`${path}.html`);
-        }
-        if (!response.ok) {
-          throw new Error('Page not found');
-        }
-
-        const htmlText = await response.text();
-        const parser = new DOMParser();
-        const doc = parser.parseFromString(htmlText, 'text/html');
-        const mainContent = doc.querySelector('article') || doc.querySelector('main');
-
-        if (mainContent) {
-          const headerDiv = mainContent.querySelector('div.mb-8');
-          if (headerDiv) {
-            const buttonContainer = headerDiv.querySelector('div.flex.gap-2');
-            if (buttonContainer) {
-              buttonContainer.remove();
-            }
-          }
-          setHtml(mainContent.innerHTML);
-        } else {
-          setHtml(htmlText);
-        }
-
-        setLoading(false);
-      } catch (err) {
-        setError(err instanceof Error ? err.message : 'Failed to load content');
-        setLoading(false);
-      }
-    }
-
-    fetchContent();
-  }, [path]);
-
-  useEffect(() => {
-    if (!wrapperRef.current) return;
-
-    const handleLinkClick = (e: MouseEvent) => {
-      const target = e.target as HTMLElement;
-      const link = target.closest('a');
-      if (!link) return;
-
-      const href = link.getAttribute('href');
-      if (!href || href.startsWith('http') || href.startsWith('#')) return;
-
-      e.preventDefault();
-      addPanel({
-        id: `${href}-${Date.now()}`,
-        title: href.split('/').pop() || href,
-        path: href,
-        content: <PanelContent path={href} />,
-      });
-    };
-
-    wrapperRef.current.addEventListener('click', handleLinkClick);
-    return () => {
-      wrapperRef.current?.removeEventListener('click', handleLinkClick);
-    };
-  }, [html, addPanel]);
-
-  if (loading) {
-    return (
-      <div className="flex items-center justify-center py-12">
-        <div className="text-sm text-[var(--text-secondary)]">Loading...</div>
-      </div>
-    );
-  }
-
-  if (error) {
-    return (
-      <div className="flex items-center justify-center py-12">
-        <div className="text-sm text-red-500">{error}</div>
-      </div>
-    );
-  }
-
-  return (
-    <div ref={wrapperRef}>
-      <div
-        className="prose prose-neutral dark:prose-invert max-w-none prose-sm"
-        dangerouslySetInnerHTML={{ __html: html }}
-      />
-    </div>
-  );
-}
 
 export function NetworkGraph({ allResources, graphData }: NetworkGraphProps) {
   const { addPanel } = usePanels();
@@ -539,7 +440,7 @@ export function NetworkGraph({ allResources, graphData }: NetworkGraphProps) {
           id: `${href}-${Date.now()}-${Math.random()}`,
           title: node.title,
           path: href,
-          content: <PanelContent path={href} />,
+          content: <ResourcePanelContent path={href} />,
         });
       }
     });

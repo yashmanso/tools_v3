@@ -33,7 +33,7 @@ export default function RootLayout({
               <div className="bg-[var(--bg-primary)]" style={{ height: '100vh', overflow: 'hidden' }}>
                 <HeaderWrapper />
                 <SlidingPanels allResources={allResources}>
-                  {children}
+                    {children}
                 </SlidingPanels>
                 <TagModal resources={allResources} />
                 <WelcomePopup allResources={allResources} />
