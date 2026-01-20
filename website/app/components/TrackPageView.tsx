@@ -1,7 +1,7 @@
 'use client';
 
 import { useEffect } from 'react';
-import { ResourceMetadata } from '../lib/markdown';
+import type { ResourceMetadata } from '../lib/markdown';
 import { addRecentView } from '../lib/recentViews';
 import { incrementViewCount } from '../lib/viewCounter';
 

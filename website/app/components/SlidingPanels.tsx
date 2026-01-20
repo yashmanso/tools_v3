@@ -2,7 +2,7 @@
 
 import { useEffect, useRef } from 'react';
 import { usePanels } from './PanelContext';
-import { ResourceMetadata } from '../lib/markdown';
+import type { ResourceMetadata } from '../lib/markdown';
 import { BookmarkButton } from './BookmarkButton';
 import { ShareButton } from './ShareButton';
 import { addRecentView } from '../lib/recentViews';
@@ -116,14 +116,21 @@ export function SlidingPanels({ children, allResources = [] }: SlidingPanelsProp
   }, [isExpanded, expandedPanelId, collapsePanel]);
 
   return (
-    <div className="flex-1 flex overflow-hidden">
+    <div 
+      className="flex overflow-hidden"
+      style={{ height: 'calc(100vh - 5rem)', marginTop: '5rem' }}
+    >
       {/* Main content area - hidden when a panel is expanded, otherwise 50% width when panels are open */}
       <div
         className={`flex-shrink-0 transition-all duration-300 ${
-          isExpanded ? 'w-0 opacity-0 overflow-hidden' : panels.length > 0 ? 'w-1/2 overflow-y-auto overscroll-contain' : 'flex-1 overflow-y-auto'
+          isExpanded ? 'w-0 opacity-0' : panels.length > 0 ? 'w-1/2' : 'flex-1'
         }`}
+        style={{ height: '100%', overflow: 'hidden' }}
       >
-        <div className="container mx-auto px-6 py-12 max-w-5xl bg-[var(--bg-primary)]">
+        <div 
+          className="container mx-auto px-6 py-12 max-w-5xl bg-[var(--bg-primary)]"
+          style={{ height: '100%', overflowY: 'auto', overscrollBehavior: 'contain' }}
+        >
           {children}
         </div>
       </div>
@@ -132,10 +139,13 @@ export function SlidingPanels({ children, allResources = [] }: SlidingPanelsProp
       {panels.length > 0 && (
         <div
           ref={containerRef}
-          className={`flex-shrink-0 overflow-x-auto overflow-y-hidden flex border-l border-[var(--border)] transition-all duration-300 ${
+          className={`flex-shrink-0 flex border-l border-[var(--border)] transition-all duration-300 ${
             isExpanded ? 'flex-1' : 'w-1/2'
           }`}
           style={{ 
+            height: '100%',
+            overflowX: 'auto',
+            overflowY: 'hidden',
             scrollSnapType: isExpanded ? 'none' : 'x mandatory'
           }}
         >
@@ -147,13 +157,14 @@ export function SlidingPanels({ children, allResources = [] }: SlidingPanelsProp
               <div
                 key={panel.id}
                 data-panel-id={panel.id}
-                className={`flex-shrink-0 overflow-y-auto border-r border-[var(--border)] bg-[var(--bg-secondary)] relative transition-all duration-300 ${
-                  isPanelExpanded ? 'w-full' : isHidden ? 'w-0 opacity-0 overflow-hidden' : 'w-[500px]'
+                className={`flex-shrink-0 border-r border-[var(--border)] bg-[var(--bg-secondary)] relative transition-all duration-300 ${
+                  isPanelExpanded ? 'w-full' : isHidden ? 'w-0 opacity-0' : 'w-[500px]'
                 }`}
                 style={{ 
+                  height: '100%',
+                  overflowY: 'auto',
                   scrollSnapAlign: isExpanded ? 'none' : 'start',
-                  overscrollBehaviorY: 'contain',
-                  overscrollBehaviorX: 'none'
+                  overscrollBehavior: 'contain'
                 }}
               >
                 {/* Panel header with expand and close buttons */}

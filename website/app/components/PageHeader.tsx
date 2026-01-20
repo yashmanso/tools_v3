@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
-import { ResourceMetadata } from '../lib/markdown';
+import type { ResourceMetadata } from '../lib/markdown';
 import { BookmarkButton } from './BookmarkButton';
 import { ShareButton } from './ShareButton';
 import { Button } from '@/components/ui/button';

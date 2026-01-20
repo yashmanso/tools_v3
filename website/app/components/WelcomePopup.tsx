@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
-import { ResourceMetadata } from '../lib/markdown';
+import type { ResourceMetadata } from '../lib/markdown';
 import { Button } from '@/components/ui/button';
 
 interface WelcomePopupProps {

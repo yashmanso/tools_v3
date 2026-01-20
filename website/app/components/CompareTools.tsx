@@ -1,7 +1,7 @@
 'use client';
 
 import { useState } from 'react';
-import { ResourceMetadata } from '../lib/markdown';
+import type { ResourceMetadata } from '../lib/markdown';
 import { PanelLink } from './PanelLink';
 import { ResourceCard } from './ResourceCard';
 import { convertMarkdownLinksToHTML } from '../lib/markdownLinks';

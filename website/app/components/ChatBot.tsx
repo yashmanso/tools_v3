@@ -2,7 +2,7 @@
 
 import { useState, useRef, useEffect } from 'react';
 import { createPortal } from 'react-dom';
-import { ResourceMetadata } from '../lib/markdown';
+import type { ResourceMetadata } from '../lib/markdown';
 import { PanelLink } from './PanelLink';
 import { convertMarkdownLinksToHTML } from '../lib/markdownLinks';
 import { Button } from '@/components/ui/button';

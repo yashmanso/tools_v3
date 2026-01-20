@@ -8,7 +8,7 @@ import { usePanels } from './PanelContext';
 import { ChatBotIcon } from './ChatBotIcon';
 import { FavoritesIcon } from './FavoritesIcon';
 import { RecentViewsSidebar } from './RecentViewsSidebar';
-import { ResourceMetadata } from '../lib/markdown';
+import type { ResourceMetadata } from '../lib/markdown';
 import { Button } from '@/components/ui/button';
 
 interface HeaderProps {

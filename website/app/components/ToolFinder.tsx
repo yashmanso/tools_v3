@@ -1,7 +1,7 @@
 'use client';
 
 import { useState } from 'react';
-import { ResourceMetadata } from '../lib/markdown';
+import type { ResourceMetadata } from '../lib/markdown';
 import { ResourceCard } from './ResourceCard';
 import Link from 'next/link';
 import { Button } from '@/components/ui/button';

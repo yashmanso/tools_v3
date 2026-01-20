@@ -1,5 +1,5 @@
 'use client';
-import { ResourceMetadata } from '../lib/markdown';
+import type { ResourceMetadata } from '../lib/markdown';
 import { getPrerequisitesForTool } from '../lib/prerequisites';
 import { PanelLink } from './PanelLink';
 import { Badge } from '@/components/ui/badge';

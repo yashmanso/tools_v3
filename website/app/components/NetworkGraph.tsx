@@ -2,7 +2,7 @@
 
 import { useState, useEffect, useRef, useMemo, useCallback } from 'react';
 import { GraphNode, GraphEdge } from '../lib/graph';
-import { ResourceMetadata } from '../lib/markdown';
+import type { ResourceMetadata } from '../lib/markdown';
 import { PanelLink } from './PanelLink';
 import { usePanels } from './PanelContext';
 import { Button } from '@/components/ui/button';

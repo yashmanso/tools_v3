@@ -3,7 +3,7 @@
 import { useState, useEffect } from 'react';
 import { getBookmarks } from '../lib/bookmarks';
 import { FavoritesModal } from './FavoritesModal';
-import { ResourceMetadata } from '../lib/markdown';
+import type { ResourceMetadata } from '../lib/markdown';
 import { Button } from '@/components/ui/button';
 
 interface FavoritesIconProps {

@@ -1,7 +1,7 @@
 'use client';
 
 import { useMemo } from 'react';
-import { ResourceMetadata } from '../lib/markdown';
+import type { ResourceMetadata } from '../lib/markdown';
 import { ResourceCard } from './ResourceCard';
 
 interface TimelineViewProps {

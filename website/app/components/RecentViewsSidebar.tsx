@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import { createPortal } from 'react-dom';
-import { ResourceMetadata } from '../lib/markdown';
+import type { ResourceMetadata } from '../lib/markdown';
 import { getRecentViewsAsResources, clearRecentViews } from '../lib/recentViews';
 import { CardLink } from './CardLink';
 import { ScrollAnimation } from './ScrollAnimation';

@@ -1,6 +1,6 @@
 'use client';
 
-import { ResourceMetadata } from '../lib/markdown';
+import type { ResourceMetadata } from '../lib/markdown';
 import { CardLink } from './CardLink';
 import { ClickableTag } from './ClickableTag';
 import { BookmarkButton } from './BookmarkButton';

@@ -2,7 +2,7 @@
 
 import { useState } from 'react';
 import Link from 'next/link';
-import { ResourceMetadata } from '../lib/markdown';
+import type { ResourceMetadata } from '../lib/markdown';
 import { ToolFinder } from './ToolFinder';
 import { CompareTools } from './CompareTools';
 import { TimelineView } from './TimelineView';

@@ -1,7 +1,7 @@
 'use client';
 
 import { useTagModal } from './TagModalContext';
-import { ResourceMetadata } from '../lib/markdown';
+import type { ResourceMetadata } from '../lib/markdown';
 import { Button } from '@/components/ui/button';
 
 interface ClickableTagProps {

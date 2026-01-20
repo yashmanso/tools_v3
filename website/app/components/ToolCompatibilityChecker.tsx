@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useMemo } from 'react';
-import { ResourceMetadata } from '../lib/markdown';
+import type { ResourceMetadata } from '../lib/markdown';
 import { analyzeCompatibility, CompatibilityResult } from '../lib/compatibility';
 import { Button } from '@/components/ui/button';
 

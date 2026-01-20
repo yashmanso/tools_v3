@@ -2,7 +2,7 @@ import { NextResponse } from 'next/server';
 import path from 'path';
 import fs from 'fs/promises';
 import { writeFile } from 'fs/promises';
-import { slugify } from '@/app/lib/markdown';
+import { slugify } from '@/app/lib/slugify';
 
 type DimensionPayload = { description: string; tags: string[] | string };
 type SubmissionPayload = {

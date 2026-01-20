@@ -1,7 +1,7 @@
 'use client';
 
 import { useEffect, useState } from 'react';
-import { ResourceMetadata } from '../lib/markdown';
+import type { ResourceMetadata } from '../lib/markdown';
 import { getMostViewedResources } from '../lib/viewCounter';
 import { CardLink } from './CardLink';
 import { ScrollAnimation } from './ScrollAnimation';

@@ -4,7 +4,7 @@ import { useState, useEffect } from 'react';
 import { createPortal } from 'react-dom';
 import { getBookmarkedResources } from '../lib/bookmarks';
 import { PanelLink } from './PanelLink';
-import { ResourceMetadata } from '../lib/markdown';
+import type { ResourceMetadata } from '../lib/markdown';
 
 interface FavoritesModalProps {
   allResources: ResourceMetadata[];

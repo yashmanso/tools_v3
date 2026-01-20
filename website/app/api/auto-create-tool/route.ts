@@ -2,7 +2,7 @@ import { NextResponse } from 'next/server';
 import path from 'path';
 import fs from 'fs/promises';
 import { writeFile } from 'fs/promises';
-import { slugify } from '@/app/lib/markdown';
+import { slugify } from '@/app/lib/slugify';
 import { parseFiles, ParsedFile } from '@/app/lib/file-parser';
 import { generateToolContent, searchPerplexity } from '@/app/lib/ai-generator';
 

@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useEffect, useMemo } from 'react';
-import { ResourceMetadata } from '../lib/markdown';
+import type { ResourceMetadata } from '../lib/markdown';
 import { Workflow, WorkflowStep, getAllWorkflows, saveWorkflow, deleteWorkflow, getWorkflowTemplates } from '../lib/workflows';
 import { PanelLink } from './PanelLink';
 import { generateWorkflowShareLink } from '../lib/workflows';

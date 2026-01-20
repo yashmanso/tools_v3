@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useMemo, useEffect } from 'react';
-import { ResourceMetadata } from '../lib/markdown';
+import type { ResourceMetadata } from '../lib/markdown';
 import { ResourceCard } from './ResourceCard';
 import { ResourceListItem } from './ResourceListItem';
 import { ViewToggle } from './ViewToggle';
