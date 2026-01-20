@@ -12,7 +12,7 @@ export function ViewToggle({ view, onViewChange }: ViewToggleProps) {
     <div className="flex items-center gap-1 p-1 rounded-full bg-gray-100 dark:bg-gray-800 border border-gray-200 dark:border-gray-700">
       <Button variant="ghost"
         onClick={() => onViewChange('grid')}
-        className={`p-2 rounded-full transition-colors ${
+        className={`p-2 rounded-full transition-colors h-9 ${
           view === 'grid'
             ? 'bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 shadow-sm'
             : 'text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300'
@@ -26,7 +26,7 @@ export function ViewToggle({ view, onViewChange }: ViewToggleProps) {
       </Button>
       <Button variant="ghost"
         onClick={() => onViewChange('list')}
-        className={`p-2 rounded-full transition-colors ${
+        className={`p-2 rounded-full transition-colors h-9 ${
           view === 'list'
             ? 'bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 shadow-sm'
             : 'text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300'
