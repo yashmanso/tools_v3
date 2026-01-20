@@ -6,7 +6,7 @@ ___
 # Dimensions
 
 **Resource type:**
-The Biomimicry Design Spiral is a step-by-step methodological framework that guides the design process, making it a valuable educational and practical tool for sustainable innovation.
+The Biomimicry Design Spiral is a step-by-step methodological framework that guides the design process as an educational and practical tool for sustainable innovation.
 - Tags: #framework, #method
 
 **Objective:**
