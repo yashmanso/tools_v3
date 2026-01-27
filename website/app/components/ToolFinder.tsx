@@ -332,13 +332,13 @@ export function ToolFinder({ allResources }: ToolFinderProps) {
             <Button variant="ghost"
               key={option.value}
               onClick={() => handleAnswer(currentQuestion.id, option.value)}
-              className={`p-4 rounded-lg border-2 text-left transition-all ${
+              className={`p-4 rounded-lg border-2 text-left transition-all h-auto whitespace-normal ${
                 answers[currentQuestion.id as keyof Answers] === option.value
                   ? 'border-blue-500 bg-blue-50 dark:bg-blue-900/20'
                   : 'border-gray-200 dark:border-gray-700 hover:border-blue-300 dark:hover:border-blue-600'
               }`}
             >
-              <div>
+              <div className="w-full">
                 <div className="font-semibold text-gray-900 dark:text-gray-100">
                   {option.label}
                 </div>

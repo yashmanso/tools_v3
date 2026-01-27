@@ -6,6 +6,7 @@ import { TypewriterTitle } from './components/TypewriterTitle';
 import { ScrollAnimation } from './components/ScrollAnimation';
 import { StaggeredText } from './components/StaggeredText';
 import { MostViewedTools } from './components/MostViewedTools';
+import { Button } from '@/components/ui/button';
 
 export default function HomePage() {
   const allResources = getAllResources();
@@ -136,6 +137,18 @@ export default function HomePage() {
       <MostViewedTools allResources={allResources} />
 
       <ExploreSection allResources={allResources} graphData={graphData} />
+
+      {/* Leave Feedback Button */}
+      <section className="mt-16 pt-12 border-t border-gray-200 dark:border-gray-700 text-center">
+        <Link href="/survey">
+          <Button className="px-8 py-6 text-base">
+            Leave feedback
+          </Button>
+        </Link>
+        <p className="text-sm text-gray-600 dark:text-gray-400 mt-4">
+          Help us improve the toolbox by sharing your experience
+        </p>
+      </section>
     </div>
   );
 }

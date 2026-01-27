@@ -11,6 +11,8 @@ import { useRouter } from 'next/navigation';
 type ProgressStep = 'idle' | 'parsing' | 'searching' | 'generating' | 'saving' | 'complete';
 type ResourceType = 'tools' | 'collections' | 'articles';
 
+const CONTACT_EMAIL = 'yashar.mansoori@chalmers.se';
+
 export default function AutoCreateToolPage() {
   const router = useRouter();
   const [resourceType, setResourceType] = useState<ResourceType>('tools');
@@ -20,6 +22,7 @@ export default function AutoCreateToolPage() {
   const [perplexityKey, setPerplexityKey] = useState('');
   const [progress, setProgress] = useState<ProgressStep>('idle');
   const [error, setError] = useState<string | null>(null);
+  const [showEmailFallback, setShowEmailFallback] = useState(false);
 
   const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const selectedFiles = Array.from(event.target.files || []);
@@ -33,6 +36,40 @@ export default function AutoCreateToolPage() {
 
   const handleRemoveFile = (index: number) => {
     setFiles(prev => prev.filter((_, i) => i !== index));
+  };
+
+  const handleSendEmail = () => {
+    const resourceTypeLabel = resourceType === 'tools' ? 'Tool' : resourceType === 'collections' ? 'Collection' : 'Article';
+    const subject = encodeURIComponent(`New ${resourceTypeLabel} Submission: ${toolName || '[Tool Name]'}`);
+    const filesList = files.length > 0 
+      ? files.map(f => `- ${f.name}`).join('\n')
+      : '(No files attached - please attach files to this email)';
+    
+    const body = encodeURIComponent(
+`Hello,
+
+I would like to submit a new ${resourceTypeLabel.toLowerCase()} to the Sustainability Atlas.
+
+Resource Type: ${resourceTypeLabel}
+Name: ${toolName || '[Please provide the name]'}
+
+Files to be included:
+${filesList}
+
+Please note: I was unable to use the automatic generation feature as I don't have the required API keys. Could you please help me create this resource page?
+
+Thank you!`
+    );
+
+    const mailtoUrl = `mailto:${CONTACT_EMAIL}?subject=${subject}&body=${body}`;
+    
+    // Try to open mail client
+    window.location.href = mailtoUrl;
+    
+    // Show fallback after a short delay (in case mailto doesn't work)
+    setTimeout(() => {
+      setShowEmailFallback(true);
+    }, 500);
   };
 
   const handleGenerate = async () => {
@@ -297,6 +334,53 @@ export default function AutoCreateToolPage() {
                     </a>
                   </p>
                 </div>
+              </div>
+
+              {/* Email alternative option */}
+              <div className="border-t border-gray-200 dark:border-gray-700 pt-4 mt-4">
+                <div className="flex items-start gap-3">
+                  <div className="flex-1">
+                    <p className="text-sm text-gray-600 dark:text-gray-400">
+                      <strong>Don't have API keys?</strong> You can send the tool information and files via email, and we'll create the page for you.
+                    </p>
+                  </div>
+                  <Button
+                    type="button"
+                    variant="outline"
+                    onClick={handleSendEmail}
+                    disabled={progress !== 'idle'}
+                    className="whitespace-nowrap"
+                  >
+                    <svg className="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
+                    </svg>
+                    Send via email
+                  </Button>
+                </div>
+                {showEmailFallback && (
+                  <div className="mt-3 p-3 bg-gray-100 dark:bg-gray-800 rounded-lg text-sm">
+                    <p className="text-gray-700 dark:text-gray-300 mb-2">
+                      If your email client didn't open, please send your files and tool information to:
+                    </p>
+                    <div className="flex items-center gap-2">
+                      <code className="px-2 py-1 bg-white dark:bg-gray-900 rounded border border-gray-300 dark:border-gray-600 text-blue-600 dark:text-blue-400 select-all">
+                        {CONTACT_EMAIL}
+                      </code>
+                      <Button
+                        type="button"
+                        variant="ghost"
+                        className="h-8 px-2"
+                        onClick={() => {
+                          navigator.clipboard.writeText(CONTACT_EMAIL);
+                        }}
+                      >
+                        <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 5H6a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2v-1M8 5a2 2 0 002 2h2a2 2 0 002-2M8 5a2 2 0 012-2h2a2 2 0 012 2m0 0h2a2 2 0 012 2v3m2 4H10m0 0l3-3m-3 3l3 3" />
+                        </svg>
+                      </Button>
+                    </div>
+                  </div>
+                )}
               </div>
             </div>
 

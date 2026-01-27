@@ -38,6 +38,7 @@ html {
 html,
 body {
   height: 100%;
+  overflow: hidden;
   overflow-wrap: break-word;
 }
 
@@ -255,23 +256,6 @@ img {
   right: 0;
 }
 
-/* Cursor styles - hide default cursor on desktop only */
-@media (min-width: 768px) {
-  * {
-    cursor: none !important;
-  }
-  
-  a, button, [role="button"], input, textarea, select {
-    cursor: none !important;
-  }
-}
-
-/* Show default cursor on mobile */
-@media (max-width: 767px) {
-  * {
-    cursor: auto !important;
-  }
-}
 
 @layer base {
   :root {

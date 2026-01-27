@@ -1,6 +1,7 @@
 'use client';
 
 import { createContext, useContext, useEffect, useState } from 'react';
+import { Toast } from './Toast';
 
 type Theme = 'light' | 'dark';
 
@@ -15,6 +16,7 @@ export function ThemeProvider({ children }: { children: React.ReactNode }) {
   // Always start with 'light' to match server render - prevents hydration mismatch
   const [theme, setTheme] = useState<Theme>('light');
   const [mounted, setMounted] = useState(false);
+  const [showToast, setShowToast] = useState(false);
 
   useEffect(() => {
     setMounted(true);
@@ -33,6 +35,11 @@ export function ThemeProvider({ children }: { children: React.ReactNode }) {
     setTheme(newTheme);
     localStorage.setItem('theme', newTheme);
     document.documentElement.classList.toggle('dark', newTheme === 'dark');
+    
+    // Show toast message when switching to dark mode
+    if (newTheme === 'dark') {
+      setShowToast(true);
+    }
   };
 
   // Always provide the context, but use 'light' as default until mounted
@@ -40,6 +47,12 @@ export function ThemeProvider({ children }: { children: React.ReactNode }) {
   return (
     <ThemeContext.Provider value={{ theme: mounted ? theme : 'light', toggleTheme }}>
       {children}
+      {showToast && (
+        <Toast
+          message="If you have any dark reader plugins enabled in your browser, please disable them to ensure dark mode functions properly."
+          onClose={() => setShowToast(false)}
+        />
+      )}
     </ThemeContext.Provider>
   );
 }

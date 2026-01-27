@@ -5,7 +5,6 @@ import { HeaderWrapper } from './components/HeaderWrapper';
 import { PanelProvider } from './components/PanelContext';
 import { TagModalProvider } from './components/TagModalContext';
 import { SlidingPanels } from './components/SlidingPanels';
-import { CursorAnimation } from './components/CursorAnimation';
 import { ContactForm } from './components/ContactForm';
 import { TagModal } from './components/TagModal';
 import { WelcomePopup } from './components/WelcomePopup';
@@ -26,7 +25,6 @@ export default function RootLayout({
   return (
     <html lang="en" suppressHydrationWarning>
       <body className="antialiased">
-        <CursorAnimation />
         <ThemeProvider>
           <PanelProvider>
             <TagModalProvider>
