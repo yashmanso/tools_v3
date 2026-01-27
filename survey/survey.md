@@ -1,0 +1,31 @@
+Part I — Questions about this toolbox
+- When you first landed on the Start Here page, how quickly and clearly did you understand the platform’s purpose? (1-5)
+- Did you immediately know how to proceed (where to click next)? / Yes / Somewhat / No
+- What would make the start page more engaging or clear? / Clearer call-to-action / Short intro video / Quick pathways (reacher, researcher, practitioner, or student) / Example journey / Other: ...
+- How easy was it to find tools, frameworks, or resources relevant to your needs? (1-5)
+- How easy was it to determine whether a tool you looked at fits your context (e.g., course, research, project)? (1-5)
+- How well did an individual tool page explain what the tool is for (e.g., ideation, problem-solving)? (1-5)
+- What determines your seeking of a tool (select all that apply) / Specific teaching module need / Research project design / Workshop facilitation / Inspiration or exploration / Other: ...
+- What is the main benefits of your use of the toolbox? (select all that apply) / Discovery of new tools / Better structure for sessions / New methods discovery / Clearer sustainable entrepreneurship and innovation (SEI)  alignment / Higher student and participant engagement / Other: ...
+- Did you encounter difficulties while navigating the toolbox? / No difficulties / Some difficulties → (If difficulties: what types? (select all that apply) / Confusing page layout / Too many clicks / Inconsistent labels / Dead or old links / Other: …)
+- Was the tagging and organization logic (categories, pathways, etc.) clear and useful? (1-5)
+- Was the overall organizational structure (headings, categories, tags, or dimensions) clear and logical? (1-5)
+- Was the search feature helpful for locating specific content? (1-5)
+- Were there resources you expected to find but did not? / No / Yes → (if no) list: … 
+- Which tools did you first learn about through this toolbox? (select all that apply)
+- Which tools from the toolbox have you used in your practice, teaching, or research? (select all that apply)
+- In which of the following contexts have you used the toolbox? (select all that apply) / Personal practice / Teaching and facilitation / Research or academic projects / Professional practice / Student projects
+- Did you make use of previous versions of the toolbox? / Not aware of earlier versions / Aware but did not use / Took a look
+- Would you be interested in providing examples or case studies of tool application? / Yes / Maybe later / No
+- One last thing: Please determine a specific purpose, visit the toolbox, select two tools, and share your experience of the process.
+
+Part II — General practices with tools/toolboxes (SEI)
+- In your work, teaching, or research, how often do you look for new tools or methods related to SEI? / Seldom / Occasionally / Actively
+- Where do you usually discover new tools or resources? (select all that apply) / Academic literature / Peer recommendations / Workshops / Online repositories or toolboxes / Social media or newsletters / Courses or conferences / Other: ...
+- When choosing a tool or framework, how important are the following? (rate each 1–5) / Clarity of purpose (1-5) / Evidence base and academic validation (1-5) / Time required to use (1-5) / Data requirements and feasibility (1-5) / Applicability to industry and other setting (1-5) / Ease of facilitation (1-5) / Fit with learning outcomes (in teaching) (1-5)
+- How do you decide whether a tool is fit for purpose? (select all that apply) / Pilot in a small session / Review academic sources / Peer  recommendations / Student or participant feedback / Personal experience / Other: ...
+- When integrating a tool, how (and how much) do you usually adapt it? (select all that apply) / Use as provided / Simplify or shorten / Combine with other methods / Contextualize / Modify visuals and language / Other: ...
+- When you use a tool, how do you determine their impact? (Specify)
+- How do you usually evaluate outcomes after applying a tool? (Specify)
+- What barriers prevent you from using certain tools? (select all that apply) / Lack of time to learn / Poor documentation / Unclear link to outcomes / Too complex / Misfit with context / Other: ...
+- Can you share an example of a tool that had significant impact on your teaching, research, or other projects?
