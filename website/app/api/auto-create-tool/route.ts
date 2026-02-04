@@ -111,6 +111,7 @@ export async function POST(request: Request) {
     const resourceType = (formData.get('resourceType')?.toString() || 'tools') as 'tools' | 'collections' | 'articles';
     const toolName = formData.get('toolName')?.toString() || '';
     const openaiKey = formData.get('openaiKey')?.toString() || '';
+    const geminiKey = formData.get('geminiKey')?.toString() || '';
     const perplexityKey = formData.get('perplexityKey')?.toString() || '';
     const files = formData.getAll('files') as File[];
 
@@ -121,16 +122,16 @@ export async function POST(request: Request) {
       );
     }
 
-    if (!openaiKey.trim()) {
+    if (!openaiKey.trim() && !geminiKey.trim() && !perplexityKey.trim()) {
       return NextResponse.json(
-        { error: 'OpenAI API key is required.' },
+        { error: 'At least one API key is required (OpenAI, Google Gemini, or Perplexity).' },
         { status: 400 }
       );
     }
 
-    if (!perplexityKey.trim()) {
+    if (files.length === 0) {
       return NextResponse.json(
-        { error: 'Perplexity API key is required.' },
+        { error: 'At least one file is required.' },
         { status: 400 }
       );
     }
@@ -161,28 +162,33 @@ export async function POST(request: Request) {
       }
     }
 
-    // Step 2: Search Perplexity
+    // Step 2: Search Perplexity (optional)
     let searchResults;
-    try {
-      let searchQuery = '';
-      if (resourceType === 'tools') {
-        searchQuery = `${normalizedTitle} sustainability tool method framework`;
-      } else if (resourceType === 'collections') {
-        searchQuery = `${normalizedTitle} sustainability toolkit collection compendium`;
-      } else {
-        searchQuery = `${normalizedTitle} sustainability academic article scientific paper research`;
+    if (perplexityKey.trim()) {
+      try {
+        let searchQuery = '';
+        if (resourceType === 'tools') {
+          searchQuery = `${normalizedTitle} sustainability tool method framework`;
+        } else if (resourceType === 'collections') {
+          searchQuery = `${normalizedTitle} sustainability toolkit collection compendium`;
+        } else {
+          searchQuery = `${normalizedTitle} sustainability academic article scientific paper research`;
+        }
+        searchResults = await searchPerplexity(searchQuery, perplexityKey);
+      } catch (error) {
+        console.error('Error searching Perplexity:', error);
+        // Continue with empty search results
+        searchResults = { content: '', sources: [] };
       }
-      searchResults = await searchPerplexity(searchQuery, perplexityKey);
-    } catch (error) {
-      console.error('Error searching Perplexity:', error);
-      // Continue with empty search results
+    } else {
+      // No Perplexity key provided, skip web search
       searchResults = { content: '', sources: [] };
     }
 
     // Step 3: Generate content with AI
     let generatedContent;
     try {
-      generatedContent = await generateToolContent(normalizedTitle, parsedFiles, searchResults, openaiKey, resourceType);
+      generatedContent = await generateToolContent(normalizedTitle, parsedFiles, searchResults, openaiKey, geminiKey, resourceType);
       
       // Validate generated content
       if (!generatedContent.overview || generatedContent.overview.trim().length < 50) {

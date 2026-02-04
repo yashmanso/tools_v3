@@ -52,8 +52,25 @@ export function ToolSubmissionSection() {
   const [dimensions, setDimensions] = useState(DEFAULT_DIMENSIONS);
   const [submitting, setSubmitting] = useState(false);
   const [status, setStatus] = useState<{ type: 'success' | 'error'; message: string } | null>(null);
+  const [activeDimensionIndex, setActiveDimensionIndex] = useState(0);
 
   const isValid = useMemo(() => title.trim().length > 0 && overview.trim().length > 0, [title, overview]);
+
+  const activeDimension = DIMENSIONS[activeDimensionIndex];
+  const isFirstDimension = activeDimensionIndex === 0;
+  const isLastDimension = activeDimensionIndex === DIMENSIONS.length - 1;
+
+  const handleNext = () => {
+    if (!isLastDimension) {
+      setActiveDimensionIndex(prev => prev + 1);
+    }
+  };
+
+  const handlePrevious = () => {
+    if (!isFirstDimension) {
+      setActiveDimensionIndex(prev => prev - 1);
+    }
+  };
 
   const handleDimensionChange = (key: DimensionKey, field: 'description', value: string) => {
     setDimensions(prev => ({
@@ -212,36 +229,70 @@ export function ToolSubmissionSection() {
           />
         </div>
 
-        <div className="space-y-4">
-          <h3 className="text-lg font-semibold text-gray-900 dark:text-gray-100">
-            Dimensions & tags
-          </h3>
-          <p className="text-sm text-gray-500 dark:text-gray-400">
+        <div className="space-y-6">
+          <div className="flex items-center justify-between">
+            <h3 className="text-lg font-semibold text-gray-900 dark:text-gray-100 text-left">
+              Dimensions & tags
+            </h3>
+            <div className="text-sm text-gray-500 dark:text-gray-400">
+              {activeDimensionIndex + 1} of {DIMENSIONS.length}
+            </div>
+          </div>
+          <p className="text-sm text-gray-500 dark:text-gray-400 text-left">
             Add short descriptions and select tags from the existing list, or add custom tags as needed.
           </p>
 
-          <div className="grid gap-4 md:grid-cols-2">
-            {DIMENSIONS.map((dimension) => (
-              <div key={dimension.key} className="space-y-3 rounded-2xl border border-gray-200 dark:border-gray-700 p-4">
-                <div>
-                  <h4 className="font-medium text-gray-900 dark:text-gray-100">
-                    {dimension.label}
-                  </h4>
-                  <p className="text-xs text-gray-500 dark:text-gray-400">{dimension.description}</p>
+          {/* Workflow view - one dimension at a time */}
+          <div className="relative">
+            {DIMENSIONS.map((dimension, index) => {
+              const isActive = index === activeDimensionIndex;
+              if (!isActive) return null;
+              
+              return (
+                <div
+                  key={dimension.key}
+                  className="space-y-4 rounded-2xl border border-gray-200 dark:border-gray-700 p-6 bg-white dark:bg-gray-800 shadow-lg"
+                >
+                  <div className="text-left">
+                    <h4 className="font-medium text-gray-900 dark:text-gray-100 text-lg mb-1 text-left">
+                      {dimension.label}
+                    </h4>
+                    <p className="text-sm text-gray-500 dark:text-gray-400 text-left">{dimension.description}</p>
+                  </div>
+                  <Textarea
+                    value={dimensions[dimension.key].description}
+                    onChange={(event) => handleDimensionChange(dimension.key, 'description', event.target.value)}
+                    placeholder="Short description"
+                    rows={3}
+                  />
+                  <TagSelector
+                    dimensionKey={dimension.key}
+                    selectedTags={dimensions[dimension.key].tags}
+                    onTagsChange={(tags) => handleTagsChange(dimension.key, tags)}
+                  />
                 </div>
-                <Textarea
-                  value={dimensions[dimension.key].description}
-                  onChange={(event) => handleDimensionChange(dimension.key, 'description', event.target.value)}
-                  placeholder="Short description"
-                  rows={3}
-                />
-                <TagSelector
-                  dimensionKey={dimension.key}
-                  selectedTags={dimensions[dimension.key].tags}
-                  onTagsChange={(tags) => handleTagsChange(dimension.key, tags)}
-                />
-              </div>
-            ))}
+              );
+            })}
+          </div>
+
+          {/* Navigation buttons */}
+          <div className="flex justify-between items-center pt-4">
+            <Button
+              type="button"
+              variant="outline"
+              onClick={handlePrevious}
+              disabled={isFirstDimension}
+            >
+              Previous
+            </Button>
+            <Button
+              type="button"
+              variant="outline"
+              onClick={handleNext}
+              disabled={isLastDimension}
+            >
+              Next
+            </Button>
           </div>
         </div>
 

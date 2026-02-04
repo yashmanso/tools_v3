@@ -13,9 +13,10 @@ interface TagSelectorProps {
   dimensionKey: string;
   selectedTags: string[];
   onTagsChange: (tags: string[]) => void;
+  disabled?: boolean;
 }
 
-export function TagSelector({ dimensionKey, selectedTags, onTagsChange }: TagSelectorProps) {
+export function TagSelector({ dimensionKey, selectedTags, onTagsChange, disabled = false }: TagSelectorProps) {
   const [customTagInput, setCustomTagInput] = useState('');
   const availableTags = TAG_GLOSSARY[dimensionKey] || [];
   const customTags = useMemo(
@@ -52,8 +53,8 @@ export function TagSelector({ dimensionKey, selectedTags, onTagsChange }: TagSel
     <div className="space-y-3">
       {/* Selected tags display */}
       {selectedTags.length > 0 && (
-        <div>
-          <Label className="text-xs text-gray-600 dark:text-gray-400 mb-2 block">
+        <div className="text-left">
+          <Label className="text-xs text-gray-600 dark:text-gray-400 mb-2 block text-left">
             Selected tags:
           </Label>
           <div className="flex flex-wrap gap-2">
@@ -85,19 +86,22 @@ export function TagSelector({ dimensionKey, selectedTags, onTagsChange }: TagSel
 
       {/* Existing tags checkboxes */}
       {availableTags.length > 0 && (
-        <div>
-          <Label className="text-xs text-gray-600 dark:text-gray-400 mb-2 block">
+        <div className="text-left">
+          <Label className="text-xs text-gray-600 dark:text-gray-400 mb-2 block text-left">
             Select from existing tags:
           </Label>
-          <div className="flex flex-wrap gap-2 max-h-32 overflow-y-auto p-2 border border-gray-200 dark:border-gray-700 rounded-lg">
+          <div className="flex flex-wrap gap-2 p-2 border border-gray-200 dark:border-gray-700 rounded-lg">
             {availableTags.map((tag) => (
               <label
                 key={tag}
-                className="flex items-center gap-2 cursor-pointer group px-2 py-1 rounded hover:bg-gray-100 dark:hover:bg-gray-800"
+                className={`flex items-center gap-2 px-2 py-1 rounded hover:bg-gray-100 dark:hover:bg-gray-800 ${
+                  disabled ? 'cursor-not-allowed opacity-50' : 'cursor-pointer'
+                }`}
               >
                 <Checkbox
                   checked={selectedTags.includes(tag)}
                   onCheckedChange={() => handleTagToggle(tag)}
+                  disabled={disabled}
                 />
                 <span className="text-sm text-gray-700 dark:text-gray-300 group-hover:text-gray-900 dark:group-hover:text-gray-100">
                   {tag.replace(/-/g, ' ')}
@@ -109,8 +113,8 @@ export function TagSelector({ dimensionKey, selectedTags, onTagsChange }: TagSel
       )}
 
       {/* Custom tags input */}
-      <div>
-        <Label className="text-xs text-gray-600 dark:text-gray-400 mb-2 block">
+      <div className="text-left">
+        <Label className="text-xs text-gray-600 dark:text-gray-400 mb-2 block text-left">
           Add custom tags:
         </Label>
         <div className="flex gap-2">
@@ -125,12 +129,13 @@ export function TagSelector({ dimensionKey, selectedTags, onTagsChange }: TagSel
             }}
             placeholder="Type custom tag and press Enter"
             className="flex-1"
+            disabled={disabled}
           />
           <Button
             type="button"
             variant="outline"
             onClick={handleAddCustomTag}
-            disabled={!customTagInput.trim()}
+            disabled={!customTagInput.trim() || disabled}
           >
             Add
           </Button>

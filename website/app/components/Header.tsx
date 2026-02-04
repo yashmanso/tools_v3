@@ -86,6 +86,7 @@ export function Header({ allResources }: HeaderProps) {
           </Link>
           <Link
             href="/submit-tool"
+            onClick={clearPanels}
             className={`px-3 py-1.5 text-sm font-medium rounded-full transition-colors ${
               isActive('/submit-tool')
                 ? 'text-[var(--text-primary)]'
@@ -96,6 +97,7 @@ export function Header({ allResources }: HeaderProps) {
           </Link>
           <Link
             href="/auto-create-tool"
+            onClick={clearPanels}
             className={`px-3 py-1.5 text-sm font-medium rounded-full transition-colors ${
               isActive('/auto-create-tool')
                 ? 'text-[var(--text-primary)]'

@@ -3,8 +3,8 @@
 @tailwind utilities;
 
 :root {
-  --bg-primary: #D2B48C;
-  --bg-secondary: #D2B48C;
+  --bg-primary: #ffffff;
+  --bg-secondary: #ffffff;
   --text-primary: #171717;
   --text-secondary: #737373;
   --text-muted: #a3a3a3;

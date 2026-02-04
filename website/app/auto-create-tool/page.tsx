@@ -20,6 +20,7 @@ export default function AutoCreateToolPage() {
   const [files, setFiles] = useState<File[]>([]);
   const [openaiKey, setOpenaiKey] = useState('');
   const [perplexityKey, setPerplexityKey] = useState('');
+  const [geminiKey, setGeminiKey] = useState('');
   const [progress, setProgress] = useState<ProgressStep>('idle');
   const [error, setError] = useState<string | null>(null);
   const [showEmailFallback, setShowEmailFallback] = useState(false);
@@ -78,13 +79,13 @@ Thank you!`
       return;
     }
 
-    if (!openaiKey.trim()) {
-      setError('OpenAI API key is required');
+    if (!openaiKey.trim() && !geminiKey.trim() && !perplexityKey.trim()) {
+      setError('At least one API key is required (OpenAI, Google Gemini, or Perplexity)');
       return;
     }
 
-    if (!perplexityKey.trim()) {
-      setError('Perplexity API key is required');
+    if (files.length === 0) {
+      setError('At least one file is required');
       return;
     }
 
@@ -96,6 +97,7 @@ Thank you!`
       formData.append('resourceType', resourceType);
       formData.append('toolName', toolName);
       formData.append('openaiKey', openaiKey);
+      formData.append('geminiKey', geminiKey);
       formData.append('perplexityKey', perplexityKey);
       files.forEach((file) => {
         formData.append('files', file);
@@ -280,11 +282,10 @@ Thank you!`
                 />
               </div>
 
-              <div className="grid gap-4 md:grid-cols-2">
+              <div className="grid gap-4 md:grid-cols-3">
                 <div className="space-y-2">
                   <Label htmlFor="openai-key">
                     OpenAI API Key
-                    <span className="text-red-500 ml-1">*</span>
                   </Label>
                   <Input
                     id="openai-key"
@@ -309,9 +310,34 @@ Thank you!`
                 </div>
 
                 <div className="space-y-2">
+                  <Label htmlFor="gemini-key">
+                    Google Gemini API Key
+                  </Label>
+                  <Input
+                    id="gemini-key"
+                    type="password"
+                    value={geminiKey}
+                    onChange={(e) => setGeminiKey(e.target.value)}
+                    placeholder="AIza..."
+                    disabled={progress !== 'idle'}
+                    className="font-mono text-sm"
+                  />
+                  <p className="text-xs text-gray-500 dark:text-gray-400">
+                    Get your API key from{' '}
+                    <a
+                      href="https://aistudio.google.com/app/apikey"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="text-blue-600 dark:text-blue-400 hover:underline"
+                    >
+                      aistudio.google.com
+                    </a>
+                  </p>
+                </div>
+
+                <div className="space-y-2">
                   <Label htmlFor="perplexity-key">
                     Perplexity API Key
-                    <span className="text-red-500 ml-1">*</span>
                   </Label>
                   <Input
                     id="perplexity-key"
@@ -335,6 +361,9 @@ Thank you!`
                   </p>
                 </div>
               </div>
+              <p className="text-xs text-gray-500 dark:text-gray-400 -mt-2">
+                <span className="text-red-500">*</span> At least one API key is required (OpenAI, Google Gemini, or Perplexity)
+              </p>
 
               {/* Email alternative option */}
               <div className="border-t border-gray-200 dark:border-gray-700 pt-4 mt-4">
@@ -385,7 +414,10 @@ Thank you!`
             </div>
 
             <div className="space-y-2">
-              <Label htmlFor="tool-files">Upload files (up to 10 files: PDF, DOCX, TXT, images)</Label>
+              <Label htmlFor="tool-files">
+                Upload files (up to 10 files: PDF, DOCX, TXT, images)
+                <span className="text-red-500 ml-1">*</span>
+              </Label>
               <Input
                 id="tool-files"
                 type="file"
@@ -465,7 +497,7 @@ Thank you!`
             <div className="flex justify-end">
               <Button
                 onClick={handleGenerate}
-                disabled={!toolName.trim() || !openaiKey.trim() || !perplexityKey.trim() || progress !== 'idle'}
+                disabled={!toolName.trim() || (!openaiKey.trim() && !geminiKey.trim() && !perplexityKey.trim()) || files.length === 0 || progress !== 'idle'}
               >
                 {progress !== 'idle' ? 'Processing...' : `Generate ${resourceType === 'tools' ? 'tool' : resourceType === 'collections' ? 'collection' : 'article'} page`}
               </Button>

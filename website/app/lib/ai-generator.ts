@@ -57,6 +57,7 @@ export async function generateToolContent(
   parsedFiles: ParsedFile[],
   searchResults: SearchResult,
   openaiApiKey: string,
+  geminiApiKey: string = '',
   resourceType: 'tools' | 'collections' | 'articles' = 'tools'
 ): Promise<{
   overview: string;
@@ -65,9 +66,15 @@ export async function generateToolContent(
   citation?: string;
   url?: string;
 }> {
-  const openai = new OpenAI({
-    apiKey: openaiApiKey,
-  });
+  // Use Gemini if OpenAI key is not provided, otherwise use OpenAI
+  const useGemini = !openaiApiKey.trim() && geminiApiKey.trim();
+  
+  let openai: OpenAI | null = null;
+  if (!useGemini && openaiApiKey.trim()) {
+    openai = new OpenAI({
+      apiKey: openaiApiKey,
+    });
+  }
   const filesContent = parsedFiles
     .map(file => `File: ${file.filename}\n${file.content}\n`)
     .join('\n---\n\n');
@@ -213,25 +220,120 @@ IMPORTANT FORMATTING RULES:
   prompt += `\n\nReturn your response as a JSON object with this structure:\n${expectedJsonStructure}\n\nReturn ONLY valid JSON, no markdown formatting or additional text.`;
 
   try {
-    const response = await openai.chat.completions.create({
-      model: 'gpt-4',
-      messages: [
-        {
-          role: 'system',
-          content: 'You are an expert at creating structured tool documentation for sustainability tools databases. Always return valid JSON.',
-        },
-        {
-          role: 'user',
-          content: prompt,
-        },
-      ],
-      temperature: 0.7,
-      max_tokens: 3000,
-    });
+    let content: string;
+    
+    if (useGemini) {
+      // Use Google Gemini API REST API following official documentation:
+      // https://ai.google.dev/gemini-api/docs/quickstart
+      // API key should be in header as x-goog-api-key, not query parameter
+      const systemInstruction = 'You are an expert at creating structured tool documentation for sustainability tools databases. Always return valid JSON.';
+      const fullPrompt = `${systemInstruction}\n\n${prompt}`;
+      
+      // Try models in order of preference (newer models first, per official docs)
+      // Official docs show gemini-3-flash-preview as example
+      const modelsToTry = [
+        { version: 'v1beta', model: 'gemini-3-flash-preview' },
+        { version: 'v1beta', model: 'gemini-1.5-flash' },
+        { version: 'v1beta', model: 'gemini-1.5-pro' },
+        { version: 'v1', model: 'gemini-1.5-flash' },
+        { version: 'v1', model: 'gemini-1.5-pro' },
+      ];
+      
+      let lastError: Error | null = null;
+      
+      // Use REST API with API key in header (as per official documentation)
+      for (const config of modelsToTry) {
+        try {
+          // API key in header, not query parameter (per official docs)
+          const url = `https://generativelanguage.googleapis.com/${config.version}/models/${config.model}:generateContent`;
+          const response = await fetch(url, {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+              'x-goog-api-key': geminiApiKey, // API key in header as per official docs
+            },
+            body: JSON.stringify({
+              contents: [{
+                parts: [{
+                  text: fullPrompt
+                }]
+              }],
+              generationConfig: {
+                temperature: 0.7,
+                maxOutputTokens: 3000,
+              }
+            }),
+          });
+          
+          if (!response.ok) {
+            const errorData = await response.json().catch(() => ({}));
+            const errorMsg = errorData.error?.message || response.statusText;
+            lastError = new Error(`Gemini API error (${config.version}/${config.model}): ${errorMsg}`);
+            
+            // If it's a model not found error, try next config
+            if (errorMsg.includes('not found') || errorMsg.includes('NOT_FOUND') || errorMsg.includes('404')) {
+              continue;
+            }
+            // If it's an auth error, don't try other models
+            if (errorMsg.includes('API key') || errorMsg.includes('UNAUTHENTICATED') || response.status === 401 || response.status === 403) {
+              throw lastError;
+            }
+            continue;
+          }
+          
+          const data = await response.json();
+          content = data.candidates?.[0]?.content?.parts?.[0]?.text;
+          
+          if (!content) {
+            lastError = new Error('No response from Gemini');
+            continue;
+          }
+          
+          // Success!
+          break;
+        } catch (error) {
+          // If it's the last config, we'll throw below
+          if (config === modelsToTry[modelsToTry.length - 1]) {
+            break;
+          }
+          // If it's an auth error, throw immediately
+          if (error instanceof Error && (error.message.includes('API key') || error.message.includes('UNAUTHENTICATED'))) {
+            throw error;
+          }
+          lastError = error instanceof Error ? error : new Error('Unknown error');
+        }
+      }
+      
+      if (!content) {
+        const errorMsg = lastError?.message || 'Failed to generate content with Gemini';
+        throw new Error(`${errorMsg}. Please verify your API key is valid and has access to Gemini models. See https://ai.google.dev/gemini-api/docs/quickstart for the correct API format.`);
+      }
+    } else {
+      // Use OpenAI API
+      if (!openai) {
+        throw new Error('OpenAI client not initialized');
+      }
+      
+      const response = await openai.chat.completions.create({
+        model: 'gpt-4',
+        messages: [
+          {
+            role: 'system',
+            content: 'You are an expert at creating structured tool documentation for sustainability tools databases. Always return valid JSON.',
+          },
+          {
+            role: 'user',
+            content: prompt,
+          },
+        ],
+        temperature: 0.7,
+        max_tokens: 3000,
+      });
 
-    const content = response.choices[0]?.message?.content;
-    if (!content) {
-      throw new Error('No response from OpenAI');
+      content = response.choices[0]?.message?.content;
+      if (!content) {
+        throw new Error('No response from OpenAI');
+      }
     }
 
     // Extract JSON from response (handle cases where there might be markdown code blocks)
