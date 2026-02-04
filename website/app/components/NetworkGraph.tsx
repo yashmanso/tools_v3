@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useMemo, useCallback } from 'react';
+import { useState, useMemo, useCallback, useRef } from 'react';
 import { GraphNode, GraphEdge } from '../lib/graph';
 import type { ResourceMetadata } from '../lib/markdown';
 import { PanelLink } from './PanelLink';
@@ -60,7 +60,7 @@ export function NetworkGraph({ allResources, graphData }: NetworkGraphProps) {
   const [panStart, setPanStart] = useState({ x: 0, y: 0 });
   const [isDragging, setIsDragging] = useState(false);
   const [dragNode, setDragNode] = useState<string | null>(null);
-  const animationFrameRef = useRef<number>();
+  const animationFrameRef = useRef<number | null>(null);
 
   // Organize resources by category for sidebar
   const resourcesByCategory = useMemo(() => {

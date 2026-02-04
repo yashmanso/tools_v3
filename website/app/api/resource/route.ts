@@ -37,8 +37,8 @@ export async function GET(request: Request) {
         tags: resource.tags,
         contentHtml: resource.contentHtml,
         overview: resource.overview,
-        compatibleTools: resource.compatibleTools,
-        prerequisites: resource.prerequisites,
+        dimensions: resource.dimensions,
+        attachments: resource.attachments,
       },
       relatedPages,
       allResources: allResources.map(r => ({
