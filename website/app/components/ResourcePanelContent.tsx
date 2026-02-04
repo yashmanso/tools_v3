@@ -128,10 +128,7 @@ export function ResourcePanelContent({ path }: ResourcePanelContentProps) {
     slug: resource.slug,
     category: resource.category,
     tags: resource.tags,
-    contentHtml: resource.contentHtml,
     overview: resource.overview,
-    compatibleTools: resource.compatibleTools,
-    prerequisites: resource.prerequisites,
   };
 
   const allResourcesMetadata: ResourceMetadata[] = allResources.map(r => ({
