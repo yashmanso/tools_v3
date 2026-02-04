@@ -5,51 +5,51 @@ The Resource Wheel, which is an interactive selection of relevant resources and 
 ___
 # Dimensions
 
-**Resource Type**
+**Resource type:**
 The Resource Wheel is a framework that offers practices for assessment, leadership and reporting, and guidance on supply chain sustainability, which can be categorized as practical instruments for organizations.
 - Tags: #framework, #guide
 
-**Objective**
+**Objective:**
 The primary goal of the tool is to help organizations embed sustainability in their structure and align their strategies with sustainable goals.
 - Tags: #assess, #align
 
-**Target Audience**
+**Target audience:**
 The tool is designed for organizations of various sizes and sectors that are seeking to embed sustainability into their operations.
 - Tags: #corporations, #SMEs, #nonprofits, #practitioners
 
-**Sustainability Focus**
+**Sustainability focus:**
 The tool and accompanying resources address multiple aspects of sustainability, including governance, operations, and supply chain management. This covers the three pillars.
 - Tags: #environmental-sustainability, #social-sustainability, #economic-sustainability, #governance, #SDGs
 
-**Innovation Type**
+**Innovation type:**
 It support business model innovation by providing organizations with the means to integrate sustainability into their core strategies.
 - Tags: #business-model-innovation
 
-**Entrepreneurship Stage**
+**Entrepreneurship stage:**
 While the tool is not designed for entrepreneurs, when used in entrepreneurial context, it may be applicable across various stages of entrepreneurship.
 - Tags: #development, #implementation, #growth, #maturity
 
-**Scope of Relevance**
+**Scope of relevance:**
 Given the global applicability of sustainability and SDGs, the tool is relevant on a global scale, although they can be tailored to regional or national contexts.
 - Tags: #global, #regional, #national
 
-**Methodological Approach**
+**Methodological approach:**
 The tool is based on a structured approach to assessing and benchmarking sustainability performance. However, the practices that it prescribes align with both qualitative and quantitative methods. 
 - Tags: #qualitative-research, #quantitative-research
 
-**Skill Development**
+**Skill development:**
 The tool aims to enhance skills in sustainability leadership, strategic planning, and operations management by providing the practices that are multidimensional.
 - Tags: #leadership-and-management, #strategic-planning, #operations-management
 
-**Source and Credibility**
+**Source and credibility:**
 The tool is likely developed from reputable industry sources and academic research. The researchers are affiliated with reputable academic institutions.
 - Tags: #reputable-industry-sources, #academic-institutions
 
-**Prerequisites and Requirements**
+**Prerequisites and requirements:**
 The tool is designed for organizations with some level of familiarity with sustainability concepts, likely at an intermediate level.
 - Tags: #intermediate-level
 
-**Collaboration Level**
+**Collaboration level:**
 Depending on the practice, there can be individual or collective focus. but similar to other tools, utilizing the tool in a collective setting would allow tapping into the experiences and skills necessary to perform these practices.
 - Tags: #team, #cross-team-collaboration 
 

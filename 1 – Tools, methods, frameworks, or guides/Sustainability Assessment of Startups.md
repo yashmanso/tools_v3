@@ -4,51 +4,51 @@ ___
 ___
 # Dimensions
 
-**Resource Type**
+**Resource type:**
 This tool serves as a methodological instrument that can be used by start-ups and investors to assess and enhance sustainability practices.
 - Tags: #framework, #criteria-based, #qualitative, #ranking-scale
 
-**Objective**
+**Objective:**
 The primary goal of this resource is to assess and report on the sustainability aspects of start-ups, helping them align their operations with sustainable objectives.
 - Tags: #assess, #report, #align
 
-**Target Audience**
+**Target audience:**
 The tool is designed for a variety of users, including entrepreneurs and investors, who are focused on sustainability in start-ups.
 - Tags: #entrepreneurs, #investors, #startups, #advisors
 
-**Sustainability Focus**
+**Sustainability focus:**
 The tool emphasizes all three pillars of sustainability, with a particular focus on aligning start-up activities with societal sustainability goals such as the SDGs.
 - Tags: #environmental-sustainability, #social-sustainability, #economic-sustainability, #SDGs
 
-**Innovation Type**
+**Innovation type:**
 While the tool supports various types of innovation, it is particularly relevant for business model innovation that integrates sustainability.
 - Tags: #business-model-innovation, #wide-application
 
-**Entrepreneurship Stage**
+**Entrepreneurship stage:**
 The tool is applicable to start-ups at the pre-seed/seed stage and those in the start-up/growth phase, addressing different needs at each stage.
 - Tags: #ideation, #development, #startup, #growth, #pre-seed
 
-**Scope of Relevance**
+**Scope of relevance:**
 The tool can be used globally, but it is especially relevant for start-ups that are aligning their business models with international sustainability standards.
 - Tags: #global
 
-**Methodological Approach**
+**Methodological approach:**
 The resource is based on established concepts used by investors for pre-screening and due diligence, offering a structured approach to sustainability assessment.
 - Tags: #qualitative-research, #theoretical-frameworks
 
-**Skill Development**
+**Skill development:**
 Using this tool can enhance skills in sustainability assessment, strategic alignment, and impact management.
 - Tags: #systems-thinking, #holistic-thinking, #environmental-awareness, #business-and-financial-skills
 
-**Source and Credibility**
+**Source and credibility:**
 The tool is developed from established practical concepts, ensuring a credible and reliable framework for sustainability assessment.
 - Tags: #reputable-industry-sources, #practice, #SDGs , #academia 
 
-**Prerequisites and Requirements**
+**Prerequisites and requirements:**
 The tool is designed for users with at least a basic understanding of business and sustainability concepts.
 - Tags: #beginner-level, #intermediate-level
 
-**Collaboration Level**
+**Collaboration level:**
 The assessment can be conducted individually or by a team, depending on the size and structure of the start-up.
 - Tags: #individual, #team, #inter-department
 

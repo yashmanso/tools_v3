@@ -4,51 +4,51 @@ The [Sustainability SWOT Analysis](https://www.threebility.com/sustainability-sw
 ___
 # Dimensions
 
-**Resource Type**
+**Resource type:**
 This is a strategic framework that aids in the analysis and alignment of sustainability efforts within an organization.
 - Tags: #framework, #tool, #canvas 
 
-**Objective**
+**Objective:**
 The primary goal of this resource is to assess and align sustainability practices with an organization's strategic objectives.
 - Tags: #assess, #align
 
-**Target Audience**
+**Target audience:**
 This tool is versatile and can be utilized by a wide range of individuals or groups involved in strategic planning and sustainability.
 - Tags: #entrepreneurs, #researchers, #policy-makers, #educators, #practitioners, #corporations
 
-**Sustainability Focus**
+**Sustainability focus:**
 The resource is centered around environmental sustainability, but is situated in the larger context of sustainability.
 - Tags: #environmental-sustainability
 
-**Innovation Type**
+**Innovation type:**
 The Sustainability SWOT Analysis supports innovation in business practices especially in relation to the whole value chain in the organization and the business model and processes that need to adapt to satisfy more of sustainability related metrics.
 - Tags: #business-model-innovation, #process-innovation
 
-**Entrepreneurship Stage**
+**Entrepreneurship stage:**
 This tool is applicable across various stages of entrepreneurship, especially when strategic decisions are critical.
 - Tags: #ideation, #design, #development, #implementation, #growth
 
-**Scope of Relevance**
+**Scope of relevance:**
 The analysis can be applied to organizations operating at different scales, from local startups to global corporations.
 - Tags: #global, #national, #local
 
-**Methodological Approach**
+**Methodological approach:**
 The Sustainability SWOT Analysis employs a structured, analytical approach to evaluating sustainability in business. In this sense, both qualitative and quantitative data can be plugged in to generate insights.
 - Tags: #theoretical-frameworks, #qualitative-and-quantitative , #mixed-methods
 
-**Skill Development**
+**Skill development:**
 Using this tool can enhance strategic thinking and sustainability awareness among business leaders and decision-makers.
 - Tags:  #systems-thinking, #environmental-awareness, #holistic-thinking, #strategic-thinking 
 
-**Source and Credibility**
+**Source and credibility:**
 The tool is based on the well-established SWOT analysis framework, adapted for sustainability, and can be considered a reputable industry source.
 - Tags: #reputable-industry-sources
 
-**Prerequisites and Requirements**
+**Prerequisites and requirements:**
 No specific prerequisites are needed to use this tool, but a general knowledge of SWOT analysis related concepts can be useful.
 - Tags: #none
 
-**Collaboration Level**
+**Collaboration level:**
 The Sustainability SWOT Analysis can be conducted individually or by a team, depending on the size and structure of the organization, but to get a better breadth, better insights can be gained if done in a collaborative format.
 - Tags: #individual, #team, #cross-team-collaboration 
 

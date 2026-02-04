@@ -5,51 +5,51 @@ The UCD Impact Planning Canvas is a tool designed to assist researchers in effec
 ___
 # Dimensions
 
-**Resource Type**
+**Resource type:**
 The UCD Impact Planning Canvas is a structured guide that aids researchers in organizing their impact strategies, thus it falls under the category of a tool designed for academic and professional use.
 - Tags: #tool, #canvas, #framework
 
-**Objective**
+**Objective:**
 This resource is primarily aimed at helping researchers map out the potential impact of their work and align their research objectives with broader societal goals.
 - Tags: #map, #align
 
-**Target Audience**
+**Target audience:**
 Given its design for research impact planning, the Canvas is most relevant to researchers, but can also be beneficial to educators and policy-makers involved in the research ecosystem.
 - Tags: #researchers, #educators, #policy-makers
 
-**Sustainability Focus**
+**Sustainability focus:**
 While not exclusively framed as a tool of sustainability, the Canvas can be used to plan for research impacts that include environmental, social, and economic sustainability goals.
 - Tags: #environmental-sustainability, #social-sustainability, #economic-sustainability
 
-**Innovation Type**
+**Innovation type:**
 The Canvas supports innovation in research methodologies and potentially in the development of comprehensive ways to think more broadly about the relevance and impact of one's research, as it helps researchers plan for societal impact.
 - Tags: #process-innovation, #social-innovation
 
-**Entrepreneurship Stage**
+**Entrepreneurship stage:**
 The Canvas doesn't directly concern entrepreneurship, but it is adaptable to any stage of the research process and more relevant to the early stages, which can be paralleled to the entrepreneurial journey from ideation to maturity.
 - Tags: #ideation, #design, #development, #implementation, #maturity
 
-**Scope of Relevance**
+**Scope of relevance:**
 The Canvas is designed to be universally applicable, making it relevant on a global scale, but can be tailored to specific regional or national contexts.
 - Tags: #global, #regional, #national
 
-**Methodological Approach**
+**Methodological approach:**
 The Canvas promotes a structured, strategic approach to planning, which can be associated with both qualitative and theoretical frameworks.
 - Tags: #qualitative-research, #theoretical-frameworks
 
-**Skill Development**
+**Skill development:**
 Using the Canvas can enhance skills in systems thinking, innovative thinking, and adaptability.
 - Tags: #systems-thinking, #innovative-thinking, #adaptability-and-resilience
 
-**Source and Credibility**
+**Source and credibility:**
 The UCD Impact Planning Canvas is developed by a reputable academic institution.
 - Tags: #academic-institutions
 
-**Prerequisites and Requirements**
+**Prerequisites and requirements:**
 The Canvas is designed to be user-friendly and does not require any specific educational background or advanced skills.
 - Tags: #none, #beginner-level
 
-**Collaboration Level**
+**Collaboration level:**
 The Canvas facilitates individual reflection as well as team-based planning, but is generally geared toward project impact.
 - Tags: #individual, #team
 

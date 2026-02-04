@@ -5,51 +5,51 @@ CircularStart is an initiative designed to empower startups with the knowledge a
 ___
 # Dimensions
 
-**Resource Type**
+**Resource type:**
 CircularStart provides a comprehensive set of educational and practical tools aimed at integrating circular economy concepts into startup operations.
 - Tags: #online-course, #tool, #toolkit, #framework, #canvas, #guide
 
-**Objective**
+**Objective:**
 The primary goal of CircularStart is to educate and guide startups in adopting circular economy principles within their business models.
 - Tags: #map, #assess, #align
 
-**Target Audience**
+**Target audience:**
 The resources are tailored for startups, incubators, and trainers who are focused on sustainability and circularity in business.
 - Tags: #entrepreneurs, #educators, #startups, #practitioners
 
-**Sustainability Focus**
+**Sustainability focus:**
 CircularStart emphasizes the transition to sustainable economic models through the adoption of circular economy practices.
 - Tags: #environmental-sustainability, #economic-sustainability, #circular-economy
 
-**Innovation Type**
+**Innovation type:**
 The project supports innovation in business models by integrating circular economy principles-
 - Tags: #business-model-innovation
 
-**Entrepreneurship Stage**
+**Entrepreneurship stage:**
 Resources are provided for various stages of startup development, from initial ideation to the implementation of circular business strategies. Although the suite is the most useful when applied in the earlier stages of the process
 - Tags: #ideation, #design, #development, #implementation
 
-**Scope of Relevance**
+**Scope of relevance:**
 There is no restriction or limitation about the scope. The principles and tools provided have global applicability for startups concerned with sustainability and impact of their activities.
 - Tags: #global, #regional
 
-**Methodological Approach**
+**Methodological approach:**
 CircularStart's framework and tools are based on a structured methodology that guides startups from understanding circularity to implementing specific strategies. These strategies may follow qualitative or quantitative approaches.
 - Tags: #theoretical-frameworks, #experimental-design
 
-**Skill Development**
+**Skill development:**
 The project aims to develop a range of skills in startups, including systems thinking, environmental awareness, and innovative thinking.
 - Tags: #systems-thinking, #environmental-awareness, #innovative-thinking, #business-and-financial-skills
 
-**Source and Credibility**
+**Source and credibility:**
 The resources are developed as part of an EU-funded program where several respected research institutes were a member of.
 - Tags: #government-sources, #academic-institutions, #recognized-experts
 
-**Prerequisites and Requirements**
+**Prerequisites and requirements:**
 The resources are designed to be accessible to a wide audience, with no specific prerequisites for most tools, although some may require a basic understanding of business and sustainability concepts.
 - Tags: #none, #beginner-level, #intermediate-level
 
-**Collaboration Level**
+**Collaboration level:**
 CircularStart encourages collaboration among startups, trainers, and consultants to foster a community of practice around circular economy principles. Using each tool ad resources is a function of the practices they espouse, therefore some can be performed individually and others would require their collective implimentation.
 - Tags: #team, #community, #cross-sector-partnerships
 

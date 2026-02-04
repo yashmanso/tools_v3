@@ -5,51 +5,51 @@
 ___
 # Dimensions
 
-**Resource Type**
+**Resource type:**
 The Impact Journey is a descriptive and conceptual framework and practical tool that guide researchers through the process of achieving societal impact. ^a8e820
 - Tags:  #tool, #canvas
 
-**Objective**
+**Objective:**
 This resource aims to align research activities with their potential societal impact, ensuring that the outcomes contribute to sustainable development goals.
 - Tags: #align, #map
 
-**Target Audience**
+**Target audience:**
 The primary users of this resource are researchers and academics, looking to maximize the societal impact of their work.
 - Tags: #researchers, #educators, #policy-makers
 
-**Sustainability Focus**
+**Sustainability focus:**
 The Impact Journey emphasizes the importance of considering the long-term environmental, social, and economic implications of research by tracing research over time, distinguishing between different five stages on the pathway to impact.
 - Tags: #environmental-sustainability, #social-sustainability, #economic-sustainability, #SDGs
 
-**Innovation Type**
+**Innovation type:**
 The tool can result in different types of innovation, but is not designed as an aid to support innovation in research.
 - Tags:  #process-innovation
 
-**Entrepreneurship Stage**
+**Entrepreneurship stage:**
 Similar to above, but the insights generated from this canvas can be relevant for the researchers entrepreneurial work.
 - Tags: #ideation, #design, #development, #implementation, #startup, #growth, #scale-up, #maturity
 
-**Scope of Relevance**
+**Scope of relevance:**
 While this tool can be used globally, they are particularly relevant for research that has a specific geographic or demographic focus, such as regional sustainability challenges.
 - Tags: #global, #regional, #national, #local
 
-**Methodological Approach**
+**Methodological approach:**
 The Impact Journey is based on a logic model, which is a systematic and theoretical framework for planning and evaluating research impact.
 - Tags: #theoretical-frameworks
 
-**Skill Development**
+**Skill development:**
 The tool contributes to skill development in areas such as systems thinking, holistic thinking, and innovative thinking.
 - Tags: #systems-thinking, #holistic-thinking, #innovative-thinking
 
-**Source and Credibility**
+**Source and credibility:**
 The tool is developed by researchers at the University College Dublin, a reputable academic institution.
 - Tags: #academic-institutions
 
-**Prerequisites and Requirements**
+**Prerequisites and requirements:**
 It is designed for users with at least an intermediate level of understanding of research processes and impact planning.
 - Tags: #intermediate-level, #specific-educational-background
 
-**Collaboration Level**
+**Collaboration level:**
 The tool encourages collaboration among researchers, stakeholders, and partners to maximize the societal impact of research.
 - Tags: #team, #cross-sector-partnerships, #public-private-partnership
 

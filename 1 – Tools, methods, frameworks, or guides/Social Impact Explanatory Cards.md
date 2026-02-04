@@ -5,51 +5,51 @@ ____
 _______
 # Dimensions
 
-**Resource Type**
+**Resource type:**
 These cards are educational tools that provide concise information and insights into the SDGs.
 - Tags: #tool, #educational-material
 
-**Objective**
+**Objective:**
 The primary goal of Social Impact Explanatory Cards is to educate and inform users about the SDGs and to foster a deeper understanding of their targets and implications.
 - Tags: #map, #assess
 
-**Target Audience**
+**Target audience:**
 These cards are designed for a broad audience, including those involved in sustainable entrepreneurship, education, and policy-making, who are interested in understanding and contributing to the SDGs.
 - Tags: #entrepreneurs, #researchers, #students, #policy-makers, #educators, #practitioners
 
-**Sustainability Focus**
+**Sustainability focus:**
 The focus of these cards is on awareness and understanding of the SDGs, which encompass social, economic, and environmental objectives.
 - Tags:  #SDGs
 
-**Innovation Type**
+**Innovation type:**
 While not directly related to innovation, these cards support social innovation by providing knowledge that can inspire new approaches to sustainable development challenges.
 - Tags: #social-innovation
 
-**Entrepreneurship Stage**
+**Entrepreneurship stage:**
 Applicable across various stages of entrepreneurship, these cards are particularly useful during the ideation and design phases, where understanding the SDGs can influence sustainable business models.
 - Tags: #ideation, #design
 
-**Scope of Relevance**
+**Scope of relevance:**
 The SDGs are global in nature; therefore, these cards have a global relevance but can also be applied to regional, national, or local contexts.
 - Tags: #global, #regional, #national, #local
 
-**Methodological Approach**
+**Methodological approach:**
 The cards use an educational approach to convey information and do not prescribe a specific research or problem-solving methodology.
 - Tags: #educational-material
 
-**Skill Development**
+**Skill development:**
 By using these cards, individuals can develop a range of skills, including systems thinking, environmental awareness, and innovative thinking. Noteworthy, these cards are mainly relevant for raising awareness.
 - Tags: #systems-thinking, #environmental-awareness, #innovative-thinking
 
-**Source and Credibility**
+**Source and credibility:**
 The information on these cards is typically derived from the United Nations and other reputable sources that have established the SDGs. In effect, the cards are exemplification and simplification of SDGs.
 - Tags: #government-sources, #reputable-industry-sources
 
-**Prerequisites and Requirements**
+**Prerequisites and requirements:**
 These cards are designed to be accessible to a wide audience, with no specific prerequisites required to understand and engage with the content.
 - Tags: #none
 
-**Collaboration Level**
+**Collaboration level:**
 Social Impact Explanatory Cards encourage collaboration by prompting discussions and collective efforts towards achieving the SDGs.
 - Tags: #individual, #team, #community
 

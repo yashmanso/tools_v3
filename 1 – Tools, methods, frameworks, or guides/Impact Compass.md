@@ -5,51 +5,51 @@ ___
 ___
 # Dimensions
 
-**Resource Type**
+**Resource type:**
 The Impact Compass is a strategic tool that provides a framework for assessing social impact. It draws on existing research methodologies, impact measurement practices, and insights from experts to create a framework that can be practically used to evaluate the social impact of different interventions.
 - Tags: #tool, #framework
 
-**Objective**
+**Objective:**
 The primary goal of the Impact Compass is to assess and maximize social impact, making it a resource for strategic alignment and evaluation.
 - Tags: #assess, #align
 
-**Target Audience**
+**Target audience:**
 This tool is designed for a wide range of users, including entrepreneurs, investors, and policy-makers, who are interested in understanding and enhancing the social impact of their decisions.
 - Tags: #entrepreneurs, #investors, #policy-makers, #general-public 
 
-**Sustainability Focus**
+**Sustainability focus:**
 The Impact Compass inherently addresses social sustainability by evaluating the social impact of organizations and programs, but it can also be applied to environmental and economic sustainability considerations.
 - Tags: #social-sustainability, #environmental-sustainability, #economic-sustainability
 
-**Innovation Type**
+**Innovation type:**
 While the tool explicitly aims to support social innovation by helping organizations to measure and understand the social change they aim to achieve, it can be a good support for other types of innovation that take into account concern related to social impact.
 - Tags: #social-innovation
 
-**Entrepreneurship Stage**
+**Entrepreneurship stage:**
 The Impact Compass is applicable across various stages of entrepreneurship, from ideation to maturity, as it helps to gauge the ongoing social impact.
 - Tags: #ideation, #development, #implementation, #startup, #growth, #scale-up, #maturity
 
-**Scope of Relevance**
+**Scope of relevance:**
 While the tool can be used in diverse contexts, it is particularly relevant to global and national organizations that aim to assess their impact across different regions. According to the white paper it is particularly relevant for addressing local, national, and especially rural sustainability challenges,
 - Tags: #global, #national, #regional 
 
-**Methodological Approach**
+**Methodological approach:**
 The Impact Compass is based on a theoretical framework that draws from extensive literature and expert insights in the field of social innovation. The six dimensions are multiplied together, rather than simply added up, to obtain an impact potential score, which represents the interactive power of each dimension on one another.
 - Tags: #theoretical-frameworks, #quantitative
 
-**Skill Development**
+**Skill development:**
 Using the Impact Compass effectively may enhance skills in systems thinking, holistic thinking, and adaptability and resilience, as it requires a comprehensive understanding of an organization's impact within its context.
 - Tags: #systems-thinking, #holistic-thinking, #adaptability-and-resilience, #social-awareness
 
-**Source and Credibility**
+**Source and credibility:**
 The tool is developed by a reputable academic institution and is grounded in scholarly research, making it a credible resource for assessing impact.
 - Tags: #academic-institutions, #recognized-experts, #research
 
-**Prerequisites and Requirements**
+**Prerequisites and requirements:**
 To utilize the Impact Compass effectively, users should have an intermediate understanding of impact assessment and social innovation concepts and a good understanding of how the six dimensions can be diligently graded.
 - Tags: #intermediate-level
 
-**Collaboration Level**
+**Collaboration level:**
 The tool can be used by individuals or teams within organizations to collaboratively assess and plan for social impact. But for meaningful outcomes, the tool suggests a cross-functional team effort that ideally also seeks input from the targeted community itself. This makes collaboration across disciplines, departments, and among diverse stakeholders essential.
 - Tags: #individual, #team,  #cross-team-collaboration 
 

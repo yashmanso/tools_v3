@@ -1,7 +1,9 @@
 import type { NextConfig } from 'next';
 
 const nextConfig: NextConfig = {
-  output: 'export',
+  // Removed 'output: export' to allow API routes to work
+  // If you need static export, API routes won't work and you'll need
+  // to use a separate backend service or serverless functions
   images: {
     unoptimized: true,
   },

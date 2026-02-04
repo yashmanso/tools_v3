@@ -5,51 +5,51 @@ ___
 ___
 # Dimensions
 
-**Resource Type**
+**Resource type:**
 The Flourishing Business Canvas is a visual and collaborative canvas that serves as a framework for designing and understanding business models with a holistic sustainable perspective.
 - Tags: #tool, #framework, #canvas
 
-**Objective**
+**Objective:**
 This resource aims to enable the design and improvement of business models that are sustainable and considerate of the organization's impact on society and the environment.
 - Tags: #design, #align, #improve
 
-**Target Audience**
+**Target audience:**
 The Flourishing Business Canvas is intended for a wide range of stakeholders, including entrepreneurs, educators, and practitioners, who are involved in creating or transforming business models with sustainability in mind.
 - Tags: #entrepreneurs, #educators, #practitioners, #startups, #SMEs, #corporations
 
-**Sustainability Focus**
+**Sustainability focus:**
 The tool emphasizes the integration of environmental regeneration, social benefits, and financial viability into business models, addressing all three pillars of sustainability.
 - Tags: #environmental-sustainability, #social-sustainability, #economic-sustainability
 
-**Innovation Type**
+**Innovation type:**
 By fostering a systemic view of business models, the Flourishing Business Canvas can support various types of innovation, particularly in business models and processes.
 - Tags: #business-model-innovation, #process-innovation
 
-**Entrepreneurship Stage**
+**Entrepreneurship stage:**
 The Canvas is suitable for use at various stages of entrepreneurship, from the initial ideation and design to the development and implementation of sustainable business practices. Similar to other tools, the benefits can be gained more when applied earlier in the life cycle of the organization.
 - Tags: #ideation, #design, #development, #implementation
 
-**Scope of Relevance**
+**Scope of relevance:**
 While the tool can be applied universally, it is especially relevant to businesses that are conscious of their role in a global context.
 - Tags: #global, #regional, #national
 
-**Methodological Approach**
+**Methodological approach:**
 The Flourishing Business Canvas promotes a collaborative and systemic methodological approach to business modeling by taking into qualitative and quantitative data.
 - Tags: #systems-thinking, #collaborative-approach, #qualitative , #qualitative , #mixed-methods 
 
-**Skill Development**
+**Skill development:**
 Utilizing this tool can enhance skills in systems thinking, holistic design, and strategic collaboration.
 - Tags: #systems-thinking, #holistic-thinking, #collaboration-and-networking, #strategic-thinking
 
-**Source and Credibility**
+**Source and credibility:**
 The resource is the result of extensive research and testing and linked to EU Climate KIC.
 - Tags: #research, #recognized-experts
 
-**Prerequisites and Requirements**
+**Prerequisites and requirements:**
 The Canvas is designed to be accessible, with no specific prerequisites required although basic understanding of business and sustainability is desired.
 - Tags: #none
 
-**Collaboration Level**
+**Collaboration level:**
 The Flourishing Business Canvas encourages teamwork and stakeholder engagement, making it an excellent tool for collaborative business design.
 - Tags: #team, #community, #cross-team-collaboration 
 

@@ -1,14 +1,18 @@
 'use client';
 
 import { useState, useMemo } from 'react';
-import { ResourceMetadata } from '../lib/markdown';
+import type { ResourceMetadata } from '../lib/markdown';
 import { ResourceCard } from './ResourceCard';
+import { Button } from '@/components/ui/button';
 
 interface SearchFilterProps {
   resources: ResourceMetadata[];
+  allResources: ResourceMetadata[];
+  onToolSelect?: (tool: ResourceMetadata) => void;
+  selectedTools?: ResourceMetadata[];
 }
 
-export function SearchFilter({ resources }: SearchFilterProps) {
+export function SearchFilter({ resources, allResources, onToolSelect, selectedTools = [] }: SearchFilterProps) {
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedTags, setSelectedTags] = useState<Set<string>>(new Set());
 
@@ -64,7 +68,7 @@ export function SearchFilter({ resources }: SearchFilterProps) {
             placeholder="Search by title or description..."
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
-            className="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 focus:outline-none focus:ring-2 focus:ring-blue-500"
+            className="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-full bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 focus:outline-none focus:ring-2 focus:ring-blue-500"
           />
         </div>
 
@@ -75,17 +79,17 @@ export function SearchFilter({ resources }: SearchFilterProps) {
               Filter by tags:
             </h3>
             {(searchQuery || selectedTags.size > 0) && (
-              <button
+              <Button variant="ghost"
                 onClick={clearFilters}
                 className="text-sm text-blue-600 dark:text-blue-400 hover:underline"
               >
                 Clear filters
-              </button>
+              </Button>
             )}
           </div>
           <div className="flex flex-wrap gap-2">
             {allTags.slice(0, 20).map((tag) => (
-              <button
+              <Button variant="ghost"
                 key={tag}
                 onClick={() => toggleTag(tag)}
                 className={`text-xs px-3 py-1 rounded-full transition-colors ${
@@ -94,8 +98,8 @@ export function SearchFilter({ resources }: SearchFilterProps) {
                     : 'bg-gray-100 dark:bg-gray-800 text-gray-600 dark:text-gray-400 hover:bg-gray-200 dark:hover:bg-gray-700'
                 }`}
               >
-                #{tag}
-              </button>
+                {tag}
+              </Button>
             ))}
           </div>
         </div>
@@ -110,9 +114,24 @@ export function SearchFilter({ resources }: SearchFilterProps) {
       {/* Results grid */}
       {filteredResources.length > 0 ? (
         <div className="grid md:grid-cols-2 gap-4">
-          {filteredResources.map((resource) => (
-            <ResourceCard key={resource.slug} resource={resource} />
-          ))}
+          {filteredResources.map((resource) => {
+            const isSelected = selectedTools.some(t => t.slug === resource.slug);
+            const canSelect = !onToolSelect || selectedTools.length < 3 || isSelected;
+            
+            return (
+              <div key={resource.slug} className="relative">
+                <ResourceCard 
+                  resource={resource} 
+                  allResources={allResources} 
+                  animationDelay={index * 50}
+                  showSelectionButton={!!onToolSelect}
+                  isSelected={isSelected}
+                  canSelect={canSelect}
+                  onSelect={() => onToolSelect?.(resource)}
+                />
+              </div>
+            );
+          })}
         </div>
       ) : (
         <div className="text-center py-12 text-gray-500 dark:text-gray-400">
