@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useMemo, useCallback, useRef } from 'react';
+import { useState, useMemo, useCallback, useRef, useEffect } from 'react';
 import { GraphNode, GraphEdge } from '../lib/graph';
 import type { ResourceMetadata } from '../lib/markdown';
 import { PanelLink } from './PanelLink';
