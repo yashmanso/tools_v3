@@ -220,7 +220,7 @@ IMPORTANT FORMATTING RULES:
   prompt += `\n\nReturn your response as a JSON object with this structure:\n${expectedJsonStructure}\n\nReturn ONLY valid JSON, no markdown formatting or additional text.`;
 
   try {
-    let content: string;
+    let content: string | undefined;
     
     if (useGemini) {
       // Use Google Gemini API REST API following official documentation:
@@ -330,10 +330,11 @@ IMPORTANT FORMATTING RULES:
         max_tokens: 3000,
       });
 
-      content = response.choices[0]?.message?.content;
-      if (!content) {
+      const responseContent = response.choices[0]?.message?.content;
+      if (!responseContent) {
         throw new Error('No response from OpenAI');
       }
+      content = responseContent;
     }
 
     // Extract JSON from response (handle cases where there might be markdown code blocks)

@@ -28,9 +28,10 @@ interface ResourceData {
     slug: string;
     title: string;
     category: string;
-    tags: string[];
+    tags?: string[];
     overview?: string;
-    score?: number;
+    score: number;
+    reasons: string[];
   }>;
   allResources: Array<{
     title: string;

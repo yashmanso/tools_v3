@@ -179,9 +179,10 @@ export function getResourcesByCategory(category: string): ResourceMetadata[] {
   const resources = files
     .filter((file) => file.endsWith('.md') && !file.startsWith('_'))
     .map((file) => {
-      const fullPath = path.join(dirPath, file);
-      const fileContents = fs.readFileSync(fullPath, 'utf8');
-      const { data, content } = matter(fileContents);
+      try {
+        const fullPath = path.join(dirPath, file);
+        const fileContents = fs.readFileSync(fullPath, 'utf8');
+        const { data, content } = matter(fileContents);
 
       const title = file.replace(/\.md$/, '');
       const slug = slugify(title);
@@ -213,15 +214,21 @@ export function getResourcesByCategory(category: string): ResourceMetadata[] {
         }
       }
 
-      return {
-        slug,
-        title,
-        category,
-        tags: extractTags(content),
-        overview,
-        dimensions: parseDimensions(content),
-      };
-    });
+        return {
+          slug,
+          title,
+          category,
+          tags: extractTags(content),
+          overview,
+          dimensions: parseDimensions(content),
+        };
+      } catch (error) {
+        // Skip files that can't be read or parsed
+        console.warn(`Failed to parse ${file}:`, error instanceof Error ? error.message : 'Unknown error');
+        return null;
+      }
+    })
+    .filter((resource): resource is NonNullable<typeof resource> => resource !== null);
 
   return resources;
 }
@@ -263,9 +270,10 @@ export async function getResourceBySlug(
     return null;
   }
 
-  const fullPath = path.join(dirPath, file);
-  const fileContents = fs.readFileSync(fullPath, 'utf8');
-  const { data, content } = matter(fileContents);
+  try {
+    const fullPath = path.join(dirPath, file);
+    const fileContents = fs.readFileSync(fullPath, 'utf8');
+    const { data, content } = matter(fileContents);
 
   const title = file.replace(/\.md$/, '');
 
@@ -316,14 +324,18 @@ export async function getResourceBySlug(
     }
   }
 
-  return {
-    slug,
-    title,
-    category,
-    tags: extractTags(content),
-    overview,
-    dimensions: parseDimensions(content),
-    contentHtml,
-    attachments,
-  };
+    return {
+      slug,
+      title,
+      category,
+      tags: extractTags(content),
+      overview,
+      dimensions: parseDimensions(content),
+      contentHtml,
+      attachments,
+    };
+  } catch (error) {
+    console.error(`Failed to read resource ${slug} from ${category}:`, error instanceof Error ? error.message : 'Unknown error');
+    return null;
+  }
 }
