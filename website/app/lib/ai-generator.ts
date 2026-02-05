@@ -330,10 +330,11 @@ IMPORTANT FORMATTING RULES:
         max_tokens: 3000,
       });
 
-      content = response.choices[0]?.message?.content;
-      if (!content) {
+      const responseContent = response.choices[0]?.message?.content;
+      if (!responseContent) {
         throw new Error('No response from OpenAI');
       }
+      content = responseContent;
     }
 
     // Extract JSON from response (handle cases where there might be markdown code blocks)
