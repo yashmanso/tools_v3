@@ -1,6 +1,4 @@
 {
   "framework": "nextjs",
-  "rootDirectory": "website",
-  "cleanUrls": true,
-  "trailingSlash": false
+  "rootDirectory": "website"
 }

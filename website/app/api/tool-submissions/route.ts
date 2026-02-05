@@ -4,6 +4,9 @@ import fs from 'fs/promises';
 import { writeFile } from 'fs/promises';
 import { slugify } from '@/app/lib/slugify';
 
+// Force dynamic rendering since we're writing to file system
+export const dynamic = 'force-dynamic';
+
 type DimensionPayload = { description: string; tags: string[] | string };
 type SubmissionPayload = {
   title?: string;

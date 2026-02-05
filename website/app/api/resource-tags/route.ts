@@ -1,6 +1,9 @@
 import { NextResponse } from 'next/server';
 import { getAllResources } from '@/app/lib/markdown';
 
+// Force dynamic rendering since we're reading from file system
+export const dynamic = 'force-dynamic';
+
 export async function GET(request: Request) {
   const { searchParams } = new URL(request.url);
   const path = searchParams.get('path');
