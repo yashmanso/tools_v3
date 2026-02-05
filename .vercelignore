@@ -60,6 +60,12 @@ BUTTON_ISSUES_REPORT.md
 GRAPH_IMPLEMENTATION_PLAN.md
 TOOL_PREREQUISITES.md
 
+# IMPORTANT: Do NOT exclude the markdown content directories - they are needed for the build!
+# The following directories MUST be included:
+# 1 – Tools, methods, frameworks, or guides/
+# 2 – Collections, Compendia, or Kits/
+# 3 – Practical academic articles and scientific reports/
+
 # Version control
 .git
 .gitignore
