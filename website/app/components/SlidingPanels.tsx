@@ -275,15 +275,15 @@ export function SlidingPanels({ children, allResources = [] }: SlidingPanelsProp
             </>
           )}
           
-          <div
-            ref={containerRef}
+        <div
+          ref={containerRef}
             className="flex h-full"
-            style={{ 
+          style={{ 
               overflowX: 'auto',
               overflowY: 'hidden',
-              scrollSnapType: isExpanded ? 'none' : 'x mandatory'
-            }}
-          >
+            scrollSnapType: isExpanded ? 'none' : 'x mandatory'
+          }}
+        >
           {panels.map((panel) => {
             const isPanelExpanded = expandedPanelId === panel.id;
             const isHidden = isExpanded && !isPanelExpanded;
