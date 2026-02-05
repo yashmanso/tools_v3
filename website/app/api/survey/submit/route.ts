@@ -5,6 +5,9 @@ import { join } from 'path';
 import { existsSync } from 'fs';
 import { surveyQuestions } from '@/app/lib/survey-questions';
 
+// Force dynamic rendering since we're writing to file system
+export const dynamic = 'force-dynamic';
+
 // Create a map of question IDs to question text
 function getQuestionTextMap() {
   const map: Record<string, string> = {};
