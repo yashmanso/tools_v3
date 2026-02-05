@@ -220,7 +220,7 @@ IMPORTANT FORMATTING RULES:
   prompt += `\n\nReturn your response as a JSON object with this structure:\n${expectedJsonStructure}\n\nReturn ONLY valid JSON, no markdown formatting or additional text.`;
 
   try {
-    let content: string;
+    let content: string | undefined;
     
     if (useGemini) {
       // Use Google Gemini API REST API following official documentation:
