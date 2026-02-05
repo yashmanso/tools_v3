@@ -114,7 +114,7 @@ export function SearchFilter({ resources, allResources, onToolSelect, selectedTo
       {/* Results grid */}
       {filteredResources.length > 0 ? (
         <div className="grid md:grid-cols-2 gap-4">
-          {filteredResources.map((resource) => {
+          {filteredResources.map((resource, index) => {
             const isSelected = selectedTools.some(t => t.slug === resource.slug);
             const canSelect = !onToolSelect || selectedTools.length < 3 || isSelected;
             
