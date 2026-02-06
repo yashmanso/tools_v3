@@ -1,0 +1,4 @@
+
+[SHIFT](https://shift.tools/) is a search engine and online platform to navigate the sea of sustainability tools and carve out your pathway to implementation. SHIFT is also a community of practitioners working together to review tools based on their own experiences. The SHIFT community includes corporate sustainability practitioners, sustainability-oriented entrepreneurs, impact investors and more. In particular, they offer an online set of [resources ](https://shift.tools/curriculums/4)including position papers, tools, frameworks, and methods that help entrepreneurs assess their impact.
+
+![[SHIFT.jpeg]]

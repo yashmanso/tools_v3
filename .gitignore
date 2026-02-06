@@ -1,0 +1,66 @@
+# Dependencies
+node_modules/
+.pnp
+.pnp.js
+
+# Testing
+coverage/
+
+# Next.js
+.next/
+out/
+
+# Production
+build/
+dist/
+
+# Misc
+.DS_Store
+*.pem
+
+# Debug
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+
+# Local env files
+.env*.local
+
+# Vercel
+.vercel
+
+# TypeScript
+*.tsbuildinfo
+next-env.d.ts
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# OS
+Thumbs.db
+
+# Workspace files
+*.code-workspace
+
+# Survey results (large files)
+survey/*.xlsx
+
+# Templates (not needed in production)
+>Templates</
+>Templates</*.md
+
+# Audit and planning docs (not needed in production)
+AUDIT_PLAN.md
+BUTTON_ISSUES_REPORT.md
+GRAPH_IMPLEMENTATION_PLAN.md
+TOOL_PREREQUISITES.md
+
+# IMPORTANT: Do NOT exclude the markdown content directories - they are needed for the build!
+# The following directories MUST be included:
+# Content/
+# survey/
