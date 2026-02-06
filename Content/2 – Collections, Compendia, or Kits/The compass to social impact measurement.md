@@ -1,0 +1,3 @@
+The [compass to social impact measurement](https://assets.csi.edu.au/assets/research/the-compass-your-guide-to-social-impact-measurement.pdf) is a guide to navigating social outcomes and impact measurement. This guide is for those working towards the creation of positive social impact in  and who wants to know if they are making a difference.
+
+![[the-compass-your-guide-to-social-impact-measurement.pdf]]

@@ -1,0 +1,3 @@
+The [NID Handbook](http://www.natureinspireddesign.nl/handbook.html) is a practical guide towards positive impact products that is created by researchers at the Delft University in the Netherlands. The handbook includes an extensive toolbox section that delves into topics such as value, sale cycle, concept, workings, recycling, health, food web, and symbiosis and provides many practical examples.
+
+![[toolbox.pdf]]
