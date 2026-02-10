@@ -9,7 +9,7 @@ interface ViewToggleProps {
 
 export function ViewToggle({ view, onViewChange }: ViewToggleProps) {
   return (
-    <div className="flex items-center gap-1 p-1 rounded-full bg-gray-100 dark:bg-gray-800 border border-gray-200 dark:border-gray-700">
+    <div className="flex items-center gap-1 p-1 rounded-full bg-[var(--bg-secondary)] border border-gray-200 dark:border-gray-700">
       <Button variant="ghost"
         onClick={() => onViewChange('grid')}
         className={`p-2 rounded-full transition-colors h-9 ${

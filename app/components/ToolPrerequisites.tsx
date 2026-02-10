@@ -29,7 +29,7 @@ export function ToolPrerequisites({ tool, allResources }: ToolPrerequisitesProps
       case 'expert':
         return 'bg-red-100 dark:bg-red-900/20 text-red-800 dark:text-red-200 border-red-300 dark:border-red-700';
       default:
-        return 'bg-gray-100 dark:bg-gray-800 text-gray-800 dark:text-gray-200 border-gray-300 dark:border-gray-700';
+        return 'bg-[var(--bg-secondary)] text-gray-800 dark:text-gray-200 border-gray-300 dark:border-gray-700';
     }
   };
 

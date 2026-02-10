@@ -198,7 +198,7 @@ export function ToolSubmissionSection() {
                 {attachments.map((file, index) => (
                   <div
                     key={index}
-                    className="flex items-center gap-2 px-3 py-1.5 bg-gray-100 dark:bg-gray-800 rounded-lg text-sm"
+                    className="flex items-center gap-2 px-3 py-1.5 bg-[var(--bg-primary)] rounded-lg text-sm"
                   >
                     <span className="text-gray-700 dark:text-gray-300">{file.name}</span>
                     <button
@@ -251,7 +251,7 @@ export function ToolSubmissionSection() {
               return (
                 <div
                   key={dimension.key}
-                  className="space-y-4 rounded-2xl border border-gray-200 dark:border-gray-700 p-6 bg-white dark:bg-gray-800 shadow-lg"
+                  className="space-y-4 rounded-2xl border border-gray-200 dark:border-gray-700 p-6 bg-[var(--bg-secondary)] shadow-lg"
                 >
                   <div className="text-left">
                     <h4 className="font-medium text-gray-900 dark:text-gray-100 text-lg mb-1 text-left">

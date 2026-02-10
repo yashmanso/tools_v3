@@ -175,7 +175,7 @@ Thank you!`
             Enter a tool name and upload related files. The system will automatically search the web, analyze your files, 
             and generate a formatted tool page matching the style of existing tools in the database.
           </p>
-          <div className="bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800 rounded-lg p-4 space-y-2">
+          <div className="bg-[var(--bg-secondary)] border border-blue-200 dark:border-blue-800 rounded-lg p-4 space-y-2">
             <h2 className="font-semibold text-blue-900 dark:text-blue-100 mb-2">What happens when you click "Generate Tool Page":</h2>
             <ol className="list-decimal list-inside space-y-2 text-sm">
               <li>
@@ -387,7 +387,7 @@ Thank you!`
                   </Button>
                 </div>
                 {showEmailFallback && (
-                  <div className="mt-3 p-3 bg-gray-100 dark:bg-gray-800 rounded-lg text-sm">
+                  <div className="mt-3 p-3 bg-[var(--bg-secondary)] rounded-lg text-sm">
                     <p className="text-gray-700 dark:text-gray-300 mb-2">
                       If your email client didn't open, please send your files and tool information to:
                     </p>
@@ -436,7 +436,7 @@ Thank you!`
                     {files.map((file, index) => (
                       <div
                         key={index}
-                        className="flex items-center gap-2 px-3 py-1.5 bg-gray-100 dark:bg-gray-800 rounded-lg text-sm"
+                        className="flex items-center gap-2 px-3 py-1.5 bg-[var(--bg-primary)] rounded-lg text-sm"
                       >
                         <span className="text-gray-700 dark:text-gray-300">{file.name}</span>
                         <button

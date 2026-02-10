@@ -95,7 +95,7 @@ export function SearchFilter({ resources, allResources, onToolSelect, selectedTo
                 className={`text-xs px-3 py-1 rounded-full transition-colors ${
                   selectedTags.has(tag)
                     ? 'bg-blue-600 text-white'
-                    : 'bg-gray-100 dark:bg-gray-800 text-gray-600 dark:text-gray-400 hover:bg-gray-200 dark:hover:bg-gray-700'
+                    : 'bg-[var(--bg-secondary)] text-gray-600 dark:text-gray-400 hover:bg-gray-200 dark:hover:bg-gray-700'
                 }`}
               >
                 {tag}

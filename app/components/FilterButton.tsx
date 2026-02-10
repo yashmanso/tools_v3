@@ -10,7 +10,7 @@ interface FilterButtonProps {
 
 export function FilterButton({ onClick, isActive = false, activeFilterCount = 0 }: FilterButtonProps) {
   return (
-    <div className="flex items-center gap-1 p-1 rounded-full bg-gray-100 dark:bg-gray-800 border border-gray-200 dark:border-gray-700">
+    <div className="flex items-center gap-1 p-1 rounded-full bg-[var(--bg-secondary)] border border-gray-200 dark:border-gray-700">
       <Button variant="ghost"
         onClick={onClick}
         className={`relative px-3 py-1.5 rounded-full transition-colors flex items-center gap-2 h-9 ${
