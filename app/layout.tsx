@@ -1,5 +1,6 @@
 import type { Metadata } from 'next';
 import './globals.css';
+import { Analytics } from '@vercel/analytics/next';
 import { ThemeProvider } from './components/ThemeProvider';
 import { HeaderWrapper } from './components/HeaderWrapper';
 import { PanelProvider } from './components/PanelContext';
@@ -36,6 +37,7 @@ export default function RootLayout({
                 <TagModal resources={allResources} />
                 <WelcomePopup allResources={allResources} />
               </div>
+              <Analytics />
             </TagModalProvider>
           </PanelProvider>
         </ThemeProvider>
