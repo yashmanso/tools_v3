@@ -36,10 +36,11 @@ const getNodeIcon = (node: GraphNode): string => {
 };
 
 const getNodeColor = (node: GraphNode, isSelected: boolean): string => {
-  if (isSelected) return '#a855f7'; // purple for selected
-  if (node.category === 'tools') return '#3b82f6'; // blue
-  if (node.category === 'collections') return '#8b5cf6'; // purple
-  if (node.category === 'articles') return '#10b981'; // green
+  if (isSelected) return '#64748b'; // slate for selected
+  // Monochrome palette based on category
+  if (node.category === 'tools') return '#475569'; // slate-600
+  if (node.category === 'collections') return '#64748b'; // slate-500
+  if (node.category === 'articles') return '#94a3b8'; // slate-400
   return '#6b7280'; // gray
 };
 
@@ -53,6 +54,7 @@ export function NetworkGraph({ allResources, graphData }: NetworkGraphProps) {
   const containerRef = useRef<HTMLDivElement>(null);
   const [dimensions, setDimensions] = useState({ width: 1000, height: 700 });
   const [hoveredNode, setHoveredNode] = useState<string | null>(null);
+  const [legendExpanded, setLegendExpanded] = useState(false);
   
   // Zoom and pan state
   const [transform, setTransform] = useState({ x: 0, y: 0, k: 1 });
@@ -457,7 +459,7 @@ export function NetworkGraph({ allResources, graphData }: NetworkGraphProps) {
             placeholder="Search tools..."
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
-            className="w-full px-3 py-2 rounded-full border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+            className="w-full px-3 py-2 rounded-full border border-gray-300 dark:border-gray-600 bg-[var(--bg-primary)] text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
           />
         </div>
 
@@ -491,7 +493,7 @@ export function NetworkGraph({ allResources, graphData }: NetworkGraphProps) {
                         onClick={() => handleNodeClick(nodeId)}
                         className={`w-full text-left px-3 py-1.5 text-xs rounded-lg transition-colors flex items-center gap-2 ${
                           isSelected
-                            ? 'bg-purple-100 dark:bg-purple-900/30 text-purple-700 dark:text-purple-300'
+                            ? 'bg-slate-100 dark:bg-slate-800/50 text-slate-700 dark:text-slate-300'
                             : 'text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-700'
                         }`}
                       >
@@ -532,7 +534,7 @@ export function NetworkGraph({ allResources, graphData }: NetworkGraphProps) {
 
       {/* Right Pane - Graph */}
       <div 
-        className="flex-1 relative bg-gray-50 dark:bg-gray-900 overflow-hidden" 
+        className="flex-1 relative bg-[var(--bg-secondary)] overflow-hidden" 
         ref={containerRef}
         onMouseDown={handleMouseDown}
         onMouseMove={handleMouseMove}
@@ -567,7 +569,7 @@ export function NetworkGraph({ allResources, graphData }: NetworkGraphProps) {
                     y1={sourcePos.y}
                     x2={targetPos.x}
                     y2={targetPos.y}
-                    stroke={isHighlighted ? '#a855f7' : '#64748b'}
+                    stroke={isHighlighted ? '#475569' : '#cbd5e1'}
                     strokeWidth={strokeWidth}
                     opacity={opacity}
                   />
@@ -616,11 +618,11 @@ export function NetworkGraph({ allResources, graphData }: NetworkGraphProps) {
                       cy={pos.y}
                       r={size}
                       fill={color}
-                      stroke={isSelected ? '#fbbf24' : isHovered ? '#fbbf24' : '#fff'}
+                      stroke={isSelected ? '#64748b' : isHovered ? '#94a3b8' : '#cbd5e1'}
                       strokeWidth={isSelected ? 3 : isHovered ? 2.5 : 2}
                       className="cursor-pointer transition-all"
                       style={{ 
-                        filter: isHovered ? 'drop-shadow(0 0 8px rgba(251, 191, 36, 0.6))' : 'none'
+                        filter: isHovered ? 'drop-shadow(0 0 8px rgba(148, 163, 184, 0.6))' : 'none'
                       }}
                       onClick={() => handleNodeClick(pos.id)}
                     />
@@ -649,7 +651,7 @@ export function NetworkGraph({ allResources, graphData }: NetworkGraphProps) {
                           rx="4"
                           fill="rgba(17, 24, 39, 0.95)"
                           className="dark:fill-gray-100"
-                          stroke="rgba(251, 191, 36, 0.5)"
+                          stroke="rgba(148, 163, 184, 0.5)"
                           strokeWidth="1"
                         />
                         <text
@@ -679,8 +681,48 @@ export function NetworkGraph({ allResources, graphData }: NetworkGraphProps) {
           </g>
         </svg>
 
+        {/* Legend - Collapsible */}
+        <div className="absolute top-4 left-4 bg-[var(--bg-secondary)] rounded-lg border border-gray-200 dark:border-gray-700 shadow-lg overflow-hidden">
+          <Button variant="ghost"
+            onClick={() => setLegendExpanded(!legendExpanded)}
+            className="w-full flex items-center justify-between px-3 py-2 text-xs font-semibold text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors"
+          >
+            <span>Legend</span>
+            <svg
+              className={`w-3 h-3 transition-transform ${legendExpanded ? 'rotate-180' : ''}`}
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+            >
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+            </svg>
+          </Button>
+          {legendExpanded && (
+            <div className="px-3 pb-3 pt-1 space-y-1.5">
+              <div className="flex items-center gap-2">
+                <div className="w-6 h-6 rounded-full bg-[#475569] flex items-center justify-center text-white text-[10px] font-bold">
+                  T
+                </div>
+                <span className="text-xs text-gray-600 dark:text-gray-400">Tools</span>
+              </div>
+              <div className="flex items-center gap-2">
+                <div className="w-6 h-6 rounded-full bg-[#64748b] flex items-center justify-center text-white text-[10px] font-bold">
+                  K
+                </div>
+                <span className="text-xs text-gray-600 dark:text-gray-400">Collections</span>
+              </div>
+              <div className="flex items-center gap-2">
+                <div className="w-6 h-6 rounded-full bg-[#94a3b8] flex items-center justify-center text-white text-[10px] font-bold">
+                  A
+                </div>
+                <span className="text-xs text-gray-600 dark:text-gray-400">Articles</span>
+              </div>
+            </div>
+          )}
+        </div>
+
         {/* Top-right zoom controls */}
-        <div className="absolute top-4 right-4 flex flex-col gap-2 bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700 shadow-lg p-2">
+        <div className="absolute top-4 right-4 flex flex-col gap-2 bg-[var(--bg-secondary)] rounded-lg border border-gray-200 dark:border-gray-700 shadow-lg p-2">
           <Button variant="ghost"
             onClick={handleZoomIn}
             className="p-2 hover:bg-gray-100 dark:hover:bg-gray-700 rounded transition-colors"
@@ -711,7 +753,7 @@ export function NetworkGraph({ allResources, graphData }: NetworkGraphProps) {
         </div>
 
         {/* Bottom-right controls */}
-        <div className="absolute bottom-4 right-4 flex items-center gap-2 bg-white dark:bg-gray-800 rounded-lg px-3 py-2 border border-gray-200 dark:border-gray-700 shadow-lg">
+        <div className="absolute bottom-4 right-4 flex items-center gap-2 bg-[var(--bg-secondary)] rounded-lg px-3 py-2 border border-gray-200 dark:border-gray-700 shadow-lg">
           <Button variant="ghost"
             onClick={handleReset}
             className="p-1 hover:bg-gray-100 dark:hover:bg-gray-700 rounded transition-colors"
@@ -728,7 +770,9 @@ export function NetworkGraph({ allResources, graphData }: NetworkGraphProps) {
 
         {/* Selected node info */}
         {selectedNodes.size > 0 && (
-          <div className="absolute top-4 left-4 bg-white dark:bg-gray-800 rounded-lg p-4 border border-gray-200 dark:border-gray-700 shadow-lg max-w-xs z-10">
+          <div className={`absolute left-4 bg-[var(--bg-secondary)] rounded-lg p-4 border border-gray-200 dark:border-gray-700 shadow-lg max-w-xs z-10 ${
+            legendExpanded ? 'top-44' : 'top-16'
+          }`}>
             <div className="flex items-center justify-between mb-3">
               <h3 className="text-sm font-semibold text-gray-900 dark:text-gray-100">
                 Selected ({selectedNodes.size})

@@ -171,7 +171,7 @@ export function QuickFiltersSidebar({ resources, onFiltersChange, initialFilters
               placeholder="Search..."
               value={filters.searchQuery}
               onChange={(e) => setFilters(prev => ({ ...prev, searchQuery: e.target.value }))}
-              className="w-full px-3 py-2 rounded-full border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+              className="w-full px-3 py-2 rounded-full border border-gray-300 dark:border-gray-600 bg-[var(--bg-primary)] text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
             />
           </div>
 

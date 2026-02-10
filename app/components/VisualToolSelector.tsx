@@ -17,30 +17,29 @@ interface DecisionState {
 }
 
 const GOALS = [
-  { id: 'map', label: 'Map & Design', icon: '🗺️', description: 'Map out concepts, models, or strategies' },
-  { id: 'assess', label: 'Assess & Measure', icon: '📊', description: 'Evaluate impact, performance, or sustainability' },
-  { id: 'report', label: 'Report & Communicate', icon: '📝', description: 'Create reports and communicate findings' },
-  { id: 'align', label: 'Align & Strategize', icon: '🎯', description: 'Align goals and create strategy' },
+  { id: 'map', label: 'Map & Design', icon: null, description: 'Map out concepts, models, or strategies' },
+  { id: 'assess', label: 'Assess & Measure', icon: null, description: 'Evaluate impact, performance, or sustainability' },
+  { id: 'report', label: 'Report & Communicate', icon: null, description: 'Create reports and communicate findings' },
+  { id: 'align', label: 'Align & Strategize', icon: null, description: 'Align goals and create strategy' },
 ];
 
 const AUDIENCES = [
-  { id: 'entrepreneurs', label: 'Entrepreneurs', icon: '💼' },
-  { id: 'startups', label: 'Startups', icon: '🚀' },
-  { id: 'SMEs', label: 'SMEs', icon: '🏢' },
-  { id: 'corporations', label: 'Corporations', icon: '🏛️' },
-  { id: 'researchers', label: 'Researchers', icon: '🔬' },
-  { id: 'students', label: 'Students', icon: '🎓' },
-  { id: 'educators', label: 'Educators', icon: '👨‍🏫' },
-  { id: 'practitioners', label: 'Practitioners', icon: '👷' },
+  { id: 'entrepreneurs', label: 'Entrepreneurs', icon: null },
+  { id: 'startups', label: 'Startups', icon: null },
+  { id: 'SMEs', label: 'SMEs', icon: null },
+  { id: 'corporations', label: 'Corporations', icon: null },
+  { id: 'researchers', label: 'Researchers', icon: null },
+  { id: 'students', label: 'Students', icon: null },
+  { id: 'educators', label: 'Educators', icon: null },
+  { id: 'practitioners', label: 'Practitioners', icon: null },
 ];
 
 const TIMELINES = [
-  { id: 'quick', label: 'Quick (< 1 hour)', icon: '⚡', value: 1 },
-  { id: 'short', label: 'Short (1-4 hours)', icon: '⏱️', value: 2 },
-  { id: 'medium', label: 'Medium (Half day)', icon: '📅', value: 3 },
-  { id: 'long', label: 'Long (Full day+)', icon: '🗓️', value: 4 },
+  { id: 'quick', label: 'Quick (< 1 hour)', icon: null, value: 1 },
+  { id: 'short', label: 'Short (1-4 hours)', icon: null, value: 2 },
+  { id: 'medium', label: 'Medium (Half day)', icon: null, value: 3 },
+  { id: 'long', label: 'Long (Full day+)', icon: null, value: 4 },
 ];
-
 export function VisualToolSelector({ allResources }: VisualToolSelectorProps) {
   const [decisionState, setDecisionState] = useState<DecisionState>({
     goal: null,
@@ -179,24 +178,20 @@ export function VisualToolSelector({ allResources }: VisualToolSelectorProps) {
                   What's your goal?
                 </h4>
               </div>
-              <div className="grid grid-cols-2 md:grid-cols-4 gap-3 ml-11">
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-2 2xl:grid-cols-4 gap-4 ml-11 items-stretch">
                 {GOALS.map((goal) => (
                   <Button variant="ghost"
                     key={goal.id}
                     onClick={() => handleGoalSelect(goal.id)}
-                    className={`p-4 rounded-xl border-2 transition-all text-left whitespace-normal h-auto items-start justify-start ${
+                    className={`p-4 rounded-2xl border-2 transition-all text-left whitespace-normal h-full items-start justify-start min-h-[64px] ${
                       decisionState.goal === goal.id
                         ? 'border-blue-500 bg-blue-50 dark:bg-blue-900/20'
                         : 'border-gray-200 dark:border-gray-700 hover:border-blue-300 dark:hover:border-blue-600'
                     }`}
                   >
-                    <div className="flex flex-col items-start gap-2 w-full">
-                      <div className="text-2xl">{goal.icon}</div>
-                      <div className="font-semibold text-sm text-gray-900 dark:text-gray-100 leading-tight break-words">
+                    <div className="flex items-center justify-center w-full h-full">
+                      <div className="font-semibold text-xs sm:text-sm text-gray-900 dark:text-gray-100 leading-tight break-words text-center">
                         {goal.label}
-                      </div>
-                      <div className="text-xs text-gray-600 dark:text-gray-400 leading-snug break-words">
-                        {goal.description}
                       </div>
                     </div>
                   </Button>
@@ -224,20 +219,19 @@ export function VisualToolSelector({ allResources }: VisualToolSelectorProps) {
                     Who's your audience?
                   </h4>
                 </div>
-                <div className="grid grid-cols-2 md:grid-cols-4 gap-3 ml-11">
+                <div className="grid grid-cols-2 md:grid-cols-4 gap-4 ml-11 items-stretch">
                   {AUDIENCES.map((audience) => (
                     <Button variant="ghost"
                       key={audience.id}
                       onClick={() => handleAudienceSelect(audience.id)}
-                      className={`p-3 rounded-xl border-2 transition-all text-center whitespace-normal h-auto items-center justify-center ${
+                      className={`p-3 rounded-2xl border-2 transition-all text-center whitespace-normal h-full items-center justify-center w-full min-h-[56px] ${
                         decisionState.audience === audience.id
                           ? 'border-blue-500 bg-blue-50 dark:bg-blue-900/20'
                           : 'border-gray-200 dark:border-gray-700 hover:border-blue-300 dark:hover:border-blue-600'
                       }`}
                     >
-                      <div className="flex flex-col items-center gap-1 w-full">
-                        <div className="text-xl">{audience.icon}</div>
-                        <div className="font-medium text-xs text-gray-900 dark:text-gray-100 leading-tight break-words">
+                      <div className="flex items-center justify-center w-full h-full">
+                        <div className="font-medium text-[0.6875rem] sm:text-xs text-gray-900 dark:text-gray-100 leading-tight break-words text-center">
                           {audience.label}
                         </div>
                       </div>
@@ -265,20 +259,19 @@ export function VisualToolSelector({ allResources }: VisualToolSelectorProps) {
                     What's your timeline?
                   </h4>
                 </div>
-                <div className="grid grid-cols-2 md:grid-cols-4 gap-3 ml-11">
+                <div className="grid grid-cols-2 md:grid-cols-4 gap-4 ml-11 items-stretch">
                   {TIMELINES.map((timeline) => (
                     <Button variant="ghost"
                       key={timeline.id}
                       onClick={() => handleTimelineSelect(timeline.id)}
-                      className={`p-3 rounded-xl border-2 transition-all text-center whitespace-normal h-auto items-center justify-center ${
+                      className={`p-3 rounded-2xl border-2 transition-all text-center whitespace-normal h-full items-center justify-center w-full min-h-[56px] ${
                         decisionState.timeline === timeline.id
                           ? 'border-blue-500 bg-blue-50 dark:bg-blue-900/20'
                           : 'border-gray-200 dark:border-gray-700 hover:border-blue-300 dark:hover:border-blue-600'
                       }`}
                     >
-                      <div className="flex flex-col items-center gap-1 w-full">
-                        <div className="text-xl">{timeline.icon}</div>
-                        <div className="font-medium text-xs text-gray-900 dark:text-gray-100 leading-tight break-words">
+                      <div className="flex items-center justify-center w-full h-full">
+                        <div className="font-medium text-[0.6875rem] sm:text-xs text-gray-900 dark:text-gray-100 leading-tight break-words text-center">
                           {timeline.label}
                         </div>
                       </div>
