@@ -22,21 +22,22 @@ export default function HomePage() {
   };
 
   return (
-    <div className="max-w-4xl mx-auto bg-[var(--bg-primary)]">
-      <section className="text-center mb-16 px-4 sm:px-6">
-        <h1 className="font-bold mb-6 tracking-tight leading-[1.1]" style={{ fontSize: 'clamp(2.5rem, 8vw, 8rem)' }}>
-          <TypewriterTitle text="Sustainability Atlas" speed={100} repeat={true} />
-        </h1>
-        <p className="text-gray-600 dark:text-gray-400 mb-8 text-center font-medium tracking-tight" style={{ fontSize: 'clamp(1.25rem, 4vw, 3rem)' }}>
-          Tools and methods for sustainable entrepreneurship and innovation
-        </p>
-        <p className="text-lg md:text-xl leading-relaxed max-w-3xl mx-auto text-left text-gray-700 dark:text-gray-300">
-          An evolving collection of resources designed to help entrepreneurs, researchers,
-          educators, and practitioners integrate sustainability into their work.
-        </p>
-      </section>
+    <div className="bg-[var(--bg-primary)]">
+      <div className="max-w-4xl mx-auto">
+        <section className="text-center mb-16 px-4 sm:px-6">
+          <h1 className="text-4xl sm:text-5xl font-bold mb-6 tracking-tight leading-[1.1]">
+            <TypewriterTitle text="Sustainability Atlas" speed={100} repeat={true} />
+          </h1>
+          <p className="text-xl sm:text-2xl text-gray-600 dark:text-gray-400 mb-8 text-center font-medium tracking-tight">
+            Tools and methods for sustainable entrepreneurship and innovation
+          </p>
+          <p className="text-lg md:text-xl leading-relaxed max-w-3xl mx-auto text-left text-gray-700 dark:text-gray-300">
+            An evolving collection of resources designed to help entrepreneurs, researchers,
+            educators, and practitioners integrate sustainability into their work.
+          </p>
+        </section>
 
-      <section className="grid md:grid-cols-3 gap-6 mb-16">
+        <section className="grid md:grid-cols-3 gap-6 mb-16">
         <ScrollAnimation direction="slide-up" delay={0}>
           <div>
             <Link
@@ -134,21 +135,24 @@ export default function HomePage() {
         </ScrollAnimation>
       </section>
 
-      <MostViewedTools allResources={allResources} />
+        <MostViewedTools allResources={allResources} />
+      </div>
 
       <ExploreSection allResources={allResources} graphData={graphData} />
 
-      {/* Leave Feedback Button */}
-      <section className="mt-16 pt-12 border-t border-gray-200 dark:border-gray-700 text-center">
-        <Link href="/survey">
-          <Button className="px-8 py-6 text-base">
-            Leave feedback
-          </Button>
-        </Link>
-        <p className="text-sm text-gray-600 dark:text-gray-400 mt-4">
-          Help us improve the toolbox by sharing your experience
-        </p>
-      </section>
+      <div className="max-w-4xl mx-auto">
+        {/* Leave Feedback Button */}
+        <section className="mt-16 pt-12 border-t border-gray-200 dark:border-gray-700 text-center">
+          <Link href="/survey">
+            <Button className="px-8 py-6 text-base">
+              Leave feedback
+            </Button>
+          </Link>
+          <p className="text-sm text-gray-600 dark:text-gray-400 mt-4">
+            Help us improve the toolbox by sharing your experience
+          </p>
+        </section>
+      </div>
     </div>
   );
 }

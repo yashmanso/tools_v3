@@ -106,7 +106,7 @@ export function ExploreSection({ allResources, graphData }: ExploreSectionProps)
           >
             ← Back to options
           </Button>
-          <h2 className="text-2xl font-bold mb-4">Browse our collection</h2>
+          <h2 className="text-2xl font-bold mb-4 text-[var(--text-primary)]">Browse our collection</h2>
           <p className="text-gray-600 dark:text-gray-400 mb-6 max-w-2xl mx-auto">
             Explore our comprehensive collection of tools, methods, frameworks, and resources.
             Filter by category, search by keywords, or browse by tags to discover what interests you.
@@ -341,11 +341,11 @@ export function ExploreSection({ allResources, graphData }: ExploreSectionProps)
         </div>
       )}
 
-      <div className={`mx-auto max-w-6xl px-4 sm:px-6 lg:px-8 ${!hasPanelsOpen ? 'lg:pl-[21rem]' : ''}`}>
+      <div className={`px-4 sm:px-6 lg:px-8 ${!hasPanelsOpen ? 'max-w-4xl mx-auto' : 'max-w-6xl mx-auto'}`}>
         <div ref={contentRef} className="mt-6 lg:mt-0">
           {mode === 'select' ? (
             <div className="text-center">
-              <h2 className="text-2xl sm:text-3xl font-bold mb-4 px-4">Start exploring</h2>
+              <h2 className="text-2xl font-bold mb-4 px-4">Start exploring</h2>
               <p className="text-sm sm:text-base text-gray-600 dark:text-gray-400 mb-6 sm:mb-8 max-w-2xl mx-auto px-4">
                 Choose how you'd like to discover tools and resources for your sustainable innovation journey.
               </p>

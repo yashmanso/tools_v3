@@ -56,7 +56,7 @@ export function MostViewedTools({ allResources }: MostViewedToolsProps) {
     <section className="mb-16 px-4 sm:px-6 lg:px-8">
       <ScrollAnimation direction="fade" delay={0}>
         <div className="mb-6">
-          <h2 className="text-2xl font-bold mb-2 text-center">
+          <h2 className="text-2xl font-bold mb-2 text-center text-[var(--text-primary)]">
             Most viewed tools
           </h2>
           <p className="text-sm text-gray-600 dark:text-gray-400 text-center">
