@@ -89,7 +89,7 @@ export function ExploreSection({ allResources, graphData }: ExploreSectionProps)
         scrollTimeoutRef.current = setTimeout(() => {
           isScrollingRef.current = false;
           syncSidebar(false);
-        }, 200);
+        }, 1000);
       };
 
       container.addEventListener('scroll', handleScroll, { passive: true });
