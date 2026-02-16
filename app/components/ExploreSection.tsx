@@ -48,6 +48,8 @@ export function ExploreSection({ allResources, graphData }: ExploreSectionProps)
   const sectionRef = useRef<HTMLElement | null>(null);
   const scrollTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const isScrollingRef = useRef(false);
+  const modeRef = useRef(mode);
+  modeRef.current = mode; // keep ref in sync with state
   const { panels } = usePanels();
   const hasPanelsOpen = panels.length > 0;
   const { sidebarVisible, setSidebarVisible } = useSidebar();
@@ -55,11 +57,17 @@ export function ExploreSection({ allResources, graphData }: ExploreSectionProps)
   // Derive expanded state: visible when not scrolling and no panels open
   const sidebarExpanded = sidebarVisible && !hasPanelsOpen;
 
-  // Stable callback that pushes the derived value into context
+  // Stable callback that pushes the derived value into context.
+  // When a workflow is active (mode !== 'select'), the sidebar
+  // should NOT reappear after a scroll pause.
   const syncSidebar = useCallback(
     (scrolling: boolean) => {
-      const shouldShow = !scrolling && !hasPanelsOpen;
-      setSidebarVisible(shouldShow);
+      if (scrolling) {
+        setSidebarVisible(false);
+      } else {
+        const isOverview = modeRef.current === 'select';
+        setSidebarVisible(isOverview && !hasPanelsOpen);
+      }
     },
     [hasPanelsOpen, setSidebarVisible],
   );
@@ -159,6 +167,8 @@ export function ExploreSection({ allResources, graphData }: ExploreSectionProps)
 
   const handleSelectMode = (id: typeof mode) => {
     setMode(id);
+    // Hide sidebar immediately when entering a workflow; show when returning to overview
+    setSidebarVisible(id === 'select' && !hasPanelsOpen);
     // Smoothly scroll the main ExploreSection content into view
     if (contentRef.current) {
       contentRef.current.scrollIntoView({ behavior: 'smooth', block: 'start' });
