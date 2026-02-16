@@ -89,36 +89,37 @@ export function CompareTools({ allResources }: CompareToolsProps) {
 
   if (showComparison && selectedTools.length >= 2) {
     return (
-      <div className="max-w-7xl mx-auto">
-        <div className="mb-6 flex items-center justify-between">
-          <h2 className="text-2xl font-bold">Compare tools</h2>
+      <div className="max-w-7xl mx-auto px-4 sm:px-6">
+        <div className="mb-4 sm:mb-6 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
+          <h2 className="text-xl sm:text-2xl font-bold">Compare tools</h2>
           <Button variant="ghost"
             onClick={handleReset}
-            className="px-4 py-2 text-sm border border-gray-300 dark:border-gray-600 rounded-full hover:border-blue-500 dark:hover:border-blue-500 transition-colors"
+            className="px-3 sm:px-4 py-2 text-xs sm:text-sm border border-gray-300 dark:border-gray-600 rounded-full hover:border-blue-500 dark:hover:border-blue-500 transition-colors"
           >
             Start over
           </Button>
         </div>
 
         {/* Comparison table */}
-        <div className="overflow-x-auto">
-          <table className="w-full border-collapse table-fixed">
-            <colgroup>
-              <col style={{ width: '20%' }} />
-              {selectedTools.map((_, idx) => (
-                <col key={idx} style={{ width: `${80 / selectedTools.length}%` }} />
-              ))}
-            </colgroup>
-            <thead>
-              <tr className="border-b-2 border-gray-200 dark:border-gray-700">
-                <th className="p-4 text-left font-semibold text-gray-900 dark:text-gray-100">Dimension</th>
-                {selectedTools.map((tool) => (
-                  <th key={tool.slug} className="p-4 text-left font-semibold text-gray-900 dark:text-gray-100">
+        <div className="overflow-x-auto -mx-4 sm:mx-0">
+          <div className="inline-block min-w-full align-middle">
+            <table className="w-full border-collapse">
+              <colgroup>
+                <col className="w-[30%] sm:w-[20%]" />
+                {selectedTools.map((_, idx) => (
+                  <col key={idx} className="w-[35%] sm:w-auto" />
+                ))}
+              </colgroup>
+              <thead>
+                <tr className="border-b-2 border-gray-200 dark:border-gray-700">
+                  <th className="p-2 sm:p-4 text-left text-xs sm:text-sm font-semibold text-gray-900 dark:text-gray-100">Dimension</th>
+                  {selectedTools.map((tool) => (
+                    <th key={tool.slug} className="p-2 sm:p-4 text-left text-xs sm:text-sm font-semibold text-gray-900 dark:text-gray-100">
                     <PanelLink
                       href={`/${tool.category}/${tool.slug}`}
                       className="hover:no-underline"
                     >
-                      <div className="font-semibold text-blue-600 dark:text-blue-400 hover:underline">
+                      <div className="font-semibold text-xs sm:text-sm text-blue-600 dark:text-blue-400 hover:underline break-words">
                         {tool.title}
                       </div>
                     </PanelLink>
@@ -129,7 +130,7 @@ export function CompareTools({ allResources }: CompareToolsProps) {
             <tbody>
               {/* Overview */}
               <tr className="border-b border-gray-200 dark:border-gray-700">
-                <td className="p-4 font-medium text-gray-700 dark:text-gray-300 align-top">Overview</td>
+                <td className="p-2 sm:p-4 text-xs sm:text-sm font-medium text-gray-700 dark:text-gray-300 align-top">Overview</td>
                 {selectedTools.map((tool) => {
                   const overviewText = tool.overview || '';
                   const isLong = overviewText.length > 150;
@@ -138,7 +139,7 @@ export function CompareTools({ allResources }: CompareToolsProps) {
                   const overviewWithLinks = convertMarkdownLinksToHTML(overviewText);
                   
                   return (
-                    <td key={tool.slug} className="p-4 text-sm text-gray-600 dark:text-gray-400 align-top group/overview relative">
+                    <td key={tool.slug} className="p-2 sm:p-4 text-xs sm:text-sm text-gray-600 dark:text-gray-400 align-top group/overview relative">
                       {overviewText ? (
                         <>
                           <div 
@@ -149,7 +150,7 @@ export function CompareTools({ allResources }: CompareToolsProps) {
                             <span className="ml-1 text-blue-500 text-xs">(hover for full)</span>
                           )}
                           {isLong && (
-                            <div className="absolute left-0 top-full mt-2 w-96 bg-white dark:bg-gray-800 shadow-xl opacity-0 invisible group-hover/overview:opacity-100 group-hover/overview:visible z-[100] transition-all duration-200 pointer-events-none relative">
+                            <div className="absolute left-0 top-full mt-2 w-[90vw] max-w-sm bg-[var(--bg-secondary)] shadow-xl opacity-0 invisible group-hover/overview:opacity-100 group-hover/overview:visible z-[100] transition-all duration-200 pointer-events-none relative">
                               {/* Left border frame */}
                               <div className="absolute left-0 top-0 bottom-0 w-px bg-gray-300 dark:bg-gray-600"></div>
                               
@@ -182,11 +183,11 @@ export function CompareTools({ allResources }: CompareToolsProps) {
 
                 return (
                   <tr key={dimension} className="border-b border-gray-200 dark:border-gray-700">
-                    <td className="p-4 font-medium text-gray-700 dark:text-gray-300 capitalize align-top">
+                    <td className="p-2 sm:p-4 text-xs sm:text-sm font-medium text-gray-700 dark:text-gray-300 capitalize align-top">
                       {dimension.replace(/-/g, ' ')}
                     </td>
                     {selectedTools.map((tool, idx) => (
-                      <td key={tool.slug} className="p-4 align-top">
+                      <td key={tool.slug} className="p-2 sm:p-4 align-top">
                         <div className="flex flex-wrap gap-1 max-h-16 overflow-hidden group relative cursor-help">
                           {dimensionTags[idx].length > 0 ? (
                             <>
@@ -201,7 +202,7 @@ export function CompareTools({ allResources }: CompareToolsProps) {
                               {dimensionTags[idx].length > 3 && (
                                 <>
                                   <span className="text-xs text-gray-400">+{dimensionTags[idx].length - 3}</span>
-                                  <div className="absolute left-0 top-full mt-2 w-80 bg-white dark:bg-gray-800 shadow-xl opacity-0 invisible group-hover:opacity-100 group-hover:visible z-50 transition-all duration-200 pointer-events-none relative">
+                                  <div className="absolute left-0 top-full mt-2 w-[90vw] max-w-xs bg-[var(--bg-secondary)] shadow-xl opacity-0 invisible group-hover:opacity-100 group-hover:visible z-50 transition-all duration-200 pointer-events-none relative">
                                     {/* Left border frame */}
                                     <div className="absolute left-0 top-0 bottom-0 w-px bg-gray-300 dark:bg-gray-600"></div>
                                     
@@ -236,9 +237,9 @@ export function CompareTools({ allResources }: CompareToolsProps) {
 
               {/* All tags */}
               <tr className="border-b border-gray-200 dark:border-gray-700">
-                <td className="p-4 font-medium text-gray-700 dark:text-gray-300 align-top">All tags</td>
+                <td className="p-2 sm:p-4 text-xs sm:text-sm font-medium text-gray-700 dark:text-gray-300 align-top">All tags</td>
                 {selectedTools.map((tool) => (
-                  <td key={tool.slug} className="p-4 align-top">
+                  <td key={tool.slug} className="p-2 sm:p-4 align-top">
                     <div className="flex flex-wrap gap-1 max-h-16 overflow-hidden group relative cursor-help">
                       {tool.tags.slice(0, 6).map((tag) => (
                         <span
@@ -279,31 +280,32 @@ export function CompareTools({ allResources }: CompareToolsProps) {
               </tr>
             </tbody>
           </table>
+          </div>
         </div>
       </div>
     );
   }
 
   return (
-    <div className="max-w-6xl mx-auto">
-      <div className="mb-6">
-        <h2 className="text-2xl font-bold mb-2">Compare tools</h2>
-        <p className="text-gray-600 dark:text-gray-400">
+    <div className="max-w-6xl mx-auto px-4 sm:px-6">
+      <div className="mb-4 sm:mb-6">
+        <h2 className="text-xl sm:text-2xl font-bold mb-2">Compare tools</h2>
+        <p className="text-sm sm:text-base text-gray-600 dark:text-gray-400">
           Select up to 3 tools to compare their features, dimensions, and use cases.
         </p>
       </div>
 
       {/* Selected tools */}
       {selectedTools.length > 0 && (
-        <div className="mb-6 p-4 bg-blue-50 dark:bg-blue-900/20 rounded-2xl border border-blue-200 dark:border-blue-800">
-          <div className="flex items-center justify-between mb-3">
-            <h3 className="font-semibold text-gray-900 dark:text-gray-100">
+        <div className="mb-4 sm:mb-6 p-3 sm:p-4 bg-blue-50 dark:bg-blue-900/20 rounded-2xl border border-blue-200 dark:border-blue-800">
+          <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between mb-3 gap-2">
+            <h3 className="text-sm sm:text-base font-semibold text-gray-900 dark:text-gray-100">
               Selected tools ({selectedTools.length}/3)
             </h3>
             {selectedTools.length >= 2 && (
               <Button variant="ghost"
                 onClick={handleCompare}
-                className="px-4 py-2 bg-blue-600 text-white rounded-full hover:bg-blue-700 transition-colors text-sm"
+                className="px-3 sm:px-4 py-2 bg-blue-600 text-white rounded-full hover:bg-blue-700 transition-colors text-xs sm:text-sm w-full sm:w-auto"
               >
                 Compare selected tools
               </Button>
@@ -313,9 +315,9 @@ export function CompareTools({ allResources }: CompareToolsProps) {
             {selectedTools.map((tool) => (
               <div
                 key={tool.slug}
-                className="flex items-center gap-2 px-3 py-2 bg-white dark:bg-gray-800 rounded-full border border-blue-300 dark:border-blue-700"
+                className="flex items-center gap-2 px-2 sm:px-3 py-1.5 sm:py-2 bg-[var(--bg-primary)] rounded-full border border-blue-300 dark:border-blue-700"
               >
-                <span className="text-sm font-medium text-gray-900 dark:text-gray-100">
+                <span className="text-xs sm:text-sm font-medium text-gray-900 dark:text-gray-100 truncate max-w-[200px] sm:max-w-none">
                   {tool.title}
                 </span>
                 <Button variant="ghost"
@@ -338,9 +340,9 @@ export function CompareTools({ allResources }: CompareToolsProps) {
         </div>
       )}
 
-      {/* Tool selection */}
+        {/* Tool selection */}
       <div>
-        <div className="mb-6 space-y-4">
+        <div className="mb-4 sm:mb-6 space-y-4">
           {/* Search input */}
           <div>
             <input
@@ -348,13 +350,13 @@ export function CompareTools({ allResources }: CompareToolsProps) {
               placeholder="Search by title or description..."
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              className="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-full bg-[var(--bg-primary)] text-gray-900 dark:text-gray-100 focus:outline-none focus:ring-2 focus:ring-blue-500"
+              className="w-full px-3 sm:px-4 py-2 text-sm sm:text-base border border-gray-300 dark:border-gray-600 rounded-full bg-[var(--bg-primary)] text-gray-900 dark:text-gray-100 focus:outline-none focus:ring-2 focus:ring-blue-500"
             />
           </div>
         </div>
 
         {/* Results grid */}
-        <div className="grid md:grid-cols-2 gap-4">
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
           {tools
             .filter((tool) => {
               const matchesSearch =

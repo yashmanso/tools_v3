@@ -23,11 +23,11 @@ export default function HomePage() {
 
   return (
     <div className="max-w-4xl mx-auto bg-[var(--bg-primary)]">
-      <section className="text-center mb-16">
-        <h1 className="text-5xl md:text-7xl lg:text-8xl font-bold mb-6 tracking-tight leading-[1.1]">
+      <section className="text-center mb-16 px-4 sm:px-6">
+        <h1 className="font-bold mb-6 tracking-tight leading-[1.1]" style={{ fontSize: 'clamp(2.5rem, 8vw, 8rem)' }}>
           <TypewriterTitle text="Sustainability Atlas" speed={100} repeat={true} />
         </h1>
-        <p className="text-2xl md:text-3xl text-gray-600 dark:text-gray-400 mb-8 text-center font-medium tracking-tight">
+        <p className="text-gray-600 dark:text-gray-400 mb-8 text-center font-medium tracking-tight" style={{ fontSize: 'clamp(1.25rem, 4vw, 3rem)' }}>
           Tools and methods for sustainable entrepreneurship and innovation
         </p>
         <p className="text-lg md:text-xl leading-relaxed max-w-3xl mx-auto text-left text-gray-700 dark:text-gray-300">

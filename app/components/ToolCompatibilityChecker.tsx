@@ -83,35 +83,35 @@ export function ToolCompatibilityChecker({ allResources }: ToolCompatibilityChec
   };
 
   return (
-    <div className="max-w-7xl mx-auto">
-      <div className="mb-6">
-        <h2 className="text-2xl font-bold mb-2">Tool Compatibility Checker</h2>
-        <p className="text-gray-600 dark:text-gray-400">
+    <div className="max-w-7xl mx-auto px-4 sm:px-6">
+      <div className="mb-4 sm:mb-6">
+        <h2 className="text-xl sm:text-2xl font-bold mb-2">Tool Compatibility Checker</h2>
+        <p className="text-sm sm:text-base text-gray-600 dark:text-gray-400">
           Select tools to see which ones work well together, which overlap, and which might conflict
         </p>
       </div>
 
       {/* Selected Tools */}
       {selectedTools.length > 0 && (
-        <div className="mb-6">
-          <div className="flex items-center justify-between mb-3">
-            <h3 className="text-lg font-semibold text-gray-900 dark:text-gray-100">
+        <div className="mb-4 sm:mb-6">
+          <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between mb-3 gap-2">
+            <h3 className="text-base sm:text-lg font-semibold text-gray-900 dark:text-gray-100">
               Selected Tools ({selectedTools.length}/5)
             </h3>
             <Button variant="ghost"
               onClick={() => setSelectedTools([])}
-              className="text-sm text-gray-600 dark:text-gray-400 hover:text-red-600 dark:hover:text-red-400"
+              className="text-xs sm:text-sm text-gray-600 dark:text-gray-400 hover:text-red-600 dark:hover:text-red-400 px-2 py-1"
             >
               Clear all
             </Button>
           </div>
-          <div className="flex flex-wrap gap-3">
+          <div className="flex flex-wrap gap-2 sm:gap-3">
             {selectedTools.map((tool) => (
               <div
                 key={tool.slug}
-                className="flex items-center gap-2 px-4 py-2 bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800 rounded-full"
+                className="flex items-center gap-2 px-3 sm:px-4 py-1.5 sm:py-2 bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800 rounded-full"
               >
-                <span className="text-sm font-medium text-blue-900 dark:text-blue-100">
+                <span className="text-xs sm:text-sm font-medium text-blue-900 dark:text-blue-100 truncate max-w-[200px] sm:max-w-none">
                   {tool.title}
                 </span>
                 <Button variant="ghost"
@@ -130,11 +130,11 @@ export function ToolCompatibilityChecker({ allResources }: ToolCompatibilityChec
 
       {/* Recommendations */}
       {analysis.recommendations.length > 0 && (
-        <div className="mb-6 space-y-2">
+        <div className="mb-4 sm:mb-6 space-y-2">
           {analysis.recommendations.map((rec, index) => (
             <div
               key={index}
-              className={`p-4 rounded-xl border ${
+              className={`p-3 sm:p-4 rounded-lg sm:rounded-xl border ${
                 rec.includes('⚠️')
                   ? 'bg-red-50 dark:bg-red-900/20 border-red-200 dark:border-red-800 text-red-800 dark:text-red-200'
                   : rec.includes('ℹ️')
@@ -142,17 +142,17 @@ export function ToolCompatibilityChecker({ allResources }: ToolCompatibilityChec
                   : 'bg-green-50 dark:bg-green-900/20 border-green-200 dark:border-green-800 text-green-800 dark:text-green-200'
               }`}
             >
-              <p className="text-sm font-medium">{rec}</p>
+              <p className="text-xs sm:text-sm font-medium">{rec}</p>
             </div>
           ))}
         </div>
       )}
 
-      <div className="grid lg:grid-cols-3 gap-6">
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 sm:gap-6">
         {/* Left: Tool Selection */}
         <div className="lg:col-span-1">
-          <div className="bg-[var(--bg-secondary)] rounded-3xl border border-gray-200 dark:border-gray-700 p-6 sticky top-4">
-            <h3 className="text-lg font-semibold mb-4 text-gray-900 dark:text-gray-100">
+          <div className="bg-[var(--bg-secondary)] rounded-2xl sm:rounded-3xl border border-gray-200 dark:border-gray-700 p-4 sm:p-6 lg:sticky lg:top-4">
+            <h3 className="text-base sm:text-lg font-semibold mb-3 sm:mb-4 text-gray-900 dark:text-gray-100">
               Select Tools
             </h3>
             <input
@@ -160,23 +160,23 @@ export function ToolCompatibilityChecker({ allResources }: ToolCompatibilityChec
               placeholder="Search tools..."
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              className="w-full px-4 py-2 mb-4 rounded-full border border-gray-300 dark:border-gray-600 bg-[var(--bg-primary)] text-gray-900 dark:text-gray-100 focus:outline-none focus:ring-2 focus:ring-blue-500"
+              className="w-full px-3 sm:px-4 py-2 mb-3 sm:mb-4 text-sm sm:text-base rounded-full border border-gray-300 dark:border-gray-600 bg-[var(--bg-primary)] text-gray-900 dark:text-gray-100 focus:outline-none focus:ring-2 focus:ring-blue-500"
             />
-            <div className="space-y-2 max-h-[600px] overflow-y-auto">
+            <div className="space-y-2 max-h-[400px] sm:max-h-[600px] overflow-y-auto">
               {filteredTools.map((tool) => {
                 const isSelected = selectedTools.some(t => t.slug === tool.slug);
                 return (
                   <div
                     key={tool.slug}
                     onClick={() => handleToggleTool(tool)}
-                    className={`p-3 rounded-xl border cursor-pointer transition-all ${
+                    className={`p-2.5 sm:p-3 rounded-lg sm:rounded-xl border cursor-pointer transition-all min-h-[44px] flex items-center ${
                       isSelected
                         ? 'border-blue-500 bg-blue-50 dark:bg-blue-900/20'
                         : 'border-gray-200 dark:border-gray-700 hover:border-blue-300 dark:hover:border-blue-600'
                     }`}
                   >
-                    <div className="flex items-center justify-between">
-                      <span className={`text-sm font-medium ${
+                    <div className="flex items-center justify-between w-full">
+                      <span className={`text-xs sm:text-sm font-medium break-words flex-1 pr-2 ${
                         isSelected
                           ? 'text-blue-900 dark:text-blue-100'
                           : 'text-gray-900 dark:text-gray-100'
@@ -204,11 +204,11 @@ export function ToolCompatibilityChecker({ allResources }: ToolCompatibilityChec
         </div>
 
         {/* Right: Compatibility Results */}
-        <div className="lg:col-span-2 space-y-6">
+        <div className="lg:col-span-2 space-y-4 sm:space-y-6">
           {selectedTools.length === 0 ? (
-            <div className="text-center py-12 bg-[var(--bg-secondary)] rounded-3xl border border-gray-200 dark:border-gray-700 border-dashed">
-              <p className="text-gray-500 dark:text-gray-400 mb-4">Select tools to check compatibility</p>
-              <p className="text-sm text-gray-400 dark:text-gray-500">
+            <div className="text-center py-8 sm:py-12 bg-[var(--bg-secondary)] rounded-2xl sm:rounded-3xl border border-gray-200 dark:border-gray-700 border-dashed">
+              <p className="text-sm sm:text-base text-gray-500 dark:text-gray-400 mb-2 sm:mb-4">Select tools to check compatibility</p>
+              <p className="text-xs sm:text-sm text-gray-400 dark:text-gray-500">
                 Choose up to 5 tools to see which ones work well together
               </p>
             </div>
@@ -217,35 +217,35 @@ export function ToolCompatibilityChecker({ allResources }: ToolCompatibilityChec
               {/* Complementary Tools */}
               {analysis.complementaryTools.length > 0 && (
                 <div>
-                  <div className="flex items-center gap-2 mb-4">
-                    {getRelationshipIcon('complementary')}
-                    <h3 className="text-lg font-semibold text-gray-900 dark:text-gray-100">
+                  <div className="flex items-center gap-2 mb-3 sm:mb-4">
+                    <div className="w-4 h-4 sm:w-5 sm:h-5">{getRelationshipIcon('complementary')}</div>
+                    <h3 className="text-base sm:text-lg font-semibold text-gray-900 dark:text-gray-100">
                       Complementary Tools ({analysis.complementaryTools.length})
                     </h3>
                   </div>
-                  <p className="text-sm text-gray-600 dark:text-gray-400 mb-4">
+                  <p className="text-xs sm:text-sm text-gray-600 dark:text-gray-400 mb-3 sm:mb-4">
                     These tools work well together and complement your selection
                   </p>
-                  <div className="space-y-3">
+                  <div className="space-y-2 sm:space-y-3">
                     {analysis.complementaryTools.map((result) => (
                       <div
                         key={result.tool.slug}
-                        className={`p-4 rounded-xl border ${getRelationshipColor(result.relationship)}`}
+                        className={`p-3 sm:p-4 rounded-lg sm:rounded-xl border ${getRelationshipColor(result.relationship)}`}
                       >
-                        <div className="flex items-start justify-between mb-2">
-                          <div className="flex-1">
-                            <h4 className="font-semibold text-gray-900 dark:text-gray-100 mb-1">
+                        <div className="flex flex-col sm:flex-row items-start sm:items-start justify-between mb-2 gap-2">
+                          <div className="flex-1 min-w-0">
+                            <h4 className="text-sm sm:text-base font-semibold text-gray-900 dark:text-gray-100 mb-1 break-words">
                               {result.tool.title}
                             </h4>
                             <div className="flex items-center gap-2 mb-2">
-                              <span className="text-xs font-medium">
+                              <span className="text-[10px] sm:text-xs font-medium">
                                 Compatibility: {Math.round(result.score)}%
                               </span>
                             </div>
                           </div>
                           <Button variant="ghost"
                             onClick={() => handleToggleTool(result.tool)}
-                            className="px-3 py-1 text-xs border border-current rounded-full hover:bg-opacity-20 transition-colors"
+                            className="px-2 sm:px-3 py-1 text-[10px] sm:text-xs border border-current rounded-full hover:bg-opacity-20 transition-colors whitespace-nowrap shrink-0"
                           >
                             {selectedTools.some(t => t.slug === result.tool.slug) ? 'Remove' : 'Add'}
                           </Button>
@@ -281,13 +281,13 @@ export function ToolCompatibilityChecker({ allResources }: ToolCompatibilityChec
               {/* Overlapping Tools */}
               {analysis.overlappingTools.length > 0 && (
                 <div>
-                  <div className="flex items-center gap-2 mb-4">
-                    {getRelationshipIcon('overlap')}
-                    <h3 className="text-lg font-semibold text-gray-900 dark:text-gray-100">
+                  <div className="flex items-center gap-2 mb-3 sm:mb-4">
+                    <div className="w-4 h-4 sm:w-5 sm:h-5">{getRelationshipIcon('overlap')}</div>
+                    <h3 className="text-base sm:text-lg font-semibold text-gray-900 dark:text-gray-100">
                       Overlapping Tools ({analysis.overlappingTools.length})
                     </h3>
                   </div>
-                  <p className="text-sm text-gray-600 dark:text-gray-400 mb-4">
+                  <p className="text-xs sm:text-sm text-gray-600 dark:text-gray-400 mb-3 sm:mb-4">
                     These tools have significant overlap with your selection - consider if you need both
                   </p>
                   <div className="space-y-3">
@@ -327,28 +327,28 @@ export function ToolCompatibilityChecker({ allResources }: ToolCompatibilityChec
               {/* Conflicting Tools */}
               {analysis.conflictingTools.length > 0 && (
                 <div>
-                  <div className="flex items-center gap-2 mb-4">
-                    {getRelationshipIcon('conflict')}
-                    <h3 className="text-lg font-semibold text-gray-900 dark:text-gray-100">
+                  <div className="flex items-center gap-2 mb-3 sm:mb-4">
+                    <div className="w-4 h-4 sm:w-5 sm:h-5">{getRelationshipIcon('conflict')}</div>
+                    <h3 className="text-base sm:text-lg font-semibold text-gray-900 dark:text-gray-100">
                       Conflicting Tools ({analysis.conflictingTools.length})
                     </h3>
                   </div>
-                  <p className="text-sm text-gray-600 dark:text-gray-400 mb-4">
+                  <p className="text-xs sm:text-sm text-gray-600 dark:text-gray-400 mb-3 sm:mb-4">
                     ⚠️ Warning: These tools may conflict with your selection or overlap too much
                   </p>
-                  <div className="space-y-3">
+                  <div className="space-y-2 sm:space-y-3">
                     {analysis.conflictingTools.map((result) => (
                       <div
                         key={result.tool.slug}
-                        className={`p-4 rounded-xl border ${getRelationshipColor(result.relationship)}`}
+                        className={`p-3 sm:p-4 rounded-lg sm:rounded-xl border ${getRelationshipColor(result.relationship)}`}
                       >
                         <div className="flex items-start justify-between mb-2">
-                          <div className="flex-1">
-                            <h4 className="font-semibold text-gray-900 dark:text-gray-100 mb-1">
+                          <div className="flex-1 min-w-0">
+                            <h4 className="text-sm sm:text-base font-semibold text-gray-900 dark:text-gray-100 mb-1 break-words">
                               {result.tool.title}
                             </h4>
                             <div className="flex items-center gap-2 mb-2">
-                              <span className="text-xs font-medium">
+                              <span className="text-[10px] sm:text-xs font-medium">
                                 Conflict score: {Math.round(result.score)}%
                               </span>
                             </div>

@@ -167,8 +167,8 @@ export function WorkflowBuilder({ allResources }: WorkflowBuilderProps) {
 
   if (isCreating && currentWorkflow) {
     return (
-      <div className="max-w-7xl mx-auto">
-        <div className="mb-6 flex items-center justify-between">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6">
+        <div className="mb-4 sm:mb-6 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
           <Button variant="ghost"
             onClick={() => {
               setIsCreating(false);
@@ -176,18 +176,18 @@ export function WorkflowBuilder({ allResources }: WorkflowBuilderProps) {
               setWorkflowTitle('');
               setWorkflowDescription('');
             }}
-            className="text-sm text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-100 inline-flex items-center gap-2"
+            className="text-xs sm:text-sm text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-100 inline-flex items-center gap-2 px-2 py-1"
           >
             ← Back to workflows
           </Button>
-          <div className="flex gap-2">
+          <div className="flex gap-2 w-full sm:w-auto">
             {currentWorkflow.id && workflows.some(w => w.id === currentWorkflow.id) && (
               <Button variant="ghost"
                 onClick={() => {
                   setShareWorkflowId(currentWorkflow.id);
                   setShowShareModal(true);
                 }}
-                className="px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-full hover:border-blue-500 dark:hover:border-blue-500 transition-colors"
+                className="px-3 sm:px-4 py-2 text-xs sm:text-sm border border-gray-300 dark:border-gray-600 rounded-full hover:border-blue-500 dark:hover:border-blue-500 transition-colors flex-1 sm:flex-none"
               >
                 Share
               </Button>
@@ -195,100 +195,100 @@ export function WorkflowBuilder({ allResources }: WorkflowBuilderProps) {
             <Button variant="ghost"
               onClick={handleSaveWorkflow}
               disabled={!workflowTitle.trim() || currentWorkflow.steps.length === 0}
-              className="px-4 py-2 bg-blue-600 text-white rounded-full hover:bg-blue-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+              className="px-3 sm:px-4 py-2 text-xs sm:text-sm bg-blue-600 text-white rounded-full hover:bg-blue-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex-1 sm:flex-none"
             >
               Save workflow
             </Button>
           </div>
         </div>
 
-        <div className="grid lg:grid-cols-3 gap-6">
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 sm:gap-6">
           {/* Left: Workflow Editor */}
-          <div className="lg:col-span-2 space-y-6">
+          <div className="lg:col-span-2 space-y-4 sm:space-y-6">
             {/* Workflow Info */}
-            <div className="bg-[var(--bg-secondary)] rounded-3xl border border-gray-200 dark:border-gray-700 p-6">
+            <div className="bg-[var(--bg-secondary)] rounded-2xl sm:rounded-3xl border border-gray-200 dark:border-gray-700 p-4 sm:p-6">
               <input
                 type="text"
                 placeholder="Workflow title..."
                 value={workflowTitle}
                 onChange={(e) => setWorkflowTitle(e.target.value)}
-                className="w-full text-2xl font-bold mb-3 bg-transparent border-none outline-none text-gray-900 dark:text-gray-100 placeholder-gray-400"
+                className="w-full text-xl sm:text-2xl font-bold mb-2 sm:mb-3 bg-transparent border-none outline-none text-gray-900 dark:text-gray-100 placeholder-gray-400"
               />
               <textarea
                 placeholder="Describe what this workflow helps accomplish..."
                 value={workflowDescription}
                 onChange={(e) => setWorkflowDescription(e.target.value)}
-                className="w-full text-sm text-gray-600 dark:text-gray-400 bg-transparent border-none outline-none resize-none"
+                className="w-full text-xs sm:text-sm text-gray-600 dark:text-gray-400 bg-transparent border-none outline-none resize-none"
                 rows={3}
               />
             </div>
 
             {/* Workflow Steps */}
-            <div className="space-y-4">
-              <h3 className="text-lg font-semibold text-gray-900 dark:text-gray-100">
+            <div className="space-y-3 sm:space-y-4">
+              <h3 className="text-base sm:text-lg font-semibold text-gray-900 dark:text-gray-100">
                 Workflow Steps ({currentWorkflow.steps.length})
               </h3>
 
               {currentWorkflow.steps.length === 0 ? (
-                <div className="text-center py-12 bg-[var(--bg-secondary)] rounded-3xl border border-gray-200 dark:border-gray-700 border-dashed">
-                  <p className="text-gray-500 dark:text-gray-400 mb-4">No tools added yet</p>
-                  <p className="text-sm text-gray-400 dark:text-gray-500">Search and add tools from the right panel</p>
+                <div className="text-center py-8 sm:py-12 bg-[var(--bg-secondary)] rounded-2xl sm:rounded-3xl border border-gray-200 dark:border-gray-700 border-dashed">
+                  <p className="text-sm sm:text-base text-gray-500 dark:text-gray-400 mb-2 sm:mb-4">No tools added yet</p>
+                  <p className="text-xs sm:text-sm text-gray-400 dark:text-gray-500">Search and add tools from the right panel</p>
                 </div>
               ) : (
-                <div className="space-y-4">
+                <div className="space-y-3 sm:space-y-4">
                   {currentWorkflow.steps.map((step, index) => (
                     <div
                       key={`${step.toolId}-${index}`}
-                      className="bg-[var(--bg-secondary)] rounded-3xl border border-gray-200 dark:border-gray-700 p-6 relative group"
+                      className="bg-[var(--bg-secondary)] rounded-2xl sm:rounded-3xl border border-gray-200 dark:border-gray-700 p-4 sm:p-6 relative group"
                     >
                       {/* Step Number */}
-                      <div className="absolute top-6 left-6 w-8 h-8 rounded-full bg-blue-600 text-white flex items-center justify-center font-bold text-sm">
+                      <div className="absolute top-4 sm:top-6 left-4 sm:left-6 w-7 h-7 sm:w-8 sm:h-8 rounded-full bg-blue-600 text-white flex items-center justify-center font-bold text-xs sm:text-sm">
                         {step.order}
                       </div>
 
-                      <div className="ml-12">
-                        <div className="flex items-start justify-between mb-3">
-                          <div className="flex-1">
-                            <h4 className="text-lg font-semibold text-gray-900 dark:text-gray-100">
+                      <div className="ml-10 sm:ml-12">
+                        <div className="flex items-start justify-between mb-2 sm:mb-3">
+                          <div className="flex-1 pr-2">
+                            <h4 className="text-base sm:text-lg font-semibold text-gray-900 dark:text-gray-100 break-words">
                               {step.tool.title}
                             </h4>
                           </div>
                         </div>
 
                         {/* Step Controls */}
-                        <div className="flex items-center gap-2 mt-4">
+                        <div className="flex flex-wrap items-center gap-2 mt-3 sm:mt-4">
                           <Button variant="ghost"
                             onClick={() => handleMoveStep(index, 'up')}
                             disabled={index === 0}
-                            className="p-2 rounded-lg border border-gray-300 dark:border-gray-600 hover:bg-gray-100 dark:hover:bg-gray-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+                            className="p-1.5 sm:p-2 rounded-lg border border-gray-300 dark:border-gray-600 hover:bg-gray-100 dark:hover:bg-gray-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors min-w-[36px] min-h-[36px]"
                             title="Move up"
                           >
-                            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <svg className="w-3.5 h-3.5 sm:w-4 sm:h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 15l7-7 7 7" />
                             </svg>
                           </Button>
                           <Button variant="ghost"
                             onClick={() => handleMoveStep(index, 'down')}
                             disabled={index === currentWorkflow.steps.length - 1}
-                            className="p-2 rounded-lg border border-gray-300 dark:border-gray-600 hover:bg-gray-100 dark:hover:bg-gray-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+                            className="p-1.5 sm:p-2 rounded-lg border border-gray-300 dark:border-gray-600 hover:bg-gray-100 dark:hover:bg-gray-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors min-w-[36px] min-h-[36px]"
                             title="Move down"
                           >
-                            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <svg className="w-3.5 h-3.5 sm:w-4 sm:h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
                             </svg>
                           </Button>
                           <Button variant="ghost"
                             onClick={() => handleRemoveStep(index)}
-                            className="p-2 rounded-lg border border-red-300 dark:border-red-600 text-red-600 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-900/20 transition-colors"
+                            className="p-1.5 sm:p-2 rounded-lg border border-red-300 dark:border-red-600 text-red-600 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-900/20 transition-colors min-w-[36px] min-h-[36px]"
                             title="Remove"
                           >
-                            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <svg className="w-3.5 h-3.5 sm:w-4 sm:h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
                             </svg>
                           </Button>
                           <PanelLink
                             href={`/${step.tool.category}/${step.tool.slug}`}
-                            className="ml-auto px-4 py-2 text-sm border border-gray-300 dark:border-gray-600 rounded-full hover:border-blue-500 dark:hover:border-blue-500 transition-colors hover:no-underline"
+                            className="ml-auto px-3 sm:px-4 py-1.5 sm:py-2 text-xs sm:text-sm border border-gray-300 dark:border-gray-600 rounded-full hover:border-blue-500 dark:hover:border-blue-500 transition-colors hover:no-underline whitespace-nowrap"
                           >
                             View tool →
                           </PanelLink>
@@ -311,9 +311,9 @@ export function WorkflowBuilder({ allResources }: WorkflowBuilderProps) {
 
           {/* Right: Tool Search */}
           <div className="lg:col-span-1">
-            <div className="sticky top-4">
-              <div className="bg-[var(--bg-secondary)] rounded-3xl border border-gray-200 dark:border-gray-700 p-6">
-                <h3 className="text-lg font-semibold mb-4 text-gray-900 dark:text-gray-100">
+            <div className="lg:sticky lg:top-4">
+              <div className="bg-[var(--bg-secondary)] rounded-2xl sm:rounded-3xl border border-gray-200 dark:border-gray-700 p-4 sm:p-6">
+                <h3 className="text-base sm:text-lg font-semibold mb-3 sm:mb-4 text-gray-900 dark:text-gray-100">
                   Add tools to workflow
                 </h3>
                 <input
@@ -321,15 +321,15 @@ export function WorkflowBuilder({ allResources }: WorkflowBuilderProps) {
                   placeholder="Search tools..."
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
-                  className="w-full px-4 py-2 mb-4 rounded-full border border-gray-300 dark:border-gray-600 bg-[var(--bg-primary)] text-gray-900 dark:text-gray-100 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  className="w-full px-3 sm:px-4 py-2 mb-3 sm:mb-4 text-sm sm:text-base rounded-full border border-gray-300 dark:border-gray-600 bg-[var(--bg-primary)] text-gray-900 dark:text-gray-100 focus:outline-none focus:ring-2 focus:ring-blue-500"
                 />
-                <div className="space-y-3 max-h-[600px] overflow-y-auto">
+                <div className="space-y-2 sm:space-y-3 max-h-[400px] sm:max-h-[600px] overflow-y-auto">
                   {filteredTools.map((tool) => {
                     const isAdded = currentWorkflow.steps.some(step => step.toolId === `${tool.category}/${tool.slug}`);
                     return (
                       <div
                         key={tool.slug}
-                        className={`p-4 rounded-xl border transition-all ${
+                        className={`p-3 sm:p-4 rounded-lg sm:rounded-xl border transition-all min-h-[44px] ${
                           isAdded
                             ? 'border-green-300 dark:border-green-700 bg-green-50 dark:bg-green-900/20'
                             : 'border-gray-200 dark:border-gray-700 hover:border-blue-500 dark:hover:border-blue-500 cursor-pointer'
@@ -337,8 +337,8 @@ export function WorkflowBuilder({ allResources }: WorkflowBuilderProps) {
                         onClick={() => !isAdded && handleAddTool(tool)}
                       >
                         <div className="flex items-start justify-between">
-                          <div className="flex-1">
-                            <h4 className="text-sm font-semibold text-gray-900 dark:text-gray-100">
+                          <div className="flex-1 pr-2">
+                            <h4 className="text-xs sm:text-sm font-semibold text-gray-900 dark:text-gray-100 break-words">
                               {tool.title}
                             </h4>
                           </div>

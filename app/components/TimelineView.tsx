@@ -58,33 +58,33 @@ export function TimelineView({ allResources }: TimelineViewProps) {
   }, [tools]);
 
   return (
-    <div className="max-w-6xl mx-auto">
-      <div className="mb-8">
-        <h2 className="text-3xl font-bold mb-3 text-center">Tools by innovation process stage</h2>
-        <p className="text-center text-gray-600 dark:text-gray-400 max-w-2xl mx-auto">
+    <div className="max-w-6xl mx-auto px-4 sm:px-6">
+      <div className="mb-6 sm:mb-8">
+        <h2 className="text-2xl sm:text-3xl font-bold mb-2 sm:mb-3 text-center px-2">Tools by innovation process stage</h2>
+        <p className="text-center text-sm sm:text-base text-gray-600 dark:text-gray-400 max-w-2xl mx-auto px-2">
           Explore tools organized by where they fit in the innovation journey, from initial ideation to mature implementation.
         </p>
       </div>
 
       {/* Timeline visualization */}
-      <div className="relative mb-12">
-        {/* Timeline line */}
-        <div className="absolute left-0 right-0 top-8 h-1 bg-gradient-to-r from-blue-500 via-purple-500 via-green-500 via-orange-500 to-indigo-500 rounded-full"></div>
+      <div className="relative mb-8 sm:mb-12">
+        {/* Timeline line - hidden on mobile, visible on larger screens */}
+        <div className="hidden sm:block absolute left-0 right-0 top-8 h-1 bg-gradient-to-r from-blue-500 via-purple-500 via-green-500 via-orange-500 to-indigo-500 rounded-full"></div>
         
         {/* Stage markers */}
-        <div className="relative flex justify-between items-start">
+        <div className="relative flex flex-wrap sm:flex-nowrap justify-center sm:justify-between items-start gap-4 sm:gap-0">
           {INNOVATION_STAGES.map((stage, index) => {
             const toolCount = toolsByStage[stage.id]?.length || 0;
             return (
-              <div key={stage.id} className="flex flex-col items-center flex-1">
-                <div className={`relative z-10 w-16 h-16 rounded-full ${stage.color} flex items-center justify-center font-semibold text-sm mb-2 border-2 border-white dark:border-gray-800 shadow-lg`}>
+              <div key={stage.id} className="flex flex-col items-center flex-1 min-w-[80px] sm:min-w-0">
+                <div className={`relative z-10 w-12 h-12 sm:w-16 sm:h-16 rounded-full ${stage.color} flex items-center justify-center font-semibold text-xs sm:text-sm mb-2 border-2 border-white dark:border-gray-800 shadow-lg`}>
                   {index + 1}
                 </div>
                 <div className="text-center">
-                  <div className="font-semibold text-sm text-gray-900 dark:text-gray-100 mb-1">
+                  <div className="font-semibold text-xs sm:text-sm text-gray-900 dark:text-gray-100 mb-1">
                     {stage.label}
                   </div>
-                  <div className="text-xs text-gray-500 dark:text-gray-400 mb-1">
+                  <div className="text-[10px] sm:text-xs text-gray-500 dark:text-gray-400 mb-1">
                     {toolCount} {toolCount === 1 ? 'tool' : 'tools'}
                   </div>
                 </div>
@@ -95,7 +95,7 @@ export function TimelineView({ allResources }: TimelineViewProps) {
       </div>
 
       {/* Tools organized by stage */}
-      <div className="space-y-12">
+      <div className="space-y-8 sm:space-y-12">
         {INNOVATION_STAGES.map((stage) => {
           const stageTools = toolsByStage[stage.id] || [];
           if (stageTools.length === 0) return null;
@@ -103,22 +103,22 @@ export function TimelineView({ allResources }: TimelineViewProps) {
           return (
             <div key={stage.id} className="relative">
               {/* Stage header */}
-              <div className="flex items-center gap-4 mb-6">
-                <div className={`px-4 py-2 rounded-full ${stage.color} font-semibold text-sm`}>
+              <div className="flex flex-col sm:flex-row items-start sm:items-center gap-2 sm:gap-4 mb-4 sm:mb-6">
+                <div className={`px-3 sm:px-4 py-1.5 sm:py-2 rounded-full ${stage.color} font-semibold text-xs sm:text-sm`}>
                   {stage.label}
                 </div>
-                <div className="flex-1 h-px bg-gray-200 dark:bg-gray-700"></div>
-                <div className="text-sm text-gray-500 dark:text-gray-400">
+                <div className="hidden sm:block flex-1 h-px bg-gray-200 dark:bg-gray-700"></div>
+                <div className="text-xs sm:text-sm text-gray-500 dark:text-gray-400">
                   {stageTools.length} {stageTools.length === 1 ? 'tool' : 'tools'}
                 </div>
               </div>
               
-              <p className="text-sm text-gray-600 dark:text-gray-400 mb-4 ml-2">
+              <p className="text-xs sm:text-sm text-gray-600 dark:text-gray-400 mb-3 sm:mb-4 ml-0 sm:ml-2">
                 {stage.description}
               </p>
 
               {/* Tools grid */}
-              <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-4">
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-4">
                 {stageTools.map((tool, index) => (
                   <ResourceCard key={tool.slug} resource={tool} allResources={allResources} animationDelay={index * 50} />
                 ))}
@@ -130,21 +130,21 @@ export function TimelineView({ allResources }: TimelineViewProps) {
         {/* Uncategorized tools */}
         {toolsByStage['uncategorized'] && toolsByStage['uncategorized'].length > 0 && (
           <div className="relative">
-            <div className="flex items-center gap-4 mb-6">
-              <div className="px-4 py-2 rounded-full bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300 font-semibold text-sm">
+            <div className="flex flex-col sm:flex-row items-start sm:items-center gap-2 sm:gap-4 mb-4 sm:mb-6">
+              <div className="px-3 sm:px-4 py-1.5 sm:py-2 rounded-full bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300 font-semibold text-xs sm:text-sm">
                 Other tools
               </div>
-              <div className="flex-1 h-px bg-gray-200 dark:bg-gray-700"></div>
-              <div className="text-sm text-gray-500 dark:text-gray-400">
+              <div className="hidden sm:block flex-1 h-px bg-gray-200 dark:bg-gray-700"></div>
+              <div className="text-xs sm:text-sm text-gray-500 dark:text-gray-400">
                 {toolsByStage['uncategorized'].length} {toolsByStage['uncategorized'].length === 1 ? 'tool' : 'tools'}
               </div>
             </div>
             
-            <p className="text-sm text-gray-600 dark:text-gray-400 mb-4 ml-2">
+            <p className="text-xs sm:text-sm text-gray-600 dark:text-gray-400 mb-3 sm:mb-4 ml-0 sm:ml-2">
               Tools that don't have a specific innovation stage tag
             </p>
 
-            <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-4">
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-4">
               {toolsByStage['uncategorized'].map((tool, index) => (
                 <ResourceCard key={tool.slug} resource={tool} allResources={allResources} animationDelay={index * 50} />
               ))}

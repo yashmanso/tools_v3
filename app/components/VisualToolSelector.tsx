@@ -32,6 +32,9 @@ const AUDIENCES = [
   { id: 'students', label: 'Students', icon: null },
   { id: 'educators', label: 'Educators', icon: null },
   { id: 'practitioners', label: 'Practitioners', icon: null },
+  { id: 'intrapreneurs', label: 'Intrapreneurs', icon: null },
+  { id: 'corporate-managers', label: 'Corporate Managers', icon: null },
+  { id: 'civil-servants', label: 'Civil Servants', icon: null },
 ];
 
 const TIMELINES = [
@@ -149,36 +152,36 @@ export function VisualToolSelector({ allResources }: VisualToolSelectorProps) {
   const currentStep = decisionState.goal ? (decisionState.audience ? 3 : 2) : 1;
 
   return (
-    <div className="max-w-7xl mx-auto">
-      <div className="mb-8">
-        <h2 className="text-3xl font-bold mb-2">Visual Tool Selector</h2>
-        <p className="text-gray-600 dark:text-gray-400">
+    <div className="max-w-7xl mx-auto px-4 sm:px-6">
+      <div className="mb-6 sm:mb-8">
+        <h2 className="text-2xl sm:text-3xl font-bold mb-2">Visual Tool Selector</h2>
+        <p className="text-sm sm:text-base text-gray-600 dark:text-gray-400">
           Answer a few questions and use visual filters to find the perfect tools for your needs
         </p>
       </div>
 
-      <div className="grid lg:grid-cols-3 gap-6">
+      <div className="grid lg:grid-cols-3 gap-4 sm:gap-6">
         {/* Left: Decision Tree */}
-        <div className="lg:col-span-2 space-y-6">
+        <div className="lg:col-span-2 space-y-4 sm:space-y-6">
           {/* Decision Tree Flow */}
-          <div className="bg-[var(--bg-secondary)] rounded-3xl border border-gray-200 dark:border-gray-700 p-6">
-            <h3 className="text-xl font-semibold mb-6 text-gray-900 dark:text-gray-100">
+          <div className="bg-[var(--bg-secondary)] rounded-2xl sm:rounded-3xl border border-gray-200 dark:border-gray-700 p-4 sm:p-6">
+            <h3 className="text-lg sm:text-xl font-semibold mb-4 sm:mb-6 text-gray-900 dark:text-gray-100">
               Decision Tree
             </h3>
 
             {/* Step 1: Goal */}
-            <div className="mb-8">
-              <div className="flex items-center gap-3 mb-4">
-                <div className={`w-8 h-8 rounded-full flex items-center justify-center font-bold text-sm ${
+            <div className="mb-6 sm:mb-8">
+              <div className="flex items-center gap-2 sm:gap-3 mb-3 sm:mb-4">
+                <div className={`w-7 h-7 sm:w-8 sm:h-8 rounded-full flex items-center justify-center font-bold text-xs sm:text-sm ${
                   currentStep >= 1 ? 'bg-blue-600 text-white' : 'bg-gray-300 dark:bg-gray-600 text-gray-600 dark:text-gray-400'
                 }`}>
                   1
                 </div>
-                <h4 className="text-lg font-semibold text-gray-900 dark:text-gray-100">
+                <h4 className="text-base sm:text-lg font-semibold text-gray-900 dark:text-gray-100">
                   What's your goal?
                 </h4>
               </div>
-              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-2 2xl:grid-cols-4 gap-4 ml-11 items-stretch">
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-2 2xl:grid-cols-4 gap-3 sm:gap-4 ml-0 sm:ml-11 items-stretch">
                 {GOALS.map((goal) => (
                   <Button variant="ghost"
                     key={goal.id}
@@ -219,7 +222,7 @@ export function VisualToolSelector({ allResources }: VisualToolSelectorProps) {
                     Who's your audience?
                   </h4>
                 </div>
-                <div className="grid grid-cols-2 md:grid-cols-4 gap-4 ml-11 items-stretch">
+                <div className="grid grid-cols-2 md:grid-cols-4 gap-3 sm:gap-4 ml-0 sm:ml-11 items-stretch">
                   {AUDIENCES.map((audience) => (
                     <Button variant="ghost"
                       key={audience.id}
@@ -259,7 +262,7 @@ export function VisualToolSelector({ allResources }: VisualToolSelectorProps) {
                     What's your timeline?
                   </h4>
                 </div>
-                <div className="grid grid-cols-2 md:grid-cols-4 gap-4 ml-11 items-stretch">
+                <div className="grid grid-cols-2 md:grid-cols-4 gap-3 sm:gap-4 ml-0 sm:ml-11 items-stretch">
                   {TIMELINES.map((timeline) => (
                     <Button variant="ghost"
                       key={timeline.id}
@@ -327,9 +330,9 @@ export function VisualToolSelector({ allResources }: VisualToolSelectorProps) {
 
         {/* Right: Visual Filters */}
         <div className="lg:col-span-1">
-          <div className="sticky top-4 space-y-6">
+          <div className="lg:sticky lg:top-4 space-y-4 sm:space-y-6">
             {/* Sustainability Focus */}
-            <div className="bg-[var(--bg-secondary)] rounded-3xl border border-gray-200 dark:border-gray-700 p-6">
+            <div className="bg-[var(--bg-secondary)] rounded-2xl sm:rounded-3xl border border-gray-200 dark:border-gray-700 p-4 sm:p-6">
               <h4 className="font-semibold mb-4 text-gray-900 dark:text-gray-100">
                 Sustainability Focus
               </h4>
@@ -360,7 +363,7 @@ export function VisualToolSelector({ allResources }: VisualToolSelectorProps) {
             </div>
 
             {/* Innovation Type */}
-            <div className="bg-[var(--bg-secondary)] rounded-3xl border border-gray-200 dark:border-gray-700 p-6">
+            <div className="bg-[var(--bg-secondary)] rounded-2xl sm:rounded-3xl border border-gray-200 dark:border-gray-700 p-4 sm:p-6">
               <h4 className="font-semibold mb-4 text-gray-900 dark:text-gray-100">
                 Innovation Type
               </h4>
@@ -391,7 +394,7 @@ export function VisualToolSelector({ allResources }: VisualToolSelectorProps) {
             </div>
 
             {/* Stage */}
-            <div className="bg-[var(--bg-secondary)] rounded-3xl border border-gray-200 dark:border-gray-700 p-6">
+            <div className="bg-[var(--bg-secondary)] rounded-2xl sm:rounded-3xl border border-gray-200 dark:border-gray-700 p-4 sm:p-6">
               <h4 className="font-semibold mb-4 text-gray-900 dark:text-gray-100">
                 Stage
               </h4>
@@ -423,7 +426,7 @@ export function VisualToolSelector({ allResources }: VisualToolSelectorProps) {
             </div>
 
             {/* Complexity Slider */}
-            <div className="bg-[var(--bg-secondary)] rounded-3xl border border-gray-200 dark:border-gray-700 p-6">
+            <div className="bg-[var(--bg-secondary)] rounded-2xl sm:rounded-3xl border border-gray-200 dark:border-gray-700 p-4 sm:p-6">
               <h4 className="font-semibold mb-4 text-gray-900 dark:text-gray-100">
                 Max Complexity
               </h4>

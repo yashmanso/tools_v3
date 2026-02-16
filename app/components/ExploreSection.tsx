@@ -283,9 +283,9 @@ export function ExploreSection({ allResources, graphData }: ExploreSectionProps)
         </aside>
       )}
 
-      {/* Mobile toolbar trigger (sticky, below the fixed header) */}
+      {/* Mobile toolbar trigger (non-sticky, scrolls with content) */}
       {!hasPanelsOpen && (
-        <div className="lg:hidden sticky top-[4.5rem] z-40 border-b border-border/60 bg-background/80 backdrop-blur-md">
+        <div className="lg:hidden border-b border-border/60 bg-background/80 backdrop-blur-md">
           <div className="mx-auto max-w-6xl px-4 sm:px-6 py-3 flex items-center justify-between gap-3">
           <div className="min-w-0">
             <div className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">
@@ -341,23 +341,23 @@ export function ExploreSection({ allResources, graphData }: ExploreSectionProps)
         </div>
       )}
 
-      <div className="mx-auto max-w-6xl px-4 sm:px-6 lg:px-8">
+      <div className={`mx-auto max-w-6xl px-4 sm:px-6 lg:px-8 ${!hasPanelsOpen ? 'lg:pl-[21rem]' : ''}`}>
         <div ref={contentRef} className="mt-6 lg:mt-0">
           {mode === 'select' ? (
             <div className="text-center">
-              <h2 className="text-3xl font-bold mb-4">Start exploring</h2>
-              <p className="text-gray-600 dark:text-gray-400 mb-8 max-w-2xl mx-auto">
+              <h2 className="text-2xl sm:text-3xl font-bold mb-4 px-4">Start exploring</h2>
+              <p className="text-sm sm:text-base text-gray-600 dark:text-gray-400 mb-6 sm:mb-8 max-w-2xl mx-auto px-4">
                 Choose how you'd like to discover tools and resources for your sustainable innovation journey.
               </p>
 
-              <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6 max-w-6xl mx-auto">
+              <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6 max-w-6xl mx-auto px-4">
                 {/* Browse Option */}
-                <CardButton onClick={() => setMode('browse')} className="group p-8 min-h-[240px]">
+                <CardButton onClick={() => setMode('browse')} className="group p-4 sm:p-6 lg:p-8 min-h-[200px] sm:min-h-[240px]">
                   <div className="flex w-full flex-col h-full">
-                    <h3 className="text-xl font-semibold mb-3 text-[var(--text-primary)]">
+                    <h3 className="text-lg sm:text-xl font-semibold mb-2 sm:mb-3 text-[var(--text-primary)]">
                       Browse & explore
                     </h3>
-                    <p className="text-sm text-[var(--text-secondary)] leading-relaxed break-words">
+                    <p className="text-xs sm:text-sm text-[var(--text-secondary)] leading-relaxed break-words">
                       Explore our full collection at your own pace. Browse by category, search by keywords,
                       or filter by tags. Perfect for discovering what's available and getting inspired.
                     </p>
@@ -368,7 +368,7 @@ export function ExploreSection({ allResources, graphData }: ExploreSectionProps)
                 </CardButton>
 
                 {/* Find Tool Option */}
-                <CardButton onClick={() => setMode('find')} className="group p-8 min-h-[240px]">
+                <CardButton onClick={() => setMode('find')} className="group p-4 sm:p-6 lg:p-8 min-h-[200px] sm:min-h-[240px]">
                   <div className="flex w-full flex-col h-full">
                     <h3 className="text-xl font-semibold mb-3 text-[var(--text-primary)]">
                       Find your tool
@@ -384,7 +384,7 @@ export function ExploreSection({ allResources, graphData }: ExploreSectionProps)
                 </CardButton>
 
                 {/* Compare Tools Option */}
-                <CardButton onClick={() => setMode('compare')} className="group p-8 min-h-[240px]">
+                <CardButton onClick={() => setMode('compare')} className="group p-4 sm:p-6 lg:p-8 min-h-[200px] sm:min-h-[240px]">
                   <div className="flex w-full flex-col h-full">
                     <h3 className="text-xl font-semibold mb-3 text-[var(--text-primary)]">
                       Compare tools
@@ -400,7 +400,7 @@ export function ExploreSection({ allResources, graphData }: ExploreSectionProps)
                 </CardButton>
 
                 {/* Timeline View Option */}
-                <CardButton onClick={() => setMode('timeline')} className="group p-8 min-h-[240px]">
+                <CardButton onClick={() => setMode('timeline')} className="group p-4 sm:p-6 lg:p-8 min-h-[200px] sm:min-h-[240px]">
                   <div className="flex w-full flex-col h-full">
                     <h3 className="text-xl font-semibold mb-3 text-[var(--text-primary)]">
                       View by stage
@@ -416,7 +416,7 @@ export function ExploreSection({ allResources, graphData }: ExploreSectionProps)
                 </CardButton>
 
                 {/* Network Graph Option */}
-                <CardButton onClick={() => setMode('network')} className="group p-8 min-h-[240px]">
+                <CardButton onClick={() => setMode('network')} className="group p-4 sm:p-6 lg:p-8 min-h-[200px] sm:min-h-[240px]">
                   <div className="flex w-full flex-col h-full">
                     <h3 className="text-xl font-semibold mb-3 text-[var(--text-primary)]">
                       Network graph
@@ -432,7 +432,7 @@ export function ExploreSection({ allResources, graphData }: ExploreSectionProps)
                 </CardButton>
 
                 {/* Workflow Builder Option */}
-                <CardButton onClick={() => setMode('workflows')} className="group p-8 min-h-[240px]">
+                <CardButton onClick={() => setMode('workflows')} className="group p-4 sm:p-6 lg:p-8 min-h-[200px] sm:min-h-[240px]">
                   <div className="flex w-full flex-col h-full">
                     <h3 className="text-xl font-semibold mb-3 text-[var(--text-primary)]">
                       Build workflows
@@ -448,7 +448,7 @@ export function ExploreSection({ allResources, graphData }: ExploreSectionProps)
                 </CardButton>
 
                 {/* Compatibility Checker Option */}
-                <CardButton onClick={() => setMode('compatibility')} className="group p-8 min-h-[240px]">
+                <CardButton onClick={() => setMode('compatibility')} className="group p-4 sm:p-6 lg:p-8 min-h-[200px] sm:min-h-[240px]">
                   <div className="flex w-full flex-col h-full">
                     <h3 className="text-xl font-semibold mb-3 text-[var(--text-primary)]">
                       Check compatibility
@@ -464,7 +464,7 @@ export function ExploreSection({ allResources, graphData }: ExploreSectionProps)
                 </CardButton>
 
                 {/* Visual Tool Selector Option */}
-                <CardButton onClick={() => setMode('visual')} className="group p-8 min-h-[240px]">
+                <CardButton onClick={() => setMode('visual')} className="group p-4 sm:p-6 lg:p-8 min-h-[200px] sm:min-h-[240px]">
                   <div className="flex w-full flex-col h-full">
                     <h3 className="text-xl font-semibold mb-3 text-[var(--text-primary)]">
                       Visual tool selector

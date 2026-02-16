@@ -26,6 +26,9 @@ const WELCOME_QUESTIONS = [
       { value: 'practitioner', label: 'Practitioner / Consultant' },
       { value: 'student', label: 'Student / Learner' },
       { value: 'educator', label: 'Educator / Teacher' },
+      { value: 'intrapreneur', label: 'Intrapreneur' },
+      { value: 'corporate-manager', label: 'Corporate Manager / Executive' },
+      { value: 'civil-servant', label: 'Civil Servant / Public Sector' },
     ],
   },
   {
@@ -154,23 +157,23 @@ export function WelcomePopup({ allResources }: WelcomePopupProps) {
   // Intro screen
   if (currentStep === -1) {
     return (
-      <div className="fixed inset-0 z-[200] flex items-center justify-center bg-black bg-opacity-75 p-4">
+      <div className="fixed inset-0 z-[200] flex items-center justify-center bg-black bg-opacity-75 p-3 sm:p-4">
         <div
           data-welcome-popup
-          className={`relative w-full max-w-2xl bg-white dark:bg-gray-800 rounded-3xl shadow-2xl overflow-hidden transition-all duration-300 ${
+          className={`relative w-full max-w-2xl bg-[var(--bg-secondary)] rounded-2xl sm:rounded-3xl shadow-2xl overflow-hidden transition-all duration-300 max-h-[90vh] overflow-y-auto ${
             isAnimating ? 'opacity-0 scale-95' : 'opacity-100 scale-100'
           }`}
           onClick={(e) => e.stopPropagation()}
           onMouseDown={(e) => e.stopPropagation()}
         >
           {/* Header */}
-          <div className="p-6 border-b border-gray-200 dark:border-gray-700">
-            <div className="flex items-center justify-between mb-4">
-              <div>
-                <h2 className="text-2xl font-bold text-gray-900 dark:text-gray-100">
+          <div className="p-4 sm:p-6 border-b border-gray-200 dark:border-gray-700">
+            <div className="flex items-start sm:items-center justify-between mb-3 sm:mb-4 gap-2">
+              <div className="flex-1 min-w-0">
+                <h2 className="text-xl sm:text-2xl font-bold text-gray-900 dark:text-gray-100">
                   Welcome to Sustainability Atlas
                 </h2>
-                <p className="text-sm text-gray-600 dark:text-gray-400 mt-1">
+                <p className="text-xs sm:text-sm text-gray-600 dark:text-gray-400 mt-1">
                   Let's personalize your experience
                 </p>
               </div>
@@ -187,25 +190,25 @@ export function WelcomePopup({ allResources }: WelcomePopupProps) {
           </div>
 
           {/* Content */}
-          <div className="p-6">
-            <div className="text-center mb-6">
-              <div className="w-16 h-16 bg-blue-100 dark:bg-blue-900/30 rounded-full flex items-center justify-center mx-auto mb-4">
-                <svg className="w-8 h-8 text-blue-600 dark:text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <div className="p-4 sm:p-6">
+            <div className="text-center mb-4 sm:mb-6">
+              <div className="w-12 h-12 sm:w-16 sm:h-16 bg-blue-100 dark:bg-blue-900/30 rounded-full flex items-center justify-center mx-auto mb-3 sm:mb-4">
+                <svg className="w-6 h-6 sm:w-8 sm:h-8 text-blue-600 dark:text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z" />
                 </svg>
               </div>
-              <h3 className="text-xl font-semibold mb-3 text-gray-900 dark:text-gray-100">
+              <h3 className="text-lg sm:text-xl font-semibold mb-2 sm:mb-3 text-gray-900 dark:text-gray-100">
                 Quick Personalization
               </h3>
-              <p className="text-gray-600 dark:text-gray-400 mb-4">
+              <p className="text-sm sm:text-base text-gray-600 dark:text-gray-400 mb-3 sm:mb-4">
                 We'll ask you three quick questions to understand your needs and preferences.
               </p>
-              <p className="text-gray-600 dark:text-gray-400 mb-6">
+              <p className="text-sm sm:text-base text-gray-600 dark:text-gray-400 mb-4 sm:mb-6">
                 Based on your answers, we'll organize the tools, collections, and articles to show you the most relevant content first.
               </p>
             </div>
 
-            <div className="bg-blue-50 dark:bg-blue-900/20 rounded-xl p-4 mb-6">
+            <div className="bg-blue-50 dark:bg-blue-900/20 rounded-xl p-3 sm:p-4 mb-4 sm:mb-6">
               <h4 className="font-semibold text-gray-900 dark:text-gray-100 mb-2">What you'll get:</h4>
               <ul className="space-y-2 text-sm text-gray-600 dark:text-gray-400">
                 <li className="flex items-start">
@@ -231,17 +234,17 @@ export function WelcomePopup({ allResources }: WelcomePopupProps) {
           </div>
 
           {/* Footer */}
-          <div className="p-4 border-t border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-900/50">
-            <div className="flex items-center justify-end gap-3">
+          <div className="p-3 sm:p-4 border-t border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-900/50">
+            <div className="flex items-center justify-end gap-2 sm:gap-3">
               <Button variant="ghost"
                 onClick={handleSkip}
-                className="text-sm text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-100 px-4 py-2"
+                className="text-xs sm:text-sm text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-100 px-3 sm:px-4 py-2"
               >
                 Skip for now
               </Button>
               <Button variant="ghost"
                 onClick={handleStart}
-                className="px-6 py-2 bg-blue-600 text-white rounded-full hover:bg-blue-700 transition-colors font-medium"
+                className="px-4 sm:px-6 py-2 bg-blue-600 text-white rounded-full hover:bg-blue-700 transition-colors font-medium text-sm sm:text-base"
               >
                 Get Started
               </Button>
@@ -256,23 +259,23 @@ export function WelcomePopup({ allResources }: WelcomePopupProps) {
   const progress = ((currentStep + 1) / WELCOME_QUESTIONS.length) * 100;
 
   return (
-    <div className="fixed inset-0 z-[200] flex items-center justify-center bg-black bg-opacity-75 p-4">
+    <div className="fixed inset-0 z-[200] flex items-center justify-center bg-black bg-opacity-75 p-3 sm:p-4">
       <div
         data-welcome-popup
-        className={`relative w-full max-w-2xl bg-white dark:bg-gray-800 rounded-3xl shadow-2xl overflow-hidden transition-all duration-300 ${
+        className={`relative w-full max-w-2xl bg-[var(--bg-secondary)] rounded-2xl sm:rounded-3xl shadow-2xl overflow-hidden transition-all duration-300 max-h-[90vh] overflow-y-auto ${
           isAnimating ? 'opacity-0 scale-95' : 'opacity-100 scale-100'
         }`}
         onClick={(e) => e.stopPropagation()}
         onMouseDown={(e) => e.stopPropagation()}
       >
         {/* Header */}
-        <div className="p-6 border-b border-gray-200 dark:border-gray-700">
-          <div className="flex items-center justify-between mb-4">
-            <div>
-              <h2 className="text-2xl font-bold text-gray-900 dark:text-gray-100">
+        <div className="p-4 sm:p-6 border-b border-gray-200 dark:border-gray-700">
+          <div className="flex items-start sm:items-center justify-between mb-3 sm:mb-4 gap-2">
+            <div className="flex-1 min-w-0">
+              <h2 className="text-xl sm:text-2xl font-bold text-gray-900 dark:text-gray-100">
                 Welcome to Sustainability Atlas
               </h2>
-              <p className="text-sm text-gray-600 dark:text-gray-400 mt-1">
+              <p className="text-xs sm:text-sm text-gray-600 dark:text-gray-400 mt-1">
                 Let's personalize your experience
               </p>
             </div>
@@ -300,26 +303,26 @@ export function WelcomePopup({ allResources }: WelcomePopupProps) {
         </div>
 
         {/* Question Content */}
-        <div className="p-6">
-          <h3 className="text-xl font-semibold mb-2 text-gray-900 dark:text-gray-100">
+        <div className="p-4 sm:p-6">
+          <h3 className="text-lg sm:text-xl font-semibold mb-2 text-gray-900 dark:text-gray-100">
             {currentQuestion.question}
           </h3>
-          <p className="text-gray-600 dark:text-gray-400 mb-6">
+          <p className="text-sm sm:text-base text-gray-600 dark:text-gray-400 mb-4 sm:mb-6">
             {currentQuestion.description}
           </p>
 
-          <div className="grid sm:grid-cols-2 gap-3">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
             {currentQuestion.options.map((option) => (
               <Button variant="ghost"
                 key={option.value}
                 onClick={() => handleAnswer(currentQuestion.id, option.value)}
-                className={`p-4 rounded-xl border-2 text-left transition-all h-auto whitespace-normal ${
+                className={`p-3 sm:p-4 rounded-xl border-2 text-left transition-all h-auto whitespace-normal min-h-[44px] ${
                   answers[currentQuestion.id as keyof WelcomeAnswers] === option.value
                     ? 'border-blue-500 bg-blue-50 dark:bg-blue-900/20'
                     : 'border-gray-200 dark:border-gray-700 hover:border-blue-300 dark:hover:border-blue-600 hover:bg-gray-50 dark:hover:bg-gray-700/50'
                 }`}
               >
-                <div className="font-medium text-gray-900 dark:text-gray-100 text-wrap">
+                <div className="font-medium text-sm sm:text-base text-gray-900 dark:text-gray-100 text-wrap">
                   {option.label}
                 </div>
               </Button>

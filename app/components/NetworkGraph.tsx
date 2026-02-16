@@ -449,9 +449,9 @@ export function NetworkGraph({ allResources, graphData }: NetworkGraphProps) {
   };
 
   return (
-    <div className="flex h-[800px] bg-[var(--bg-primary)] rounded-3xl border border-gray-200 dark:border-gray-700 overflow-hidden">
+    <div className="flex flex-col lg:flex-row h-[600px] sm:h-[700px] lg:h-[800px] bg-[var(--bg-primary)] rounded-2xl sm:rounded-3xl border border-gray-200 dark:border-gray-700 overflow-hidden">
       {/* Left Sidebar */}
-      <div className="w-80 border-r border-gray-200 dark:border-gray-700 bg-[var(--bg-secondary)] flex flex-col">
+      <div className="w-full lg:w-80 border-b lg:border-b-0 lg:border-r border-gray-200 dark:border-gray-700 bg-[var(--bg-secondary)] flex flex-col h-[200px] sm:h-[250px] lg:h-auto">
         {/* Search */}
         <div className="p-4 border-b border-gray-200 dark:border-gray-700">
           <input

@@ -33,6 +33,9 @@ const QUESTIONS = [
       { value: 'educators', label: 'Educator' },
       { value: 'practitioners', label: 'Practitioner' },
       { value: 'nonprofits', label: 'Non-profit' },
+      { value: 'intrapreneurs', label: 'Intrapreneur' },
+      { value: 'corporate-managers', label: 'Corporate Manager' },
+      { value: 'civil-servants', label: 'Civil Servant' },
     ],
   },
   {
@@ -196,12 +199,12 @@ export function ToolFinder({ allResources }: ToolFinderProps) {
     const otherTools = reorderedTools.filter(item => item.score === 0);
     
     return (
-      <div className="max-w-6xl mx-auto">
-        <div className="mb-8">
-          <div className="flex items-center justify-between mb-4">
-            <div>
-              <h2 className="text-3xl font-bold mb-2">Tools for You</h2>
-              <p className="text-gray-600 dark:text-gray-400">
+      <div className="max-w-6xl mx-auto px-4 sm:px-6">
+        <div className="mb-6 sm:mb-8">
+          <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between mb-4 gap-3">
+            <div className="flex-1">
+              <h2 className="text-2xl sm:text-3xl font-bold mb-2">Tools for You</h2>
+              <p className="text-sm sm:text-base text-gray-600 dark:text-gray-400">
                 {topMatches.length > 0 
                   ? `We've reordered ${reorderedTools.length} tools based on your answers. The most relevant are shown first.`
                   : `Showing all ${reorderedTools.length} tools.`
@@ -210,14 +213,14 @@ export function ToolFinder({ allResources }: ToolFinderProps) {
             </div>
             <Button variant="ghost"
               onClick={handleReset}
-              className="px-4 py-2 text-sm border border-gray-300 dark:border-gray-600 rounded-full hover:border-blue-500 dark:hover:border-blue-500 transition-colors"
+              className="px-3 sm:px-4 py-2 text-xs sm:text-sm border border-gray-300 dark:border-gray-600 rounded-full hover:border-blue-500 dark:hover:border-blue-500 transition-colors w-full sm:w-auto"
             >
               Start Over
             </Button>
           </div>
 
           {/* Show selected answers */}
-          <div className="flex flex-wrap gap-2 mb-6">
+          <div className="flex flex-wrap gap-2 mb-4 sm:mb-6">
             {Object.entries(answers).map(([key, value]) => {
               const question = QUESTIONS.find((q) => q.id === key);
               const option = question?.options.find((opt) => opt.value === value);
@@ -238,11 +241,11 @@ export function ToolFinder({ allResources }: ToolFinderProps) {
 
         {/* Top matches section */}
         {topMatches.length > 0 && (
-          <div className="mb-12">
-            <h3 className="text-xl font-semibold mb-4 text-gray-900 dark:text-gray-100">
+          <div className="mb-8 sm:mb-12">
+            <h3 className="text-lg sm:text-xl font-semibold mb-3 sm:mb-4 text-gray-900 dark:text-gray-100">
               Most Relevant Tools ({topMatches.length})
             </h3>
-            <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-4">
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-4">
               {topMatches.map((item, idx) => (
                 <div key={item.tool.slug} className="relative">
                   <ResourceCard 
@@ -264,10 +267,10 @@ export function ToolFinder({ allResources }: ToolFinderProps) {
         {/* All other tools section */}
         {otherTools.length > 0 && (
           <div>
-            <h3 className="text-xl font-semibold mb-4 text-gray-900 dark:text-gray-100">
+            <h3 className="text-lg sm:text-xl font-semibold mb-3 sm:mb-4 text-gray-900 dark:text-gray-100">
               All Other Tools ({otherTools.length})
             </h3>
-            <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-4">
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-4">
               {otherTools.map((item, idx) => (
                 <ResourceCard 
                   key={item.tool.slug} 
@@ -282,7 +285,7 @@ export function ToolFinder({ allResources }: ToolFinderProps) {
 
         {/* If no matches but tools exist, show all */}
         {topMatches.length === 0 && reorderedTools.length > 0 && (
-          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-4">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-4">
             {reorderedTools.map((item, idx) => (
               <ResourceCard 
                 key={item.tool.slug} 
@@ -298,17 +301,17 @@ export function ToolFinder({ allResources }: ToolFinderProps) {
   }
 
   return (
-    <div className="max-w-3xl mx-auto">
+    <div className="max-w-3xl mx-auto px-4 sm:px-6">
       {/* Progress indicator */}
-      <div className="mb-8">
+      <div className="mb-6 sm:mb-8">
         <div className="flex items-center justify-between mb-2">
-          <span className="text-sm text-gray-600 dark:text-gray-400">
+          <span className="text-xs sm:text-sm text-gray-600 dark:text-gray-400">
             Question {currentStep + 1} of {QUESTIONS.length}
           </span>
           {currentStep > 0 && (
             <Button variant="ghost"
               onClick={handleBack}
-              className="text-sm text-blue-600 dark:text-blue-400 hover:underline"
+              className="text-xs sm:text-sm text-blue-600 dark:text-blue-400 hover:underline px-2 py-1"
             >
               ← Back
             </Button>
@@ -323,27 +326,27 @@ export function ToolFinder({ allResources }: ToolFinderProps) {
       </div>
 
       {/* Question */}
-      <div className="mb-8">
-        <h2 className="text-3xl font-bold mb-2">{currentQuestion.question}</h2>
-        <p className="text-gray-600 dark:text-gray-400 mb-6">{currentQuestion.description}</p>
+      <div className="mb-6 sm:mb-8">
+        <h2 className="text-2xl sm:text-3xl font-bold mb-2 px-2 sm:px-0">{currentQuestion.question}</h2>
+        <p className="text-sm sm:text-base text-gray-600 dark:text-gray-400 mb-4 sm:mb-6 px-2 sm:px-0">{currentQuestion.description}</p>
 
-        <div className="grid sm:grid-cols-2 gap-3">
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
           {currentQuestion.options.map((option) => (
             <Button variant="ghost"
               key={option.value}
               onClick={() => handleAnswer(currentQuestion.id, option.value)}
-              className={`p-4 rounded-lg border-2 text-left transition-all h-auto whitespace-normal ${
+              className={`p-3 sm:p-4 rounded-lg border-2 text-left transition-all h-auto whitespace-normal min-h-[44px] ${
                 answers[currentQuestion.id as keyof Answers] === option.value
                   ? 'border-blue-500 bg-blue-50 dark:bg-blue-900/20'
                   : 'border-gray-200 dark:border-gray-700 hover:border-blue-300 dark:hover:border-blue-600'
               }`}
             >
               <div className="w-full">
-                <div className="font-semibold text-gray-900 dark:text-gray-100">
+                <div className="font-semibold text-sm sm:text-base text-gray-900 dark:text-gray-100">
                   {option.label}
                 </div>
                 {'description' in option && option.description && (
-                  <div className="text-sm text-gray-600 dark:text-gray-400 mt-1">
+                  <div className="text-xs sm:text-sm text-gray-600 dark:text-gray-400 mt-1">
                     {option.description}
                   </div>
                 )}
@@ -354,7 +357,7 @@ export function ToolFinder({ allResources }: ToolFinderProps) {
       </div>
 
       {/* Skip option */}
-      <div className="text-center">
+      <div className="text-center px-2 sm:px-0">
         <Button variant="ghost"
           onClick={() => {
             if (currentStep < QUESTIONS.length - 1) {
@@ -363,7 +366,7 @@ export function ToolFinder({ allResources }: ToolFinderProps) {
               setShowResults(true);
             }
           }}
-          className="text-sm text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-100"
+          className="text-xs sm:text-sm text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-100 px-3 py-2"
         >
           Skip this question →
         </Button>
