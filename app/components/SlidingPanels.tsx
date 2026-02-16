@@ -2,6 +2,7 @@
 
 import { useEffect, useRef, useState, useCallback } from 'react';
 import { usePanels } from './PanelContext';
+import { useSidebar } from './SidebarContext';
 import type { ResourceMetadata } from '../lib/markdown';
 import { BookmarkButton } from './BookmarkButton';
 import { ShareButton } from './ShareButton';
@@ -15,6 +16,7 @@ interface SlidingPanelsProps {
 
 export function SlidingPanels({ children, allResources = [] }: SlidingPanelsProps) {
   const { panels, removePanel, expandedPanelId, togglePanelExpand, collapsePanel } = usePanels();
+  const { sidebarVisible } = useSidebar();
   const containerRef = useRef<HTMLDivElement>(null);
   const [canScrollLeft, setCanScrollLeft] = useState(false);
   const [canScrollRight, setCanScrollRight] = useState(false);
@@ -223,7 +225,7 @@ export function SlidingPanels({ children, allResources = [] }: SlidingPanelsProp
         style={{ height: '100%', overflow: 'hidden' }}
       >
         <div 
-          className="container mx-auto px-6 py-12 max-w-7xl bg-[var(--bg-primary)]"
+          className={`container mx-auto px-6 py-12 max-w-7xl bg-[var(--bg-primary)] transition-[padding] duration-300 ease-in-out ${sidebarVisible && panels.length === 0 ? 'lg:pl-[21rem]' : ''}`}
           style={{ height: '100%', overflowY: 'auto', overscrollBehavior: 'contain' }}
         >
           {children}

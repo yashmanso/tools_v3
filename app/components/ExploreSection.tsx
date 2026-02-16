@@ -1,6 +1,6 @@
 'use client';
 
-import { useRef, useState, type ReactElement } from 'react';
+import { useRef, useState, useEffect, useCallback, type ReactElement } from 'react';
 import Link from 'next/link';
 import type { ResourceMetadata } from '../lib/markdown';
 import { ToolFinder } from './ToolFinder';
@@ -15,6 +15,23 @@ import { CardButton } from './CardButton';
 import { cn } from '@/lib/utils';
 import { Sheet, SheetContent, SheetTrigger } from '@/components/ui/sheet';
 import { usePanels } from './PanelContext';
+import { useSidebar } from './SidebarContext';
+
+/**
+ * Walk up the DOM to find the nearest scrollable ancestor.
+ */
+function findScrollableAncestor(el: HTMLElement | null): HTMLElement | null {
+  let node = el?.parentElement ?? null;
+  while (node && node !== document.documentElement) {
+    const style = getComputedStyle(node);
+    const oy = style.overflowY || style.overflow;
+    if (/(auto|scroll)/.test(oy)) {
+      return node;
+    }
+    node = node.parentElement;
+  }
+  return null;
+}
 
 interface ExploreSectionProps {
   allResources: ResourceMetadata[];
@@ -28,8 +45,63 @@ export function ExploreSection({ allResources, graphData }: ExploreSectionProps)
   const [mode, setMode] = useState<'select' | 'browse' | 'find' | 'compare' | 'timeline' | 'network' | 'workflows' | 'compatibility' | 'visual'>('select');
   const [toolbarOpen, setToolbarOpen] = useState(false);
   const contentRef = useRef<HTMLDivElement | null>(null);
+  const sectionRef = useRef<HTMLElement | null>(null);
+  const scrollTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const isScrollingRef = useRef(false);
   const { panels } = usePanels();
   const hasPanelsOpen = panels.length > 0;
+  const { sidebarVisible, setSidebarVisible } = useSidebar();
+
+  // Derive expanded state: visible when not scrolling and no panels open
+  const sidebarExpanded = sidebarVisible && !hasPanelsOpen;
+
+  // Stable callback that pushes the derived value into context
+  const syncSidebar = useCallback(
+    (scrolling: boolean) => {
+      const shouldShow = !scrolling && !hasPanelsOpen;
+      setSidebarVisible(shouldShow);
+    },
+    [hasPanelsOpen, setSidebarVisible],
+  );
+
+  // Scroll detection — attaches to the nearest scrollable ancestor.
+  // Uses a ref for the raw "scrolling" flag so intermediate ticks
+  // never cause React re-renders (only the debounced settle does).
+  useEffect(() => {
+    const section = sectionRef.current;
+    if (!section) return;
+
+    let cleanupFn: (() => void) | null = null;
+
+    const raf = requestAnimationFrame(() => {
+      const container = findScrollableAncestor(section);
+      if (!container) return;
+
+      // Show sidebar immediately on mount (page is idle)
+      syncSidebar(false);
+
+      const handleScroll = () => {
+        if (!isScrollingRef.current) {
+          isScrollingRef.current = true;
+          syncSidebar(true);
+        }
+        if (scrollTimeoutRef.current) clearTimeout(scrollTimeoutRef.current);
+        scrollTimeoutRef.current = setTimeout(() => {
+          isScrollingRef.current = false;
+          syncSidebar(false);
+        }, 200);
+      };
+
+      container.addEventListener('scroll', handleScroll, { passive: true });
+      cleanupFn = () => container.removeEventListener('scroll', handleScroll);
+    });
+
+    return () => {
+      cancelAnimationFrame(raf);
+      cleanupFn?.();
+      if (scrollTimeoutRef.current) clearTimeout(scrollTimeoutRef.current);
+    };
+  }, [syncSidebar]);
 
   const items: {
     id: typeof mode;
@@ -247,40 +319,113 @@ export function ExploreSection({ allResources, graphData }: ExploreSectionProps)
     );
   }
 
+  /* Shared menu content rendered inside a Sheet (used by mobile trigger AND collapsed FAB) */
+  const menuSheetContent = (
+    <SheetContent side="left" className="p-0">
+      <div className="h-full overflow-auto p-4">
+        <div className="rounded-[1.75rem] border border-[var(--border)] bg-[var(--bg-secondary)] p-3">
+          <h3 className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">
+            Workflow menu
+          </h3>
+          <div className="mt-4 space-y-1">
+            {items.map((item) => (
+              <button
+                key={item.id}
+                type="button"
+                onClick={() => {
+                  handleSelectMode(item.id);
+                  setToolbarOpen(false);
+                }}
+                className={cn(
+                  'w-full rounded-lg px-3 py-2 text-left text-xs transition-colors',
+                  'hover:bg-muted hover:text-foreground',
+                  mode === item.id
+                    ? 'bg-primary text-primary-foreground shadow-sm'
+                    : 'text-muted-foreground'
+                )}
+              >
+                <div className="font-medium text-[0.8rem]">
+                  {item.label}
+                </div>
+                <div className="mt-0.5 text-[0.7rem] text-muted-foreground/80">
+                  {item.description}
+                </div>
+              </button>
+            ))}
+          </div>
+        </div>
+      </div>
+    </SheetContent>
+  );
+
   return (
-    <section className="py-12 bg-[var(--bg-primary)]">
-      {/* Desktop fixed left toolbar (below the fixed header) */}
+    <section ref={sectionRef} className="py-12 bg-[var(--bg-primary)]">
+      {/* Desktop fixed left toolbar — slides in/out based on scroll + visibility */}
       {!hasPanelsOpen && (
-        <aside className="hidden lg:block">
-          <div className="fixed left-0 top-[6.25rem] z-40 h-[calc(100svh-6.25rem)] w-[20rem] px-4 pb-6 overflow-auto">
-            <div className="rounded-[1.75rem] border border-[var(--border)] bg-[var(--bg-secondary)] p-4 backdrop-blur-md">
-              <h3 className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">
-                Workflow menu
-              </h3>
-              <div className="mt-4 space-y-1">
-                {items.map((item) => (
-                  <button
-                    key={item.id}
-                    type="button"
-                    onClick={() => handleSelectMode(item.id)}
-                    className={cn(
-                      'w-full rounded-lg px-3 py-2 text-left text-xs transition-colors',
-                      'hover:bg-muted hover:text-foreground',
-                      mode === item.id
-                        ? 'bg-primary text-primary-foreground shadow-sm'
-                        : 'text-muted-foreground'
-                    )}
-                  >
-                    <div className="font-medium text-[0.8rem]">{item.label}</div>
-                    <div className="mt-0.5 text-[0.7rem] text-muted-foreground/80">
-                      {item.description}
-                    </div>
-                  </button>
-                ))}
-              </div>
+        <aside
+          className={cn(
+            'hidden lg:block fixed left-0 top-[6.25rem] z-40 h-[calc(100svh-6.25rem)] w-[20rem] px-4 pb-6 overflow-auto',
+            'transition-all duration-300 ease-in-out',
+            sidebarExpanded
+              ? 'translate-x-0 opacity-100'
+              : '-translate-x-full opacity-0 pointer-events-none'
+          )}
+        >
+          <div className="rounded-[1.75rem] border border-[var(--border)] bg-[var(--bg-secondary)] p-4 backdrop-blur-md">
+            <h3 className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">
+              Workflow menu
+            </h3>
+            <div className="mt-4 space-y-1">
+              {items.map((item) => (
+                <button
+                  key={item.id}
+                  type="button"
+                  onClick={() => handleSelectMode(item.id)}
+                  className={cn(
+                    'w-full rounded-lg px-3 py-2 text-left text-xs transition-colors',
+                    'hover:bg-muted hover:text-foreground',
+                    mode === item.id
+                      ? 'bg-primary text-primary-foreground shadow-sm'
+                      : 'text-muted-foreground'
+                  )}
+                >
+                  <div className="font-medium text-[0.8rem]">{item.label}</div>
+                  <div className="mt-0.5 text-[0.7rem] text-muted-foreground/80">
+                    {item.description}
+                  </div>
+                </button>
+              ))}
             </div>
           </div>
         </aside>
+      )}
+
+      {/* Collapsed floating action button — visible on lg when sidebar is hidden */}
+      {!hasPanelsOpen && (
+        <div
+          className={cn(
+            'hidden lg:block fixed bottom-6 left-6 z-40 transition-all duration-300 ease-in-out',
+            !sidebarExpanded
+              ? 'translate-y-0 opacity-100 scale-100'
+              : 'translate-y-4 opacity-0 scale-95 pointer-events-none'
+          )}
+        >
+          <Sheet open={toolbarOpen} onOpenChange={setToolbarOpen}>
+            <SheetTrigger asChild>
+              <button
+                className="flex items-center gap-2 rounded-full border border-[var(--border)] bg-[var(--bg-secondary)] px-4 py-2.5 shadow-lg backdrop-blur-md hover:bg-muted transition-colors"
+              >
+                <svg className="w-4 h-4 text-muted-foreground" fill="none" stroke="currentColor" strokeWidth={2} viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25h16.5" />
+                </svg>
+                <span className="text-sm font-medium truncate max-w-[10rem]">
+                  {activeItem?.label ?? 'Menu'}
+                </span>
+              </button>
+            </SheetTrigger>
+            {menuSheetContent}
+          </Sheet>
+        </div>
       )}
 
       {/* Mobile toolbar trigger (non-sticky, scrolls with content) */}
@@ -301,47 +446,18 @@ export function ExploreSection({ allResources, graphData }: ExploreSectionProps)
                 Open
               </Button>
             </SheetTrigger>
-            <SheetContent side="left" className="p-0">
-              <div className="h-full overflow-auto p-4">
-                <div className="rounded-[1.75rem] border border-[var(--border)] bg-[var(--bg-secondary)] p-3">
-                  <h3 className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">
-                    Workflow menu
-                  </h3>
-                  <div className="mt-4 space-y-1">
-                    {items.map((item) => (
-                      <button
-                        key={item.id}
-                        type="button"
-                        onClick={() => {
-                          handleSelectMode(item.id);
-                          setToolbarOpen(false);
-                        }}
-                        className={cn(
-                          'w-full rounded-lg px-3 py-2 text-left text-xs transition-colors',
-                          'hover:bg-muted hover:text-foreground',
-                          mode === item.id
-                            ? 'bg-primary text-primary-foreground shadow-sm'
-                            : 'text-muted-foreground'
-                        )}
-                      >
-                        <div className="font-medium text-[0.8rem]">
-                          {item.label}
-                        </div>
-                        <div className="mt-0.5 text-[0.7rem] text-muted-foreground/80">
-                          {item.description}
-                        </div>
-                      </button>
-                    ))}
-                  </div>
-                </div>
-              </div>
-            </SheetContent>
+            {menuSheetContent}
           </Sheet>
         </div>
         </div>
       )}
 
-      <div className={`px-4 sm:px-6 lg:px-8 ${!hasPanelsOpen ? 'max-w-4xl mx-auto' : 'max-w-6xl mx-auto'}`}>
+      <div
+        className={cn(
+          'px-4 sm:px-6 lg:px-8',
+          hasPanelsOpen ? 'max-w-6xl mx-auto' : 'max-w-4xl mx-auto'
+        )}
+      >
         <div ref={contentRef} className="mt-6 lg:mt-0">
           {mode === 'select' ? (
             <div className="text-center">
