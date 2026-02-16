@@ -223,7 +223,7 @@ export function SlidingPanels({ children, allResources = [] }: SlidingPanelsProp
         style={{ height: '100%', overflow: 'hidden' }}
       >
         <div 
-          className="container mx-auto px-6 py-12 max-w-5xl bg-[var(--bg-primary)]"
+          className="container mx-auto px-6 py-12 max-w-7xl bg-[var(--bg-primary)]"
           style={{ height: '100%', overflowY: 'auto', overscrollBehavior: 'contain' }}
         >
           {children}
