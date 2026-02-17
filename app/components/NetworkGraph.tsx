@@ -55,6 +55,7 @@ export function NetworkGraph({ allResources, graphData }: NetworkGraphProps) {
   const [dimensions, setDimensions] = useState({ width: 1000, height: 700 });
   const [hoveredNode, setHoveredNode] = useState<string | null>(null);
   const [legendExpanded, setLegendExpanded] = useState(false);
+  const [showWeightHelp, setShowWeightHelp] = useState(false);
   
   // Zoom and pan state
   const [transform, setTransform] = useState({ x: 0, y: 0, k: 1 });
@@ -520,13 +521,17 @@ export function NetworkGraph({ allResources, graphData }: NetworkGraphProps) {
           <div className="flex items-center justify-between text-xs text-gray-600 dark:text-gray-400 mb-2">
             <span className="flex items-center gap-1">
               Min weight:
-              <span className="relative group/help">
-                <span className="inline-flex items-center justify-center w-4 h-4 rounded-full border border-gray-400 dark:border-gray-500 text-[10px] font-semibold cursor-help hover:border-blue-500 hover:text-blue-500 transition-colors">?</span>
-                <span className="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 w-56 px-3 py-2 rounded-lg bg-gray-900 dark:bg-gray-100 text-white dark:text-gray-900 text-[11px] leading-relaxed shadow-xl opacity-0 invisible group-hover/help:opacity-100 group-hover/help:visible transition-all duration-200 pointer-events-none z-50">
-                  Edges connect resources that share tags. <strong>Weight</strong> is the number of shared tags. Raise the minimum to show only the strongest connections and simplify the graph.
-                  <span className="absolute top-full left-1/2 -translate-x-1/2 border-4 border-transparent border-t-gray-900 dark:border-t-gray-100"></span>
-                </span>
-              </span>
+              <button
+                type="button"
+                onClick={() => setShowWeightHelp(v => !v)}
+                className={`inline-flex items-center justify-center w-4 h-4 rounded-full border text-[10px] font-semibold transition-colors ${
+                  showWeightHelp
+                    ? 'border-blue-500 text-blue-500'
+                    : 'border-gray-400 dark:border-gray-500 hover:border-blue-500 hover:text-blue-500'
+                }`}
+              >
+                ?
+              </button>
             </span>
             <span>{minWeight}</span>
           </div>
@@ -538,6 +543,11 @@ export function NetworkGraph({ allResources, graphData }: NetworkGraphProps) {
             onChange={(e) => setMinWeight(Number(e.target.value))}
             className="w-full"
           />
+          {showWeightHelp && (
+            <div className="mt-2 p-2.5 rounded-lg bg-[var(--bg-primary)] border border-gray-200 dark:border-gray-700 text-[11px] leading-relaxed text-gray-500 dark:text-gray-400">
+              Edges connect resources that share tags. <strong className="text-gray-700 dark:text-gray-300">Weight</strong> is the number of shared tags. Raise the minimum to show only the strongest connections.
+            </div>
+          )}
         </div>
       </div>
 
@@ -695,9 +705,34 @@ export function NetworkGraph({ allResources, graphData }: NetworkGraphProps) {
                       {icon}
                     </text>
 
-                    {/* Tooltip on hover */}
+                    {/* Label on neighbor nodes so user can identify them */}
+                    {isNeighborOfHovered && !isThisHovered && (
+                      <g transform={`translate(${pos.x}, ${pos.y + size + 4})`} className="pointer-events-none select-none">
+                        <rect
+                          x={-(Math.min(node.title.length, 22) * 3.2 + 8)}
+                          y="0"
+                          width={Math.min(node.title.length, 22) * 6.4 + 16}
+                          height="18"
+                          rx="4"
+                          fill="rgba(17, 24, 39, 0.88)"
+                          stroke="rgba(96, 165, 250, 0.35)"
+                          strokeWidth="0.5"
+                        />
+                        <text
+                          x="0"
+                          y="13"
+                          textAnchor="middle"
+                          fontSize="10"
+                          fill="#e2e8f0"
+                        >
+                          {node.title.length > 22 ? node.title.substring(0, 19) + '…' : node.title}
+                        </text>
+                      </g>
+                    )}
+
+                    {/* Tooltip on hovered node */}
                     {isThisHovered && (
-                      <g transform={`translate(${pos.x}, ${pos.y - size - 12})`}>
+                      <g transform={`translate(${pos.x}, ${pos.y - size - 12})`} className="pointer-events-none select-none">
                         <rect
                           x="-110"
                           y="-32"
@@ -712,7 +747,7 @@ export function NetworkGraph({ allResources, graphData }: NetworkGraphProps) {
                           x="0"
                           y="-14"
                           textAnchor="middle"
-                          className="font-semibold pointer-events-none select-none"
+                          className="font-semibold"
                           fontSize="11"
                           fill="white"
                         >
@@ -722,7 +757,7 @@ export function NetworkGraph({ allResources, graphData }: NetworkGraphProps) {
                           x="0"
                           y="0"
                           textAnchor="middle"
-                          className="pointer-events-none select-none capitalize"
+                          className="capitalize"
                           fontSize="9"
                           fill="#94a3b8"
                         >
