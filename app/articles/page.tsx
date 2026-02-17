@@ -7,7 +7,7 @@ export default function ArticlesPage() {
   const allResources = getAllResources();
 
   return (
-    <div>
+    <div className="max-w-4xl mx-auto">
       <Breadcrumbs />
       <div className="mb-8">
         <h1 className="text-3xl font-bold mb-3">Practical academic articles & scientific reports</h1>

@@ -3,7 +3,7 @@ import { Breadcrumbs } from '../components/Breadcrumbs';
 
 export default function SubmitToolPage() {
   return (
-    <div>
+    <div className="max-w-4xl mx-auto">
       <Breadcrumbs />
       <div className="mb-8">
         <h1 className="text-3xl font-bold mb-3">Submit a tool</h1>

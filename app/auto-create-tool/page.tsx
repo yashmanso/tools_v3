@@ -166,7 +166,7 @@ Thank you!`
 
 
   return (
-    <div>
+    <div className="max-w-4xl mx-auto">
       <Breadcrumbs />
       <div className="mb-8">
         <h1 className="text-3xl font-bold mb-3">Auto create resource</h1>

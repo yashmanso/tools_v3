@@ -89,7 +89,7 @@ export function CompareTools({ allResources }: CompareToolsProps) {
 
   if (showComparison && selectedTools.length >= 2) {
     return (
-      <div className="max-w-7xl mx-auto px-4 sm:px-6">
+      <div className="w-full px-4 sm:px-6">
         <div className="mb-4 sm:mb-6 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
           <h2 className="text-xl sm:text-2xl font-bold">Compare tools</h2>
           <Button variant="ghost"
@@ -101,13 +101,12 @@ export function CompareTools({ allResources }: CompareToolsProps) {
         </div>
 
         {/* Comparison table */}
-        <div className="overflow-x-auto -mx-4 sm:mx-0">
-          <div className="inline-block min-w-full align-middle">
-            <table className="w-full border-collapse">
+        <div className="w-full">
+            <table className="w-full border-collapse table-fixed">
               <colgroup>
-                <col className="w-[30%] sm:w-[20%]" />
+                <col style={{ width: `${Math.floor(100 / (selectedTools.length + 1))}%` }} />
                 {selectedTools.map((_, idx) => (
-                  <col key={idx} className="w-[35%] sm:w-auto" />
+                  <col key={idx} style={{ width: `${Math.floor(100 / (selectedTools.length + 1))}%` }} />
                 ))}
               </colgroup>
               <thead>
@@ -150,7 +149,7 @@ export function CompareTools({ allResources }: CompareToolsProps) {
                             <span className="ml-1 text-blue-500 text-xs">(hover for full)</span>
                           )}
                           {isLong && (
-                            <div className="absolute left-0 top-full mt-2 w-[90vw] max-w-sm bg-[var(--bg-secondary)] shadow-xl opacity-0 invisible group-hover/overview:opacity-100 group-hover/overview:visible z-[100] transition-all duration-200 pointer-events-none relative">
+                            <div className="absolute left-0 top-full mt-2 w-[90vw] max-w-sm bg-[var(--bg-secondary)] shadow-xl opacity-0 invisible group-hover/overview:opacity-100 group-hover/overview:visible z-[100] transition-all duration-200 pointer-events-none">
                               {/* Left border frame */}
                               <div className="absolute left-0 top-0 bottom-0 w-px bg-gray-300 dark:bg-gray-600"></div>
                               
@@ -202,7 +201,7 @@ export function CompareTools({ allResources }: CompareToolsProps) {
                               {dimensionTags[idx].length > 3 && (
                                 <>
                                   <span className="text-xs text-gray-400">+{dimensionTags[idx].length - 3}</span>
-                                  <div className="absolute left-0 top-full mt-2 w-[90vw] max-w-xs bg-[var(--bg-secondary)] shadow-xl opacity-0 invisible group-hover:opacity-100 group-hover:visible z-50 transition-all duration-200 pointer-events-none relative">
+                                  <div className="absolute left-0 top-full mt-2 w-[90vw] max-w-xs bg-[var(--bg-secondary)] shadow-xl opacity-0 invisible group-hover:opacity-100 group-hover:visible z-50 transition-all duration-200 pointer-events-none">
                                     {/* Left border frame */}
                                     <div className="absolute left-0 top-0 bottom-0 w-px bg-gray-300 dark:bg-gray-600"></div>
                                     
@@ -252,7 +251,7 @@ export function CompareTools({ allResources }: CompareToolsProps) {
                       {tool.tags.length > 6 && (
                         <>
                           <span className="text-xs text-gray-400">+{tool.tags.length - 6}</span>
-                          <div className="absolute left-0 top-full mt-2 w-80 bg-white dark:bg-gray-800 shadow-xl opacity-0 invisible group-hover:opacity-100 group-hover:visible z-50 transition-all duration-200 pointer-events-none max-h-64 overflow-y-auto relative">
+                          <div className="absolute left-0 top-full mt-2 w-80 bg-white dark:bg-gray-800 shadow-xl opacity-0 invisible group-hover:opacity-100 group-hover:visible z-50 transition-all duration-200 pointer-events-none max-h-64 overflow-y-auto">
                             {/* Left border frame */}
                             <div className="absolute left-0 top-0 bottom-0 w-px bg-gray-300 dark:bg-gray-600"></div>
                             
@@ -280,7 +279,6 @@ export function CompareTools({ allResources }: CompareToolsProps) {
               </tr>
             </tbody>
           </table>
-          </div>
         </div>
       </div>
     );
