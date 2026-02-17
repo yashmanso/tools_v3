@@ -518,7 +518,16 @@ export function NetworkGraph({ allResources, graphData }: NetworkGraphProps) {
         {/* Bottom Controls */}
         <div className="p-4 border-t border-gray-200 dark:border-gray-700">
           <div className="flex items-center justify-between text-xs text-gray-600 dark:text-gray-400 mb-2">
-            <span>Min weight:</span>
+            <span className="flex items-center gap-1">
+              Min weight:
+              <span className="relative group/help">
+                <span className="inline-flex items-center justify-center w-4 h-4 rounded-full border border-gray-400 dark:border-gray-500 text-[10px] font-semibold cursor-help hover:border-blue-500 hover:text-blue-500 transition-colors">?</span>
+                <span className="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 w-56 px-3 py-2 rounded-lg bg-gray-900 dark:bg-gray-100 text-white dark:text-gray-900 text-[11px] leading-relaxed shadow-xl opacity-0 invisible group-hover/help:opacity-100 group-hover/help:visible transition-all duration-200 pointer-events-none z-50">
+                  Edges connect resources that share tags. <strong>Weight</strong> is the number of shared tags. Raise the minimum to show only the strongest connections and simplify the graph.
+                  <span className="absolute top-full left-1/2 -translate-x-1/2 border-4 border-transparent border-t-gray-900 dark:border-t-gray-100"></span>
+                </span>
+              </span>
+            </span>
             <span>{minWeight}</span>
           </div>
           <input
