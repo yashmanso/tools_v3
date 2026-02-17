@@ -115,7 +115,24 @@ export function NetworkGraph({ allResources, graphData }: NetworkGraphProps) {
     return { nodes: filteredNodes, edges: filteredEdges };
   }, [graphData, searchQuery, minWeight]);
 
-  // Calculate node positions with improved force-directed layout
+  // Build neighbor lookup and connection counts (used for radial layout + hover highlight)
+  const { neighborMap, connectionCounts } = useMemo(() => {
+    const map = new Map<string, Set<string>>();
+    const counts = new Map<string, number>();
+    nodes.forEach((_, id) => {
+      map.set(id, new Set());
+      counts.set(id, 0);
+    });
+    edges.forEach(edge => {
+      map.get(edge.source)?.add(edge.target);
+      map.get(edge.target)?.add(edge.source);
+      counts.set(edge.source, (counts.get(edge.source) || 0) + 1);
+      counts.set(edge.target, (counts.get(edge.target) || 0) + 1);
+    });
+    return { neighborMap: map, connectionCounts: counts };
+  }, [nodes, edges]);
+
+  // Calculate node positions with radial hub-spoke layout
   const [nodePositions, setNodePositions] = useState<NodePosition[]>([]);
 
   useEffect(() => {
@@ -130,130 +147,113 @@ export function NetworkGraph({ allResources, graphData }: NetworkGraphProps) {
       cancelAnimationFrame(animationFrameRef.current);
     }
 
-    // Initialize positions with better spacing - use a grid-like pattern
     const centerX = dimensions.width / 2;
     const centerY = dimensions.height / 2;
-    const nodeCount = nodeArray.length;
-    
-    // Calculate grid dimensions for better initial distribution
-    const cols = Math.ceil(Math.sqrt(nodeCount * (dimensions.width / dimensions.height)));
-    const rows = Math.ceil(nodeCount / cols);
-    const cellWidth = dimensions.width / (cols + 1);
-    const cellHeight = dimensions.height / (rows + 1);
-    const minSpacing = 120; // Minimum distance between nodes
-    
-    let positions: NodePosition[] = nodeArray.map(([id, node], index) => {
-      // Use grid layout for initial positions
-      const col = index % cols;
-      const row = Math.floor(index / cols);
-      const x = cellWidth * (col + 1) + (Math.random() - 0.5) * cellWidth * 0.3;
-      const y = cellHeight * (row + 1) + (Math.random() - 0.5) * cellHeight * 0.3;
-      
-      return {
-        id,
-        x: Math.max(80, Math.min(dimensions.width - 80, x)),
-        y: Math.max(80, Math.min(dimensions.height - 80, y)),
-        node,
-        vx: 0,
-        vy: 0,
-      };
+    const maxRadius = Math.min(dimensions.width, dimensions.height) * 0.4;
+    const minSpacing = 80;
+
+    // --- Radial hub-spoke initial placement (C) ---
+    // Sort nodes by connection count descending (hubs first)
+    const sorted = [...nodeArray].sort((a, b) => {
+      return (connectionCounts.get(b[0]) || 0) - (connectionCounts.get(a[0]) || 0);
     });
 
-    // Set initial positions immediately so all nodes are visible
+    // Golden-angle spiral: hubs near center, peripherals on outside
+    const goldenAngle = Math.PI * (3 - Math.sqrt(5));
+    const targetRadii = new Map<string, number>();
+
+    let positions: NodePosition[] = sorted.map(([id, node], idx) => {
+      const rank = idx / Math.max(sorted.length - 1, 1); // 0 (hub) → 1 (leaf)
+      const radius = Math.sqrt(rank) * maxRadius; // sqrt spreads inner nodes more
+      const angle = idx * goldenAngle;
+      const x = centerX + radius * Math.cos(angle);
+      const y = centerY + radius * Math.sin(angle);
+      targetRadii.set(id, radius);
+      return { id, x, y, node, vx: 0, vy: 0 };
+    });
+
+    // Show initial positions immediately
     setNodePositions([...positions]);
 
-    // Improved force simulation with stronger repulsion
+    // --- Force simulation (refines radial layout) ---
     let iteration = 0;
-    const maxIterations = 300; // More iterations for better convergence
-    const alpha = 1;
-    const alphaDecay = 0.01; // Slower decay
+    const maxIterations = 200;
 
     const simulate = () => {
       if (iteration >= maxIterations) {
-        // Final update to ensure all positions are set
         setNodePositions([...positions]);
         return;
       }
 
-      const currentAlpha = alpha * Math.max(0.1, 1 - iteration * alphaDecay);
-      
+      const t = Math.max(0.05, 1 - iteration / maxIterations); // cooling
+
       positions.forEach((pos1, i) => {
-        if (pos1.fx !== undefined || pos1.fy !== undefined) return; // Fixed position
-        
+        if (pos1.fx !== undefined || pos1.fy !== undefined) return;
+
         let fx = 0;
         let fy = 0;
-        
-        // Stronger repulsion from other nodes to prevent overlap
+
+        // Repulsion between all nodes
         positions.forEach((pos2, j) => {
           if (i === j) return;
           const dx = pos1.x - pos2.x;
           const dy = pos1.y - pos2.y;
-          const distance = Math.sqrt(dx * dx + dy * dy) || 0.1;
-          
-          // Minimum distance enforcement - very strong when too close
-          if (distance < minSpacing) {
-            const pushForce = (minSpacing - distance) * 5 * currentAlpha;
-            fx += (dx / distance) * pushForce;
-            fy += (dy / distance) * pushForce;
+          const dist = Math.sqrt(dx * dx + dy * dy) || 0.1;
+          if (dist < minSpacing) {
+            const push = (minSpacing - dist) * 4 * t;
+            fx += (dx / dist) * push;
+            fy += (dy / dist) * push;
           }
-          
-          // Standard repulsion (weaker but still significant)
-          const repulsionForce = (25000 * currentAlpha) / (distance * distance);
-          fx += (dx / distance) * repulsionForce;
-          fy += (dy / distance) * repulsionForce;
+          const repulsion = (15000 * t) / (dist * dist);
+          fx += (dx / dist) * repulsion;
+          fy += (dy / dist) * repulsion;
         });
 
-        // Attraction along edges (weaker to allow more spreading)
+        // Edge attraction
         edges.forEach(edge => {
-          if (edge.source === pos1.id || edge.target === pos1.id) {
-            const otherId = edge.source === pos1.id ? edge.target : edge.source;
-            const otherPos = positions.find(p => p.id === otherId);
-            if (otherPos) {
-              const dx = otherPos.x - pos1.x;
-              const dy = otherPos.y - pos1.y;
-              const distance = Math.sqrt(dx * dx + dy * dy) || 1;
-              // Increased ideal distance for better spacing
-              const idealDistance = 150 + edge.weight * 25;
-              const force = ((distance - idealDistance) * currentAlpha * 0.3) / Math.max(edge.weight, 1);
-              fx += (dx / distance) * force;
-              fy += (dy / distance) * force;
-            }
-          }
+          if (edge.source !== pos1.id && edge.target !== pos1.id) return;
+          const otherId = edge.source === pos1.id ? edge.target : edge.source;
+          const other = positions.find(p => p.id === otherId);
+          if (!other) return;
+          const dx = other.x - pos1.x;
+          const dy = other.y - pos1.y;
+          const dist = Math.sqrt(dx * dx + dy * dy) || 1;
+          const ideal = 120 + edge.weight * 15;
+          const force = ((dist - ideal) * t * 0.25) / Math.max(edge.weight, 1);
+          fx += (dx / dist) * force;
+          fy += (dy / dist) * force;
         });
 
-        // Very weak center gravity (just to prevent nodes from drifting too far)
-        const centerForce = 0.001 * currentAlpha;
-        fx -= (pos1.x - centerX) * centerForce;
-        fy -= (pos1.y - centerY) * centerForce;
+        // Radial force: pull toward target ring radius
+        const dx = pos1.x - centerX;
+        const dy = pos1.y - centerY;
+        const currentR = Math.sqrt(dx * dx + dy * dy) || 1;
+        const targetR = targetRadii.get(pos1.id) ?? maxRadius * 0.5;
+        const radialStrength = (targetR - currentR) * 0.04 * t;
+        fx += (dx / currentR) * radialStrength;
+        fy += (dy / currentR) * radialStrength;
 
-        // Apply forces with damping
-        pos1.vx = (pos1.vx + fx * 0.2) * 0.75;
-        pos1.vy = (pos1.vy + fy * 0.2) * 0.75;
+        // Apply
+        pos1.vx = (pos1.vx + fx * 0.15) * 0.7;
+        pos1.vy = (pos1.vy + fy * 0.15) * 0.7;
         pos1.x += pos1.vx;
         pos1.y += pos1.vy;
 
-        // Boundary constraints with padding
-        const padding = 80;
-        pos1.x = Math.max(padding, Math.min(dimensions.width - padding, pos1.x));
-        pos1.y = Math.max(padding, Math.min(dimensions.height - padding, pos1.y));
+        // Boundary
+        const pad = 60;
+        pos1.x = Math.max(pad, Math.min(dimensions.width - pad, pos1.x));
+        pos1.y = Math.max(pad, Math.min(dimensions.height - pad, pos1.y));
       });
 
       iteration++;
-      
-      // Update positions every frame for smooth animation
-      if (iteration % 1 === 0 || iteration >= maxIterations) {
+      if (iteration % 2 === 0 || iteration >= maxIterations) {
         setNodePositions([...positions]);
       }
-      
       if (iteration < maxIterations) {
         animationFrameRef.current = requestAnimationFrame(simulate);
-      } else {
-        // Final update
-        setNodePositions([...positions]);
       }
     };
 
-    // Start simulation after a brief delay to ensure dimensions are set
     const timeoutId = setTimeout(() => {
       animationFrameRef.current = requestAnimationFrame(simulate);
     }, 50);
@@ -264,7 +264,7 @@ export function NetworkGraph({ allResources, graphData }: NetworkGraphProps) {
         cancelAnimationFrame(animationFrameRef.current);
       }
     };
-  }, [nodes, edges, dimensions]);
+  }, [nodes, edges, dimensions, connectionCounts]);
 
   // Update dimensions
   useEffect(() => {
@@ -374,8 +374,8 @@ export function NetworkGraph({ allResources, graphData }: NetworkGraphProps) {
   };
 
   const getNodeSize = (nodeId: string): number => {
-    const connectionCount = edges.filter(e => e.source === nodeId || e.target === nodeId).length;
-    return 18 + Math.min(connectionCount * 1.5, 12);
+    const count = connectionCounts.get(nodeId) || 0;
+    return 18 + Math.min(count * 1.5, 12);
   };
 
   const toggleSection = (section: string) => {
@@ -559,67 +559,109 @@ export function NetworkGraph({ allResources, graphData }: NetworkGraphProps) {
           onWheel={handleWheel}
         >
           <g transform={`translate(${transform.x}, ${transform.y}) scale(${transform.k})`}>
-            {/* Edges */}
-            <g opacity="0.3">
+            {/* Curved edges (D) with hover highlight (F) */}
+            <g>
               {edges.map((edge, index) => {
                 const sourcePos = nodePositions.find(p => p.id === edge.source);
                 const targetPos = nodePositions.find(p => p.id === edge.target);
-                
                 if (!sourcePos || !targetPos) return null;
 
-                const isHighlighted = selectedNodes.has(edge.source) || selectedNodes.has(edge.target);
-                const opacity = isHighlighted ? 0.6 : Math.min(edge.weight / 10, 0.3);
-                const strokeWidth = isHighlighted ? 2 : Math.min(edge.weight / 3, 1.5);
+                // Hover highlight: is this edge connected to hovered node?
+                const isHoverActive = hoveredNode !== null;
+                const isHoverEdge = hoveredNode === edge.source || hoveredNode === edge.target;
+                const isSelectedEdge = selectedNodes.has(edge.source) || selectedNodes.has(edge.target);
+
+                // Dim non-related edges during hover
+                let edgeOpacity: number;
+                let edgeStroke: string;
+                let edgeWidth: number;
+
+                if (isHoverActive) {
+                  if (isHoverEdge) {
+                    edgeOpacity = 0.8;
+                    edgeStroke = '#3b82f6'; // blue highlight
+                    edgeWidth = Math.min(edge.weight / 2, 2.5);
+                  } else {
+                    edgeOpacity = 0.04;
+                    edgeStroke = '#cbd5e1';
+                    edgeWidth = 0.5;
+                  }
+                } else if (isSelectedEdge) {
+                  edgeOpacity = 0.5;
+                  edgeStroke = '#475569';
+                  edgeWidth = 1.5;
+                } else {
+                  edgeOpacity = Math.min(edge.weight / 12, 0.25);
+                  edgeStroke = '#94a3b8';
+                  edgeWidth = Math.min(edge.weight / 4, 1.2);
+                }
+
+                // Curved bezier (D): offset control point perpendicular to midpoint
+                const mx = (sourcePos.x + targetPos.x) / 2;
+                const my = (sourcePos.y + targetPos.y) / 2;
+                const dx = targetPos.x - sourcePos.x;
+                const dy = targetPos.y - sourcePos.y;
+                const dist = Math.sqrt(dx * dx + dy * dy) || 1;
+                // Perpendicular normal
+                const nx = -dy / dist;
+                const ny = dx / dist;
+                // Consistent curve direction based on id ordering; cap curvature
+                const sign = edge.source < edge.target ? 1 : -1;
+                const curvature = sign * Math.min(dist * 0.18, 60);
+                const cx = mx + nx * curvature;
+                const cy = my + ny * curvature;
 
                 return (
-                  <line
+                  <path
                     key={index}
-                    x1={sourcePos.x}
-                    y1={sourcePos.y}
-                    x2={targetPos.x}
-                    y2={targetPos.y}
-                    stroke={isHighlighted ? '#475569' : '#cbd5e1'}
-                    strokeWidth={strokeWidth}
-                    opacity={opacity}
+                    d={`M ${sourcePos.x} ${sourcePos.y} Q ${cx} ${cy} ${targetPos.x} ${targetPos.y}`}
+                    fill="none"
+                    stroke={edgeStroke}
+                    strokeWidth={edgeWidth}
+                    opacity={edgeOpacity}
+                    className="transition-opacity duration-200"
                   />
                 );
               })}
             </g>
 
-            {/* Nodes - ensure ALL nodes are rendered */}
+            {/* Nodes with hover highlight (F) */}
             <g>
               {Array.from(nodes.entries()).map(([nodeId, node]) => {
-                // Find position for this node, or create a default one
                 let pos = nodePositions.find(p => p.id === nodeId);
-                
-                // If node doesn't have a position yet, create a default one
                 if (!pos) {
-                  const centerX = dimensions.width / 2;
-                  const centerY = dimensions.height / 2;
                   pos = {
                     id: nodeId,
-                    x: centerX + (Math.random() - 0.5) * 200,
-                    y: centerY + (Math.random() - 0.5) * 200,
-                    node,
-                    vx: 0,
-                    vy: 0,
+                    x: dimensions.width / 2 + (Math.random() - 0.5) * 200,
+                    y: dimensions.height / 2 + (Math.random() - 0.5) * 200,
+                    node, vx: 0, vy: 0,
                   };
                 }
-                
+
                 const size = getNodeSize(pos.id);
                 const isSelected = selectedNodes.has(pos.id);
                 const color = getNodeColor(pos.node, isSelected);
                 const icon = getNodeIcon(pos.node);
-                const isHovered = hoveredNode === pos.id;
+                const isThisHovered = hoveredNode === pos.id;
+
+                // Hover highlight (F): dim nodes that aren't neighbors
+                const isHoverActive = hoveredNode !== null;
+                const hoveredNeighbors = hoveredNode ? (neighborMap.get(hoveredNode) || new Set<string>()) : new Set<string>();
+                const isNeighborOfHovered = hoveredNeighbors.has(pos.id);
+                const isNodeActive = !isHoverActive || isThisHovered || isNeighborOfHovered;
+
+                const nodeOpacity = isNodeActive ? 1 : 0.12;
 
                 return (
-                  <g 
+                  <g
                     key={pos.id}
                     onMouseDown={(e) => handleNodeMouseDown(e, pos.id)}
                     onMouseMove={handleNodeMouseMove}
                     onMouseUp={handleNodeMouseUp}
                     onMouseEnter={() => setHoveredNode(pos.id)}
                     onMouseLeave={() => setHoveredNode(null)}
+                    opacity={nodeOpacity}
+                    className="transition-opacity duration-200"
                   >
                     {/* Node circle */}
                     <circle
@@ -627,59 +669,64 @@ export function NetworkGraph({ allResources, graphData }: NetworkGraphProps) {
                       cy={pos.y}
                       r={size}
                       fill={color}
-                      stroke={isSelected ? '#64748b' : isHovered ? '#94a3b8' : '#cbd5e1'}
-                      strokeWidth={isSelected ? 3 : isHovered ? 2.5 : 2}
-                      className="cursor-pointer transition-all"
-                      style={{ 
-                        filter: isHovered ? 'drop-shadow(0 0 8px rgba(148, 163, 184, 0.6))' : 'none'
+                      stroke={isSelected ? '#64748b' : isThisHovered ? '#3b82f6' : isNeighborOfHovered ? '#60a5fa' : '#cbd5e1'}
+                      strokeWidth={isSelected ? 3 : isThisHovered ? 3 : isNeighborOfHovered ? 2.5 : 1.5}
+                      className="cursor-pointer"
+                      style={{
+                        filter: isThisHovered
+                          ? 'drop-shadow(0 0 12px rgba(59, 130, 246, 0.7))'
+                          : isNeighborOfHovered
+                            ? 'drop-shadow(0 0 6px rgba(96, 165, 250, 0.4))'
+                            : 'none',
                       }}
                       onClick={() => handleNodeClick(pos.id)}
                     />
-                    
-                    {/* Icon inside node */}
+
+                    {/* Icon */}
                     <text
                       x={pos.x}
                       y={pos.y}
                       textAnchor="middle"
                       dominantBaseline="middle"
-                      className="text-white font-bold pointer-events-none select-none"
+                      className="font-bold pointer-events-none select-none"
                       fontSize={size * 0.6}
                       fill="white"
                     >
                       {icon}
                     </text>
-                    
-                    {/* Hover tooltip */}
-                    {isHovered && (
-                      <g transform={`translate(${pos.x}, ${pos.y - size - 10})`}>
+
+                    {/* Tooltip on hover */}
+                    {isThisHovered && (
+                      <g transform={`translate(${pos.x}, ${pos.y - size - 12})`}>
                         <rect
-                          x="-100"
-                          y="-30"
-                          width="200"
-                          height="25"
-                          rx="4"
-                          fill="rgba(17, 24, 39, 0.95)"
-                          className="dark:fill-gray-100"
-                          stroke="rgba(148, 163, 184, 0.5)"
+                          x="-110"
+                          y="-32"
+                          width="220"
+                          height="28"
+                          rx="6"
+                          fill="rgba(17, 24, 39, 0.92)"
+                          stroke="rgba(59, 130, 246, 0.5)"
                           strokeWidth="1"
                         />
                         <text
                           x="0"
-                          y="-12"
+                          y="-14"
                           textAnchor="middle"
-                          className="text-white dark:text-gray-900 font-semibold pointer-events-none select-none text-[10px]"
-                          fill="currentColor"
+                          className="font-semibold pointer-events-none select-none"
+                          fontSize="11"
+                          fill="white"
                         >
-                          {node.title.length > 25 ? node.title.substring(0, 22) + '...' : node.title}
+                          {node.title.length > 28 ? node.title.substring(0, 25) + '…' : node.title}
                         </text>
                         <text
                           x="0"
                           y="0"
                           textAnchor="middle"
-                          className="text-gray-300 dark:text-gray-600 pointer-events-none select-none text-[8px] capitalize"
-                          fill="currentColor"
+                          className="pointer-events-none select-none capitalize"
+                          fontSize="9"
+                          fill="#94a3b8"
                         >
-                          {node.category}
+                          {node.category} · {connectionCounts.get(pos.id) || 0} connections
                         </text>
                       </g>
                     )}
