@@ -187,43 +187,16 @@ export function CompareTools({ allResources }: CompareToolsProps) {
                     </td>
                     {selectedTools.map((tool, idx) => (
                       <td key={tool.slug} className="p-2 sm:p-4 align-top">
-                        <div className="flex flex-wrap gap-1 max-h-16 overflow-hidden group relative cursor-help">
+                        <div className="flex flex-wrap gap-1">
                           {dimensionTags[idx].length > 0 ? (
-                            <>
-                              {dimensionTags[idx].slice(0, 3).map((tag) => (
-                                <span
-                                  key={tag}
-                                  className="text-xs px-2 py-1 rounded-full bg-blue-100 dark:bg-blue-900/30 text-blue-700 dark:text-blue-300 whitespace-nowrap"
-                                >
-                                  {tag.replace(/-/g, ' ')}
-                                </span>
-                              ))}
-                              {dimensionTags[idx].length > 3 && (
-                                <>
-                                  <span className="text-xs text-gray-400">+{dimensionTags[idx].length - 3}</span>
-                                  <div className="absolute left-0 top-full mt-2 w-[90vw] max-w-xs bg-[var(--bg-secondary)] shadow-xl opacity-0 invisible group-hover:opacity-100 group-hover:visible z-50 transition-all duration-200 pointer-events-none">
-                                    {/* Left border frame */}
-                                    <div className="absolute left-0 top-0 bottom-0 w-px bg-gray-300 dark:bg-gray-600"></div>
-                                    
-                                    {/* Right border frame */}
-                                    <div className="absolute right-0 top-0 bottom-0 w-px bg-gray-300 dark:bg-gray-600"></div>
-                                    
-                                    <div className="p-3 pl-4 pr-4">
-                                      <div className="flex flex-wrap gap-1">
-                                        {dimensionTags[idx].map((tag) => (
-                                          <span
-                                            key={tag}
-                                            className="text-xs px-2 py-1 rounded-full bg-blue-100 dark:bg-blue-900/30 text-blue-700 dark:text-blue-300"
-                                          >
-                                            {tag.replace(/-/g, ' ')}
-                                          </span>
-                                        ))}
-                                      </div>
-                                    </div>
-                                  </div>
-                                </>
-                              )}
-                            </>
+                            dimensionTags[idx].map((tag) => (
+                              <span
+                                key={tag}
+                                className="text-xs px-2 py-1 rounded-full bg-blue-100 dark:bg-blue-900/30 text-blue-700 dark:text-blue-300 whitespace-nowrap"
+                              >
+                                {tag.replace(/-/g, ' ')}
+                              </span>
+                            ))
                           ) : (
                             <span className="text-xs text-gray-400">—</span>
                           )}
@@ -239,8 +212,8 @@ export function CompareTools({ allResources }: CompareToolsProps) {
                 <td className="p-2 sm:p-4 text-xs sm:text-sm font-medium text-gray-700 dark:text-gray-300 align-top">All tags</td>
                 {selectedTools.map((tool) => (
                   <td key={tool.slug} className="p-2 sm:p-4 align-top">
-                    <div className="flex flex-wrap gap-1 max-h-16 overflow-hidden group relative cursor-help">
-                      {tool.tags.slice(0, 6).map((tag) => (
+                    <div className="flex flex-wrap gap-1">
+                      {tool.tags.map((tag) => (
                         <span
                           key={tag}
                           className="text-xs px-2 py-1 rounded-full bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-400 whitespace-nowrap"
@@ -248,31 +221,6 @@ export function CompareTools({ allResources }: CompareToolsProps) {
                           {tag.replace(/-/g, ' ')}
                         </span>
                       ))}
-                      {tool.tags.length > 6 && (
-                        <>
-                          <span className="text-xs text-gray-400">+{tool.tags.length - 6}</span>
-                          <div className="absolute left-0 top-full mt-2 w-80 bg-white dark:bg-gray-800 shadow-xl opacity-0 invisible group-hover:opacity-100 group-hover:visible z-50 transition-all duration-200 pointer-events-none max-h-64 overflow-y-auto">
-                            {/* Left border frame */}
-                            <div className="absolute left-0 top-0 bottom-0 w-px bg-gray-300 dark:bg-gray-600"></div>
-                            
-                            {/* Right border frame */}
-                            <div className="absolute right-0 top-0 bottom-0 w-px bg-gray-300 dark:bg-gray-600"></div>
-                            
-                            <div className="p-3 pl-4 pr-4">
-                              <div className="flex flex-wrap gap-1">
-                                {tool.tags.map((tag) => (
-                                <span
-                                  key={tag}
-                                  className="text-xs px-2 py-1 rounded-full bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-400"
-                                >
-                                  {tag.replace(/-/g, ' ')}
-                                </span>
-                              ))}
-                              </div>
-                            </div>
-                          </div>
-                        </>
-                      )}
                     </div>
                   </td>
                 ))}
