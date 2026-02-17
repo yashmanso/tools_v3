@@ -108,8 +108,10 @@ export function ExploreSection({ allResources, graphData }: ExploreSectionProps)
       cancelAnimationFrame(raf);
       cleanupFn?.();
       if (scrollTimeoutRef.current) clearTimeout(scrollTimeoutRef.current);
+      // Reset sidebar when leaving the page that has the sidebar
+      setSidebarVisible(false);
     };
-  }, [syncSidebar]);
+  }, [syncSidebar, setSidebarVisible]);
 
   const items: {
     id: typeof mode;
