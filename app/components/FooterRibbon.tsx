@@ -1,21 +1,22 @@
 export function FooterRibbon() {
   return (
-    <footer className="mt-16 border-t border-[var(--border)] bg-[var(--bg-secondary)]">
-      <div className="max-w-4xl mx-auto px-6 py-8">
-        <div className="flex flex-col items-center gap-6">
+    <footer className="mt-16 pt-12 border-t border-gray-200 dark:border-gray-700">
+      <div className="max-w-4xl mx-auto px-6 pb-12">
+        <div className="flex flex-col items-center gap-8">
           {/* Logos */}
-          <div className="flex items-center justify-center gap-8 flex-wrap">
+          <div className="flex items-center justify-center gap-12 flex-wrap">
             <a
               href="https://www.chalmers.se"
               target="_blank"
               rel="noopener noreferrer"
-              className="shrink-0 hover:opacity-70 transition-opacity"
+              className="shrink-0 hover:opacity-70 transition-opacity flex items-center justify-center"
+              style={{ width: 200, height: 80 }}
             >
               {/* eslint-disable-next-line @next/next/no-img-element */}
               <img
                 src="/chalmers-logo.jpg"
                 alt="Chalmers University of Technology"
-                className="h-12 w-auto dark:invert"
+                className="max-h-full max-w-full object-contain dark:invert"
                 style={{ borderRadius: 0 }}
               />
             </a>
@@ -23,13 +24,14 @@ export function FooterRibbon() {
               href="https://enhanceuniversity.eu/"
               target="_blank"
               rel="noopener noreferrer"
-              className="shrink-0 hover:opacity-70 transition-opacity"
+              className="shrink-0 hover:opacity-70 transition-opacity flex items-center justify-center"
+              style={{ width: 200, height: 80 }}
             >
               {/* eslint-disable-next-line @next/next/no-img-element */}
               <img
                 src="/enhance-logo.png"
                 alt="ENHANCE – European Universities of Technology Alliance"
-                className="h-10 w-auto dark:invert"
+                className="max-h-full max-w-full object-contain dark:invert"
                 style={{ borderRadius: 0 }}
               />
             </a>
