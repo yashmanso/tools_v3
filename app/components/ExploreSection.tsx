@@ -419,10 +419,11 @@ export function ExploreSection({ allResources, graphData }: ExploreSectionProps)
               <h3 className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">
                 Workflow menu
               </h3>
-              <button
-                type="button"
+              <Button
+                variant="ghost"
+                size="icon"
                 onClick={() => toggleSidebar()}
-                className="p-1 rounded-md text-muted-foreground hover:text-foreground hover:bg-muted transition-colors"
+                className="h-7 w-7 text-muted-foreground hover:text-foreground"
                 aria-label="Hide sidebar"
                 title="Hide sidebar"
               >
@@ -433,7 +434,7 @@ export function ExploreSection({ allResources, graphData }: ExploreSectionProps)
                   <line x1="5" y1="11" x2="7.5" y2="11" strokeLinecap="round" />
                   <line x1="5" y1="14" x2="7.5" y2="14" strokeLinecap="round" />
                 </svg>
-              </button>
+              </Button>
             </div>
             <div className="mt-4 space-y-1">
               {items.map((item) => (
