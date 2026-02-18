@@ -71,7 +71,7 @@ export function MostViewedTools({ allResources }: MostViewedToolsProps) {
                 href={`/${tool.category}/${tool.slug}`}
                 className="p-6 h-full flex flex-col"
               >
-                <h3 className="text-lg font-semibold mb-2 text-[var(--text-primary)] line-clamp-2">
+                <h3 className="text-lg font-semibold mb-2 text-[var(--text-primary)] line-clamp-2 min-h-[3.5rem]">
                   {tool.title}
                 </h3>
                 {tool.overview && (
