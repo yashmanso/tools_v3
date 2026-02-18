@@ -8,6 +8,7 @@ import { BookmarkButton } from './BookmarkButton';
 import { ShareButton } from './ShareButton';
 import { addRecentView } from '../lib/recentViews';
 import { Button } from '@/components/ui/button';
+import { FooterRibbon } from './FooterRibbon';
 
 interface SlidingPanelsProps {
   children: React.ReactNode;
@@ -229,6 +230,7 @@ export function SlidingPanels({ children, allResources = [] }: SlidingPanelsProp
           style={{ height: '100%', overflowY: 'auto', overscrollBehavior: 'contain' }}
         >
           {children}
+          <FooterRibbon />
         </div>
       </div>
 

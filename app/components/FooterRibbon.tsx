@@ -13,7 +13,7 @@ export function FooterRibbon() {
             >
               {/* eslint-disable-next-line @next/next/no-img-element */}
               <img
-                src="/chalmers-logo.svg"
+                src="/chalmers-logo.jpg"
                 alt="Chalmers University of Technology"
                 className="h-12 w-auto dark:invert"
                 style={{ borderRadius: 0 }}
@@ -27,7 +27,7 @@ export function FooterRibbon() {
             >
               {/* eslint-disable-next-line @next/next/no-img-element */}
               <img
-                src="/enhance-logo.svg"
+                src="/enhance-logo.png"
                 alt="ENHANCE – European Universities of Technology Alliance"
                 className="h-10 w-auto dark:invert"
                 style={{ borderRadius: 0 }}
