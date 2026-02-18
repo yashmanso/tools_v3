@@ -52,10 +52,16 @@ export function ExploreSection({ allResources, graphData }: ExploreSectionProps)
   modeRef.current = mode; // keep ref in sync with state
   const { panels } = usePanels();
   const hasPanelsOpen = panels.length > 0;
-  const { sidebarVisible, setSidebarVisible, sidebarLocked, setSidebarLocked, setSidebarMounted } = useSidebar();
+  const { sidebarVisible, setSidebarVisible, sidebarLocked, setSidebarLocked, setSidebarMounted, toggleSidebar } = useSidebar();
 
   // Derive expanded state: visible when not scrolling and no panels open
   const sidebarExpanded = sidebarVisible && !hasPanelsOpen;
+
+  useEffect(() => {
+    // #region agent log
+    fetch('http://127.0.0.1:7243/ingest/5bbecbae-44aa-4e2f-b557-31f64a471b94',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({runId:'pre-fix-1',hypothesisId:'H5',location:'ExploreSection.tsx:sidebarExpandedEffect',message:'sidebar render state',data:{sidebarVisible,hasPanelsOpen,sidebarExpanded},timestamp:Date.now()})}).catch(()=>{});
+    // #endregion
+  }, [sidebarVisible, hasPanelsOpen, sidebarExpanded]);
 
   // Keep a ref of sidebarLocked so the scroll handler always reads the latest value.
   const sidebarLockedRef = useRef(sidebarLocked);
@@ -67,6 +73,9 @@ export function ExploreSection({ allResources, graphData }: ExploreSectionProps)
   // When sidebarLocked is true the user manually toggled — skip auto-behavior.
   const syncSidebar = useCallback(
     (scrolling: boolean) => {
+      // #region agent log
+      fetch('http://127.0.0.1:7243/ingest/5bbecbae-44aa-4e2f-b557-31f64a471b94',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({runId:'pre-fix-1',hypothesisId:'H3',location:'ExploreSection.tsx:syncSidebar',message:'syncSidebar called',data:{scrolling,sidebarLocked:sidebarLockedRef.current,mode:modeRef.current,hasPanelsOpen},timestamp:Date.now()})}).catch(()=>{});
+      // #endregion
       if (sidebarLockedRef.current) return; // user has manual control
       if (scrolling) {
         setSidebarVisible(false);
@@ -81,7 +90,13 @@ export function ExploreSection({ allResources, graphData }: ExploreSectionProps)
   // Register this component so the Header knows the sidebar is available.
   useEffect(() => {
     setSidebarMounted(true);
+    // #region agent log
+    fetch('http://127.0.0.1:7243/ingest/5bbecbae-44aa-4e2f-b557-31f64a471b94',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({runId:'pre-fix-1',hypothesisId:'H4',location:'ExploreSection.tsx:mountEffect',message:'ExploreSection mounted; sidebarMounted true',data:{mode,hasPanelsOpen},timestamp:Date.now()})}).catch(()=>{});
+    // #endregion
     return () => {
+      // #region agent log
+      fetch('http://127.0.0.1:7243/ingest/5bbecbae-44aa-4e2f-b557-31f64a471b94',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({runId:'pre-fix-1',hypothesisId:'H4',location:'ExploreSection.tsx:mountEffectCleanup',message:'ExploreSection unmounted; sidebarMounted false',data:{mode:modeRef.current,hasPanelsOpen},timestamp:Date.now()})}).catch(()=>{});
+      // #endregion
       setSidebarMounted(false);
     };
   }, [setSidebarMounted]);
@@ -400,9 +415,26 @@ export function ExploreSection({ allResources, graphData }: ExploreSectionProps)
           )}
         >
           <div className="rounded-[1.75rem] border border-[var(--border)] bg-[var(--bg-secondary)] p-4 backdrop-blur-md">
-            <h3 className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">
-              Workflow menu
-            </h3>
+            <div className="flex items-center justify-between">
+              <h3 className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">
+                Workflow menu
+              </h3>
+              <button
+                type="button"
+                onClick={() => toggleSidebar()}
+                className="p-1 rounded-md text-muted-foreground hover:text-foreground hover:bg-muted transition-colors"
+                aria-label="Hide sidebar"
+                title="Hide sidebar"
+              >
+                <svg className="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.8}>
+                  <rect x="3" y="3" width="18" height="18" rx="3" />
+                  <line x1="9" y1="3" x2="9" y2="21" />
+                  <line x1="5" y1="8" x2="7.5" y2="8" strokeLinecap="round" />
+                  <line x1="5" y1="11" x2="7.5" y2="11" strokeLinecap="round" />
+                  <line x1="5" y1="14" x2="7.5" y2="14" strokeLinecap="round" />
+                </svg>
+              </button>
+            </div>
             <div className="mt-4 space-y-1">
               {items.map((item) => (
                 <button

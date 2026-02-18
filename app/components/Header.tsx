@@ -23,11 +23,17 @@ export function Header({ allResources }: HeaderProps) {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const pathname = usePathname();
   const { clearPanels } = usePanels();
-  const { sidebarVisible, toggleSidebar } = useSidebar();
+  const { sidebarVisible } = useSidebar();
 
   useEffect(() => {
     setMounted(true);
   }, []);
+
+  useEffect(() => {
+    // #region agent log
+    fetch('http://127.0.0.1:7243/ingest/5bbecbae-44aa-4e2f-b557-31f64a471b94',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({runId:'pre-fix-1',hypothesisId:'H1',location:'Header.tsx:renderGateEffect',message:'header sidebar toggle gate values',data:{pathname,isHome:pathname==='/',sidebarVisible,mounted,windowWidth:typeof window!=='undefined'?window.innerWidth:null},timestamp:Date.now()})}).catch(()=>{});
+    // #endregion
+  }, [pathname, sidebarVisible, mounted]);
 
   const isActive = (path: string) => {
     if (path === '/') return pathname === '/';
@@ -38,35 +44,6 @@ export function Header({ allResources }: HeaderProps) {
     <header className="fixed top-0 left-0 right-0 z-50 backdrop-blur-md bg-[var(--bg-primary)]/90 border-b border-[var(--border)]">
       <div className="container mx-auto px-3 sm:px-6 py-3 sm:py-5 flex items-center justify-between max-w-5xl">
         <div className="flex items-center gap-2">
-          {/* Apple-Mail-style sidebar toggle — only visible on lg when on homepage */}
-          {pathname === '/' && (
-            <div className="hidden lg:block">
-              <Button
-                variant="ghost"
-                onClick={toggleSidebar}
-                className="p-1.5 rounded-md text-[var(--text-secondary)] hover:text-[var(--text-primary)] hover:bg-[var(--border-subtle)] transition-colors"
-                aria-label={sidebarVisible ? 'Hide sidebar' : 'Show sidebar'}
-                title={sidebarVisible ? 'Hide sidebar' : 'Show sidebar'}
-              >
-                {sidebarVisible ? (
-                  /* Sidebar-open icon: panel highlighted on left */
-                  <svg className="w-[18px] h-[18px]" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.8}>
-                    <rect x="3" y="3" width="18" height="18" rx="3" />
-                    <line x1="9" y1="3" x2="9" y2="21" />
-                    <line x1="5" y1="8" x2="7.5" y2="8" strokeLinecap="round" />
-                    <line x1="5" y1="11" x2="7.5" y2="11" strokeLinecap="round" />
-                    <line x1="5" y1="14" x2="7.5" y2="14" strokeLinecap="round" />
-                  </svg>
-                ) : (
-                  /* Sidebar-closed icon: plain panel outline */
-                  <svg className="w-[18px] h-[18px]" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.8}>
-                    <rect x="3" y="3" width="18" height="18" rx="3" />
-                    <line x1="9" y1="3" x2="9" y2="21" />
-                  </svg>
-                )}
-              </Button>
-            </div>
-          )}
           <Link
             href="/"
             onClick={clearPanels}
