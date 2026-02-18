@@ -176,7 +176,7 @@ Thank you!`
             and generate a formatted tool page matching the style of existing tools in the database.
           </p>
           <div className="bg-[var(--bg-secondary)] border border-blue-200 dark:border-blue-800 rounded-lg p-4 space-y-2">
-            <h2 className="font-semibold text-blue-900 dark:text-blue-100 mb-2">What happens when you click "Generate Tool Page":</h2>
+            <h2 className="font-semibold text-blue-900 dark:text-blue-100 mb-2">What happens when you click "Generate tool page":</h2>
             <ol className="list-decimal list-inside space-y-2 text-sm">
               <li>
                 <strong>File Parsing:</strong> The system extracts text content from your uploaded files (PDF, DOCX, TXT, images). 
