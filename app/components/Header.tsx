@@ -40,30 +40,32 @@ export function Header({ allResources }: HeaderProps) {
         <div className="flex items-center gap-2">
           {/* Apple-Mail-style sidebar toggle — only visible on lg when ExploreSection is mounted */}
           {sidebarMounted && (
-            <Button
-              variant="ghost"
-              onClick={toggleSidebar}
-              className="hidden lg:inline-flex p-1.5 rounded-md text-[var(--text-secondary)] hover:text-[var(--text-primary)] hover:bg-[var(--border-subtle)] transition-colors"
-              aria-label={sidebarVisible ? 'Hide sidebar' : 'Show sidebar'}
-              title={sidebarVisible ? 'Hide sidebar' : 'Show sidebar'}
-            >
-              {sidebarVisible ? (
-                /* Sidebar-open icon: panel highlighted on left */
-                <svg className="w-[18px] h-[18px]" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.8}>
-                  <rect x="3" y="3" width="18" height="18" rx="3" />
-                  <line x1="9" y1="3" x2="9" y2="21" />
-                  <line x1="5" y1="8" x2="7.5" y2="8" strokeLinecap="round" />
-                  <line x1="5" y1="11" x2="7.5" y2="11" strokeLinecap="round" />
-                  <line x1="5" y1="14" x2="7.5" y2="14" strokeLinecap="round" />
-                </svg>
-              ) : (
-                /* Sidebar-closed icon: plain panel outline */
-                <svg className="w-[18px] h-[18px]" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.8}>
-                  <rect x="3" y="3" width="18" height="18" rx="3" />
-                  <line x1="9" y1="3" x2="9" y2="21" />
-                </svg>
-              )}
-            </Button>
+            <div className="hidden lg:block">
+              <Button
+                variant="ghost"
+                onClick={toggleSidebar}
+                className="p-1.5 rounded-md text-[var(--text-secondary)] hover:text-[var(--text-primary)] hover:bg-[var(--border-subtle)] transition-colors"
+                aria-label={sidebarVisible ? 'Hide sidebar' : 'Show sidebar'}
+                title={sidebarVisible ? 'Hide sidebar' : 'Show sidebar'}
+              >
+                {sidebarVisible ? (
+                  /* Sidebar-open icon: panel highlighted on left */
+                  <svg className="w-[18px] h-[18px]" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.8}>
+                    <rect x="3" y="3" width="18" height="18" rx="3" />
+                    <line x1="9" y1="3" x2="9" y2="21" />
+                    <line x1="5" y1="8" x2="7.5" y2="8" strokeLinecap="round" />
+                    <line x1="5" y1="11" x2="7.5" y2="11" strokeLinecap="round" />
+                    <line x1="5" y1="14" x2="7.5" y2="14" strokeLinecap="round" />
+                  </svg>
+                ) : (
+                  /* Sidebar-closed icon: plain panel outline */
+                  <svg className="w-[18px] h-[18px]" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.8}>
+                    <rect x="3" y="3" width="18" height="18" rx="3" />
+                    <line x1="9" y1="3" x2="9" y2="21" />
+                  </svg>
+                )}
+              </Button>
+            </div>
           )}
           <Link
             href="/"
