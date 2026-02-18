@@ -138,7 +138,7 @@ export function QuickFiltersSidebar({ resources, onFiltersChange, initialFilters
   if (!isOpen) return null;
 
   return (
-    <div className="w-80 flex-shrink-0 bg-[var(--bg-secondary)] border-r border-gray-200 dark:border-gray-700 h-[calc(100vh-200px)] overflow-hidden flex flex-col">
+    <div className="w-80 flex-shrink-0 bg-[var(--bg-secondary)] border border-gray-200 dark:border-gray-700 h-[calc(100vh-200px)] overflow-hidden flex flex-col rounded-2xl">
         <div className="h-full flex flex-col">
           {/* Header */}
           <div className="p-4 border-b border-gray-200 dark:border-gray-700 flex items-center justify-between">
