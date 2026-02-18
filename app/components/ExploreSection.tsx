@@ -371,7 +371,7 @@ export function ExploreSection({ allResources, graphData }: ExploreSectionProps)
   );
 
   return (
-    <section ref={sectionRef} className="py-12 bg-[var(--bg-primary)]">
+    <section ref={sectionRef} className="pb-12 bg-[var(--bg-primary)]">
       {/* Desktop fixed left toolbar — slides in/out based on scroll + visibility */}
       {!hasPanelsOpen && (
         <aside
