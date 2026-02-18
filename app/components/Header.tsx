@@ -23,7 +23,7 @@ export function Header({ allResources }: HeaderProps) {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const pathname = usePathname();
   const { clearPanels } = usePanels();
-  const { sidebarVisible, sidebarMounted, toggleSidebar } = useSidebar();
+  const { sidebarVisible, toggleSidebar } = useSidebar();
 
   useEffect(() => {
     setMounted(true);
@@ -38,8 +38,8 @@ export function Header({ allResources }: HeaderProps) {
     <header className="fixed top-0 left-0 right-0 z-50 backdrop-blur-md bg-[var(--bg-primary)]/90 border-b border-[var(--border)]">
       <div className="container mx-auto px-3 sm:px-6 py-3 sm:py-5 flex items-center justify-between max-w-5xl">
         <div className="flex items-center gap-2">
-          {/* Apple-Mail-style sidebar toggle — only visible on lg when ExploreSection is mounted */}
-          {sidebarMounted && (
+          {/* Apple-Mail-style sidebar toggle — only visible on lg when on homepage */}
+          {pathname === '/' && (
             <div className="hidden lg:block">
               <Button
                 variant="ghost"
