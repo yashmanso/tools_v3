@@ -52,16 +52,22 @@ export function ExploreSection({ allResources, graphData }: ExploreSectionProps)
   modeRef.current = mode; // keep ref in sync with state
   const { panels } = usePanels();
   const hasPanelsOpen = panels.length > 0;
-  const { sidebarVisible, setSidebarVisible } = useSidebar();
+  const { sidebarVisible, setSidebarVisible, sidebarLocked, setSidebarLocked, setSidebarMounted } = useSidebar();
 
   // Derive expanded state: visible when not scrolling and no panels open
   const sidebarExpanded = sidebarVisible && !hasPanelsOpen;
 
+  // Keep a ref of sidebarLocked so the scroll handler always reads the latest value.
+  const sidebarLockedRef = useRef(sidebarLocked);
+  sidebarLockedRef.current = sidebarLocked;
+
   // Stable callback that pushes the derived value into context.
   // When a workflow is active (mode !== 'select'), the sidebar
   // should NOT reappear after a scroll pause.
+  // When sidebarLocked is true the user manually toggled — skip auto-behavior.
   const syncSidebar = useCallback(
     (scrolling: boolean) => {
+      if (sidebarLockedRef.current) return; // user has manual control
       if (scrolling) {
         setSidebarVisible(false);
       } else {
@@ -71,6 +77,14 @@ export function ExploreSection({ allResources, graphData }: ExploreSectionProps)
     },
     [hasPanelsOpen, setSidebarVisible],
   );
+
+  // Register this component so the Header knows the sidebar is available.
+  useEffect(() => {
+    setSidebarMounted(true);
+    return () => {
+      setSidebarMounted(false);
+    };
+  }, [setSidebarMounted]);
 
   // Scroll detection — attaches to the nearest scrollable ancestor.
   // Uses a ref for the raw "scrolling" flag so intermediate ticks
@@ -110,8 +124,9 @@ export function ExploreSection({ allResources, graphData }: ExploreSectionProps)
       if (scrollTimeoutRef.current) clearTimeout(scrollTimeoutRef.current);
       // Reset sidebar when leaving the page that has the sidebar
       setSidebarVisible(false);
+      setSidebarLocked(false);
     };
-  }, [syncSidebar, setSidebarVisible]);
+  }, [syncSidebar, setSidebarVisible, setSidebarLocked]);
 
   const items: {
     id: typeof mode;
@@ -169,7 +184,8 @@ export function ExploreSection({ allResources, graphData }: ExploreSectionProps)
 
   const handleSelectMode = (id: typeof mode) => {
     setMode(id);
-    // Hide sidebar immediately when entering a workflow; show when returning to overview
+    // Unlock auto-behavior and set visibility based on the new mode
+    setSidebarLocked(false);
     setSidebarVisible(id === 'select' && !hasPanelsOpen);
     // Smoothly scroll the main ExploreSection content into view
     if (contentRef.current) {
@@ -410,34 +426,6 @@ export function ExploreSection({ allResources, graphData }: ExploreSectionProps)
             </div>
           </div>
         </aside>
-      )}
-
-      {/* Collapsed floating action button — visible on lg when sidebar is hidden */}
-      {!hasPanelsOpen && (
-        <div
-          className={cn(
-            'hidden lg:block fixed bottom-6 left-6 z-40 transition-all duration-300 ease-in-out',
-            !sidebarExpanded
-              ? 'translate-y-0 opacity-100 scale-100'
-              : 'translate-y-4 opacity-0 scale-95 pointer-events-none'
-          )}
-        >
-          <Sheet open={toolbarOpen} onOpenChange={setToolbarOpen}>
-            <SheetTrigger asChild>
-              <button
-                className="flex items-center gap-2 rounded-full border border-[var(--border)] bg-[var(--bg-secondary)] px-4 py-2.5 shadow-lg backdrop-blur-md hover:bg-muted transition-colors"
-              >
-                <svg className="w-4 h-4 text-muted-foreground" fill="none" stroke="currentColor" strokeWidth={2} viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" d="M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25h16.5" />
-                </svg>
-                <span className="text-sm font-medium truncate max-w-[10rem]">
-                  {activeItem?.label ?? 'Menu'}
-                </span>
-              </button>
-            </SheetTrigger>
-            {menuSheetContent}
-          </Sheet>
-        </div>
       )}
 
       {/* Mobile toolbar trigger (non-sticky, scrolls with content) */}

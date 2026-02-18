@@ -179,15 +179,15 @@ Thank you!`
             <h2 className="font-semibold text-blue-900 dark:text-blue-100 mb-2">What happens when you click "Generate tool page":</h2>
             <ol className="list-decimal list-inside space-y-2 text-sm">
               <li>
-                <strong>File Parsing:</strong> The system extracts text content from your uploaded files (PDF, DOCX, TXT, images). 
+                <strong>File parsing:</strong> The system extracts text content from your uploaded files (PDF, DOCX, TXT, images). 
                 Each file is processed to extract readable text that will be used to understand the tool.
               </li>
               <li>
-                <strong>Web Search:</strong> Using Perplexity AI, the system searches the web for comprehensive information about your tool. 
+                <strong>Web search:</strong> Using Perplexity AI, the system searches the web for comprehensive information about your tool. 
                 It looks for details about what the tool is, its purpose, methodology, target audience, and how it relates to sustainability.
               </li>
               <li>
-                <strong>Content Generation:</strong> OpenAI GPT-4 analyzes the parsed file content and web search results to generate:
+                <strong>Content generation:</strong> OpenAI GPT-4 analyzes the parsed file content and web search results to generate:
                 <ul className="list-disc list-inside ml-4 mt-1 space-y-1">
                   <li>A comprehensive <strong>Overview</strong> section (2-3 paragraphs) describing the tool</li>
                   <li>All 12 <strong>Dimensions</strong> with descriptions and relevant tags:
@@ -202,14 +202,14 @@ Thank you!`
                 </ul>
               </li>
               <li>
-                <strong>File Saving:</strong> Your uploaded files are saved to the attachments directory and linked in the tool page.
+                <strong>File saving:</strong> Your uploaded files are saved to the attachments directory and linked in the tool page.
               </li>
               <li>
-                <strong>Tool Creation:</strong> A markdown file is created in the tools directory with the generated content, 
+                <strong>Tool creation:</strong> A markdown file is created in the tools directory with the generated content, 
                 formatted exactly like existing tools in the database.
               </li>
               <li>
-                <strong>Preview & Edit:</strong> You can review the generated content, edit any sections, and then save the final tool page.
+                <strong>Preview & edit:</strong> You can review the generated content, edit any sections, and then save the final tool page.
               </li>
             </ol>
             <p className="text-xs mt-3 pt-3 border-t border-blue-200 dark:border-blue-700">
