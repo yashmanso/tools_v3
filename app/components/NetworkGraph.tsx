@@ -64,6 +64,7 @@ export function NetworkGraph({ allResources, graphData }: NetworkGraphProps) {
   const [isDragging, setIsDragging] = useState(false);
   const [dragNode, setDragNode] = useState<string | null>(null);
   const animationFrameRef = useRef<number | null>(null);
+  const [isExpanded, setIsExpanded] = useState(false);
 
   // Organize resources by category for sidebar
   const resourcesByCategory = useMemo(() => {
@@ -278,7 +279,36 @@ export function NetworkGraph({ allResources, graphData }: NetworkGraphProps) {
     updateDimensions();
     window.addEventListener('resize', updateDimensions);
     return () => window.removeEventListener('resize', updateDimensions);
-  }, []);
+  }, [isExpanded]);
+
+  // Escape key to exit expanded mode & auto-fit after expand/collapse
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === 'Escape' && isExpanded) setIsExpanded(false);
+    };
+    document.addEventListener('keydown', handleKeyDown);
+
+    // Lock body scroll when expanded
+    if (isExpanded) {
+      document.body.style.overflow = 'hidden';
+    } else {
+      document.body.style.overflow = '';
+    }
+
+    // Auto-fit the graph after dimensions recalculate
+    const timer = setTimeout(() => {
+      if (containerRef.current) {
+        const rect = containerRef.current.getBoundingClientRect();
+        setDimensions({ width: rect.width || 1000, height: rect.height || 700 });
+      }
+    }, 50);
+
+    return () => {
+      document.removeEventListener('keydown', handleKeyDown);
+      document.body.style.overflow = '';
+      clearTimeout(timer);
+    };
+  }, [isExpanded]);
 
   // Zoom handlers
   const handleWheel = useCallback((e: React.WheelEvent) => {
@@ -450,9 +480,15 @@ export function NetworkGraph({ allResources, graphData }: NetworkGraphProps) {
   };
 
   return (
-    <div className="flex flex-col lg:flex-row h-[600px] sm:h-[700px] lg:h-[800px] bg-[var(--bg-primary)] rounded-2xl sm:rounded-3xl border border-gray-200 dark:border-gray-700 overflow-hidden">
+    <div className={
+      isExpanded
+        ? 'fixed inset-0 z-[100] flex flex-col lg:flex-row bg-[var(--bg-primary)] overflow-hidden'
+        : 'flex flex-col lg:flex-row h-[600px] sm:h-[700px] lg:h-[800px] bg-[var(--bg-primary)] rounded-2xl sm:rounded-3xl border border-gray-200 dark:border-gray-700 overflow-hidden'
+    }>
       {/* Left Sidebar */}
-      <div className="w-full lg:w-80 border-b lg:border-b-0 lg:border-r border-gray-200 dark:border-gray-700 bg-[var(--bg-secondary)] flex flex-col h-[200px] sm:h-[250px] lg:h-auto">
+      <div className={`w-full lg:w-80 border-b lg:border-b-0 lg:border-r border-gray-200 dark:border-gray-700 bg-[var(--bg-secondary)] flex flex-col ${
+        isExpanded ? 'h-[200px] lg:h-full' : 'h-[200px] sm:h-[250px] lg:h-auto'
+      }`}>
         {/* Search */}
         <div className="p-4 border-b border-gray-200 dark:border-gray-700">
           <input
@@ -833,13 +869,19 @@ export function NetworkGraph({ allResources, graphData }: NetworkGraphProps) {
             </svg>
           </Button>
           <Button variant="ghost"
-            onClick={handleFitView}
+            onClick={() => setIsExpanded(!isExpanded)}
             className="p-2 hover:bg-gray-100 dark:hover:bg-gray-700 rounded transition-colors"
-            title="Fit to view"
+            title={isExpanded ? 'Exit full screen' : 'Full screen'}
           >
-            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 8V4m0 0h4M4 4l5 5m11-1V4m0 0h-4m4 0l-5 5M4 16v4m0 0h4m-4 0l5-5m11 5l-5-5m5 5v-4m0 4h-4" />
-            </svg>
+            {isExpanded ? (
+              <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 9V4.5M9 9H4.5M9 9L3.75 3.75M9 15v4.5M9 15H4.5M9 15l-5.25 5.25M15 9h4.5M15 9V4.5M15 9l5.25-5.25M15 15h4.5M15 15v4.5m0-4.5l5.25 5.25" />
+              </svg>
+            ) : (
+              <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 8V4m0 0h4M4 4l5 5m11-1V4m0 0h-4m4 0l-5 5M4 16v4m0 0h4m-4 0l5-5m11 5l-5-5m5 5v-4m0 4h-4" />
+              </svg>
+            )}
           </Button>
         </div>
 
