@@ -37,6 +37,17 @@ export function FooterRibbon() {
             </a>
           </div>
 
+          {/* EU Co-funded badge */}
+          <div className="flex items-center justify-center">
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img
+              src="/eu-cofunded-logo.jpg"
+              alt="Co-funded by the European Union"
+              className="h-14 w-auto object-contain dark:invert"
+              style={{ borderRadius: 0 }}
+            />
+          </div>
+
           {/* Attribution text */}
           <p className="text-center text-sm text-[var(--text-secondary)] leading-relaxed max-w-2xl">
             This toolbox is created by{' '}
