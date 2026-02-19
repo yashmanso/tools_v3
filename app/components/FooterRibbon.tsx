@@ -35,17 +35,18 @@ export function FooterRibbon() {
                 style={{ borderRadius: 0 }}
               />
             </a>
-          </div>
-
-          {/* EU Co-funded badge */}
-          <div className="flex items-center justify-center">
-            {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img
-              src="/eu-cofunded-logo.jpg"
-              alt="Co-funded by the European Union"
-              className="h-14 w-auto object-contain dark:invert"
-              style={{ borderRadius: 0 }}
-            />
+            <div
+              className="shrink-0 flex items-center justify-center"
+              style={{ width: 200, height: 80 }}
+            >
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img
+                src="/eu-cofunded-logo.jpg"
+                alt="Co-funded by the European Union"
+                className="max-h-full max-w-full object-contain dark:invert"
+                style={{ borderRadius: 0 }}
+              />
+            </div>
           </div>
 
           {/* Attribution text */}
