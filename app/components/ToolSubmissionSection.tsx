@@ -54,7 +54,16 @@ export function ToolSubmissionSection() {
   const [status, setStatus] = useState<{ type: 'success' | 'error'; message: string } | null>(null);
   const [activeDimensionIndex, setActiveDimensionIndex] = useState(0);
 
-  const isValid = useMemo(() => title.trim().length > 0 && overview.trim().length > 0, [title, overview]);
+  const [visitedDimensions, setVisitedDimensions] = useState<Set<number>>(new Set([0]));
+
+  const dimensionProgress = Math.round(((activeDimensionIndex + 1) / DIMENSIONS.length) * 100);
+
+  const allDimensionsVisited = visitedDimensions.size === DIMENSIONS.length;
+
+  const isValid = useMemo(
+    () => title.trim().length > 0 && overview.trim().length > 0 && allDimensionsVisited,
+    [title, overview, allDimensionsVisited],
+  );
 
   const activeDimension = DIMENSIONS[activeDimensionIndex];
   const isFirstDimension = activeDimensionIndex === 0;
@@ -62,13 +71,17 @@ export function ToolSubmissionSection() {
 
   const handleNext = () => {
     if (!isLastDimension) {
-      setActiveDimensionIndex(prev => prev + 1);
+      const next = activeDimensionIndex + 1;
+      setActiveDimensionIndex(next);
+      setVisitedDimensions(prev => new Set(prev).add(next));
     }
   };
 
   const handlePrevious = () => {
     if (!isFirstDimension) {
-      setActiveDimensionIndex(prev => prev - 1);
+      const prev = activeDimensionIndex - 1;
+      setActiveDimensionIndex(prev);
+      setVisitedDimensions(p => new Set(p).add(prev));
     }
   };
 
@@ -235,8 +248,14 @@ export function ToolSubmissionSection() {
               Dimensions & tags
             </h3>
             <div className="text-sm text-gray-500 dark:text-gray-400">
-              {activeDimensionIndex + 1} of {DIMENSIONS.length}
+              {activeDimensionIndex + 1} of {DIMENSIONS.length} ({dimensionProgress}%)
             </div>
+          </div>
+          <div className="w-full bg-gray-200 dark:bg-gray-700 rounded-full h-2">
+            <div
+              className="bg-blue-600 h-2 rounded-full transition-all duration-300"
+              style={{ width: `${dimensionProgress}%` }}
+            />
           </div>
           <p className="text-sm text-gray-500 dark:text-gray-400 text-left">
             Add short descriptions and select tags from the existing list, or add custom tags as needed.
@@ -308,7 +327,12 @@ export function ToolSubmissionSection() {
           </div>
         )}
 
-        <div className="flex justify-end">
+        <div className="flex items-center justify-end gap-3">
+          {!allDimensionsVisited && (
+            <span className="text-xs text-amber-600 dark:text-amber-400">
+              Complete all {DIMENSIONS.length} dimensions to submit ({DIMENSIONS.length - visitedDimensions.size} remaining)
+            </span>
+          )}
           <Button type="submit" disabled={!isValid || submitting}>
             {submitting ? 'Submitting...' : 'Submit tool'}
           </Button>
