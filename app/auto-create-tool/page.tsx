@@ -169,54 +169,50 @@ Thank you!`
     <div className="max-w-4xl mx-auto">
       <Breadcrumbs />
       <div className="mb-8">
-        <h1 className="text-3xl font-bold mb-3">Auto create resource</h1>
+        <div className="flex items-center gap-3 mb-3">
+          <h1 className="text-3xl font-bold">Auto create resource</h1>
+          <div className="relative group">
+            <button
+              type="button"
+              className="inline-flex items-center justify-center w-6 h-6 rounded-full border border-gray-300 dark:border-gray-600 text-xs font-semibold text-gray-500 dark:text-gray-400 hover:border-blue-500 hover:text-blue-500 dark:hover:border-blue-400 dark:hover:text-blue-400 transition-colors"
+              aria-label="How it works"
+            >
+              ?
+            </button>
+            <div className="invisible group-hover:visible opacity-0 group-hover:opacity-100 transition-all duration-200 absolute left-1/2 -translate-x-1/2 top-full mt-2 z-50 w-[28rem] bg-[var(--bg-secondary)] border border-blue-200 dark:border-blue-800 rounded-lg p-4 shadow-xl space-y-2">
+              <div className="absolute -top-2 left-1/2 -translate-x-1/2 w-3 h-3 rotate-45 bg-[var(--bg-secondary)] border-l border-t border-blue-200 dark:border-blue-800" />
+              <h2 className="font-semibold text-blue-900 dark:text-blue-100 mb-2 text-sm">What happens when you click &quot;Generate tool page&quot;:</h2>
+              <ol className="list-decimal list-inside space-y-2 text-xs text-gray-600 dark:text-gray-400">
+                <li>
+                  <strong>File parsing:</strong> The system extracts text content from your uploaded files (PDF, DOCX, TXT, images).
+                </li>
+                <li>
+                  <strong>Web search:</strong> Using Perplexity AI, the system searches the web for comprehensive information about your tool.
+                </li>
+                <li>
+                  <strong>Content generation:</strong> An LLM analyzes the parsed file content and web search results to generate an overview, all 12 dimensions with tags, and a resources section.
+                </li>
+                <li>
+                  <strong>File saving:</strong> Your uploaded files are saved to the attachments directory and linked in the tool page.
+                </li>
+                <li>
+                  <strong>Tool creation:</strong> A markdown file is created in the tools directory with the generated content.
+                </li>
+                <li>
+                  <strong>Preview &amp; edit:</strong> You can review, edit, and then save the final tool page.
+                </li>
+              </ol>
+              <p className="text-[11px] mt-3 pt-3 border-t border-blue-200 dark:border-blue-700 text-gray-500 dark:text-gray-400">
+                <strong>Note:</strong> The process typically takes 30-60 seconds. You&apos;ll see progress indicators for each step.
+              </p>
+            </div>
+          </div>
+        </div>
         <div className="space-y-3 text-gray-600 dark:text-gray-400">
           <p>
             Enter a tool name and upload related files. The system will automatically search the web, analyze your files, 
             and generate a formatted tool page matching the style of existing tools in the database.
           </p>
-          <div className="bg-[var(--bg-secondary)] border border-blue-200 dark:border-blue-800 rounded-lg p-4 space-y-2">
-            <h2 className="font-semibold text-blue-900 dark:text-blue-100 mb-2">What happens when you click "Generate tool page":</h2>
-            <ol className="list-decimal list-inside space-y-2 text-sm">
-              <li>
-                <strong>File parsing:</strong> The system extracts text content from your uploaded files (PDF, DOCX, TXT, images). 
-                Each file is processed to extract readable text that will be used to understand the tool.
-              </li>
-              <li>
-                <strong>Web search:</strong> Using Perplexity AI, the system searches the web for comprehensive information about your tool. 
-                It looks for details about what the tool is, its purpose, methodology, target audience, and how it relates to sustainability.
-              </li>
-              <li>
-                <strong>Content generation:</strong> OpenAI GPT-4 analyzes the parsed file content and web search results to generate:
-                <ul className="list-disc list-inside ml-4 mt-1 space-y-1">
-                  <li>A comprehensive <strong>Overview</strong> section (2-3 paragraphs) describing the tool</li>
-                  <li>All 12 <strong>Dimensions</strong> with descriptions and relevant tags:
-                    <ul className="list-disc list-inside ml-4 mt-1 text-xs">
-                      <li>Resource type, Objective, Target audience, Sustainability focus</li>
-                      <li>Innovation type, Entrepreneurship stage, Scope of relevance</li>
-                      <li>Methodological approach, Skill development, Source and credibility</li>
-                      <li>Prerequisites and requirements, Collaboration level</li>
-                    </ul>
-                  </li>
-                  <li>A <strong>Resources</strong> section listing your uploaded files</li>
-                </ul>
-              </li>
-              <li>
-                <strong>File saving:</strong> Your uploaded files are saved to the attachments directory and linked in the tool page.
-              </li>
-              <li>
-                <strong>Tool creation:</strong> A markdown file is created in the tools directory with the generated content, 
-                formatted exactly like existing tools in the database.
-              </li>
-              <li>
-                <strong>Preview & edit:</strong> You can review the generated content, edit any sections, and then save the final tool page.
-              </li>
-            </ol>
-            <p className="text-xs mt-3 pt-3 border-t border-blue-200 dark:border-blue-700">
-              <strong>Note:</strong> The entire process typically takes 30-60 seconds depending on the number of files and complexity. 
-              You'll see progress indicators for each step.
-            </p>
-          </div>
         </div>
       </div>
 
