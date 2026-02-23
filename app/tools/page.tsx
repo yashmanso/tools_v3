@@ -12,7 +12,7 @@ export default function ToolsPage() {
       <div className="mb-8">
         <h1 className="text-3xl font-bold mb-3">Tools, methods & frameworks</h1>
         <p className="text-gray-600 dark:text-gray-400">
-          An evolving list of individual tools, methods, or guides related to sustainable
+          An evolving list of individual tools, methods, and frameworks related to sustainable
           entrepreneurship and innovation.
         </p>
       </div>

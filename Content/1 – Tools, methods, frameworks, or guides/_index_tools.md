@@ -1,4 +1,4 @@
-In this section, an evolving list of individual tools, methods, or guides related sustainable entrepreneurship and innovation are supplied. 
+In this section, an evolving list of individual tools, methods, and frameworks related sustainable entrepreneurship and innovation are supplied. 
 
 - [[Biomimicards Game]]
 - [[Version 3 - Current/1 – Tools, methods, frameworks, or guides/Biomimicry Design Spiral|Biomimicry Design Spiral]]
