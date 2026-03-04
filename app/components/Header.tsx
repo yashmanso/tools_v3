@@ -61,6 +61,7 @@ export function Header({ allResources }: HeaderProps) {
   };
 
   return (
+    <>
     <header className="fixed top-0 left-0 right-0 z-50 backdrop-blur-md bg-[var(--bg-primary)]/90 border-b border-[var(--border)]">
       <div className="container mx-auto px-3 sm:px-6 py-3 sm:py-5 flex items-center justify-between max-w-5xl">
         <div className="flex items-center gap-2">
@@ -366,37 +367,38 @@ export function Header({ allResources }: HeaderProps) {
         isOpen={recentViewsOpen} 
         onClose={() => setRecentViewsOpen(false)} 
       />
-      {/* Profile reset confirmation dialog */}
-      {mounted && showProfileDialog && (
-        <div className="fixed inset-0 z-[210] flex items-center justify-center bg-black/60 p-4">
-          <div className="w-full max-w-sm rounded-2xl bg-[var(--bg-secondary)] border border-[var(--border)] shadow-2xl p-5 space-y-4">
-            <div className="space-y-1">
-              <h2 className="text-base font-semibold text-gray-900 dark:text-gray-100">
-                Update your profile?
-              </h2>
-              <p className="text-sm text-gray-600 dark:text-gray-400">
-                This will reset your answers and reopen the welcome questions so you can change your role and goals.
-              </p>
-            </div>
-            <div className="flex justify-end gap-2">
-              <Button
-                variant="outline"
-                onClick={() => setShowProfileDialog(false)}
-                className="text-sm"
-              >
-                Cancel
-              </Button>
-              <Button
-                variant="ghost"
-                onClick={handleConfirmProfileReset}
-                className="bg-blue-600 text-white hover:bg-blue-700 text-sm px-4"
-              >
-                Yes, update profile
-              </Button>
-            </div>
+    </header>
+    {/* Profile reset confirmation dialog - global overlay centered on screen */}
+    {mounted && showProfileDialog && (
+      <div className="fixed inset-0 z-[210] flex items-center justify-center bg-black/60 p-4">
+        <div className="w-full max-w-sm rounded-2xl bg-[var(--bg-secondary)] border border-[var(--border)] shadow-2xl p-5 space-y-4">
+          <div className="space-y-1">
+            <h2 className="text-base font-semibold text-gray-900 dark:text-gray-100">
+              Update your profile?
+            </h2>
+            <p className="text-sm text-gray-600 dark:text-gray-400">
+              This will reset your answers and reopen the welcome questions so you can change your role and goals.
+            </p>
+          </div>
+          <div className="flex justify-end gap-2">
+            <Button
+              variant="outline"
+              onClick={() => setShowProfileDialog(false)}
+              className="text-sm"
+            >
+              Cancel
+            </Button>
+            <Button
+              variant="ghost"
+              onClick={handleConfirmProfileReset}
+              className="bg-blue-600 text-white hover:bg-blue-700 text-sm px-4"
+            >
+              Yes, update profile
+            </Button>
           </div>
         </div>
-      )}
-    </header>
+      </div>
+    )}
+    </>
   );
 }
