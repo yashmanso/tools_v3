@@ -40,6 +40,23 @@ export function Header({ allResources }: HeaderProps) {
     return pathname.startsWith(path);
   };
 
+  const handleResetProfile = () => {
+    if (typeof window === 'undefined') return;
+    const confirmed = window.confirm(
+      'Reset your profile and see the welcome questions again?'
+    );
+    if (!confirmed) return;
+
+    try {
+      window.localStorage.removeItem('welcome-answers');
+      window.localStorage.removeItem('welcome-completed');
+    } catch (e) {
+      // Fail silently if localStorage is unavailable
+    }
+
+    window.location.href = '/';
+  };
+
   return (
     <header className="fixed top-0 left-0 right-0 z-50 backdrop-blur-md bg-[var(--bg-primary)]/90 border-b border-[var(--border)]">
       <div className="container mx-auto px-3 sm:px-6 py-3 sm:py-5 flex items-center justify-between max-w-5xl">
@@ -149,6 +166,36 @@ export function Header({ allResources }: HeaderProps) {
             <FavoritesIcon allResources={allResources} />
             <ChatBotIcon allResources={allResources} />
             {mounted && (
+              <Button
+                variant="ghost"
+                size="icon"
+                onClick={handleResetProfile}
+                className="h-7 w-7 text-[var(--text-secondary)] hover:text-[var(--text-primary)] hover:bg-[var(--border-subtle)] transition-colors"
+                aria-label="Reset profile"
+                title="Reset profile"
+              >
+                <svg
+                  className="w-4 h-4"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d="M12 12c1.657 0 3-1.343 3-3S13.657 6 12 6 9 7.343 9 9s1.343 3 3 3z"
+                  />
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d="M19.4 15a7 7 0 10-14.8 0M16 18l-2 2-2-2m4 0H8"
+                  />
+                </svg>
+              </Button>
+            )}
+            {mounted && (
               <Button variant="ghost"
                 onClick={toggleTheme}
                 className="p-1.5 rounded-full text-[var(--text-secondary)] hover:text-[var(--text-primary)] hover:bg-[var(--border-subtle)] transition-colors"
@@ -187,6 +234,35 @@ export function Header({ allResources }: HeaderProps) {
             <FavoritesIcon allResources={allResources} />
             <ChatBotIcon allResources={allResources} />
             {mounted && (
+              <>
+              <Button
+                variant="ghost"
+                size="icon"
+                onClick={handleResetProfile}
+                className="p-2 rounded-full text-[var(--text-secondary)] hover:text-[var(--text-primary)] hover:bg-[var(--border-subtle)] transition-colors"
+                aria-label="Reset profile"
+                title="Reset profile"
+              >
+                <svg
+                  className="w-4 h-4"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d="M12 12c1.657 0 3-1.343 3-3S13.657 6 12 6 9 7.343 9 9s1.343 3 3 3z"
+                  />
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d="M19.4 15a7 7 0 10-14.8 0M16 18l-2 2-2-2m4 0H8"
+                  />
+                </svg>
+              </Button>
               <Button variant="ghost"
                 onClick={toggleTheme}
                 className="p-2 rounded-full text-[var(--text-secondary)] hover:text-[var(--text-primary)] hover:bg-[var(--border-subtle)] transition-colors"
@@ -202,6 +278,7 @@ export function Header({ allResources }: HeaderProps) {
                   </svg>
                 )}
               </Button>
+              </>
             )}
           </div>
         </div>
