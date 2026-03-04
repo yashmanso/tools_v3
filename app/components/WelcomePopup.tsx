@@ -82,6 +82,25 @@ export function WelcomePopup({ allResources }: WelcomePopupProps) {
     }
   }, []);
 
+  // Allow other components (e.g., header) to explicitly open/reset the wizard
+  useEffect(() => {
+    const handler = (event: Event) => {
+      const detail = (event as CustomEvent<{ reset?: boolean }>).detail;
+
+      if (detail?.reset) {
+        setAnswers({});
+        setCurrentStep(-1);
+      }
+
+      setIsOpen(true);
+    };
+
+    window.addEventListener('open-welcome-popup', handler as EventListener);
+    return () => {
+      window.removeEventListener('open-welcome-popup', handler as EventListener);
+    };
+  }, []);
+
   const handleStart = () => {
     setIsAnimating(true);
     setTimeout(() => {

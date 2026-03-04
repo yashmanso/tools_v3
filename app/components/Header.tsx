@@ -21,6 +21,7 @@ export function Header({ allResources }: HeaderProps) {
   const [mounted, setMounted] = useState(false);
   const [recentViewsOpen, setRecentViewsOpen] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [showProfileDialog, setShowProfileDialog] = useState(false);
   const pathname = usePathname();
   const { clearPanels } = usePanels();
   const { sidebarVisible, toggleSidebar } = useSidebar();
@@ -41,20 +42,22 @@ export function Header({ allResources }: HeaderProps) {
   };
 
   const handleResetProfile = () => {
-    if (typeof window === 'undefined') return;
-    const confirmed = window.confirm(
-      'Reset your profile and see the welcome questions again?'
-    );
-    if (!confirmed) return;
+    setShowProfileDialog(true);
+  };
 
+  const handleConfirmProfileReset = () => {
+    if (typeof window === 'undefined') return;
     try {
       window.localStorage.removeItem('welcome-answers');
       window.localStorage.removeItem('welcome-completed');
     } catch (e) {
       // Fail silently if localStorage is unavailable
     }
-
-    window.location.href = '/';
+    // Ask WelcomePopup to open again
+    window.dispatchEvent(
+      new CustomEvent('open-welcome-popup', { detail: { reset: true } })
+    );
+    setShowProfileDialog(false);
   };
 
   return (
@@ -363,6 +366,37 @@ export function Header({ allResources }: HeaderProps) {
         isOpen={recentViewsOpen} 
         onClose={() => setRecentViewsOpen(false)} 
       />
+      {/* Profile reset confirmation dialog */}
+      {mounted && showProfileDialog && (
+        <div className="fixed inset-0 z-[210] flex items-center justify-center bg-black/60 p-4">
+          <div className="w-full max-w-sm rounded-2xl bg-[var(--bg-secondary)] border border-[var(--border)] shadow-2xl p-5 space-y-4">
+            <div className="space-y-1">
+              <h2 className="text-base font-semibold text-gray-900 dark:text-gray-100">
+                Update your profile?
+              </h2>
+              <p className="text-sm text-gray-600 dark:text-gray-400">
+                This will reset your answers and reopen the welcome questions so you can change your role and goals.
+              </p>
+            </div>
+            <div className="flex justify-end gap-2">
+              <Button
+                variant="outline"
+                onClick={() => setShowProfileDialog(false)}
+                className="text-sm"
+              >
+                Cancel
+              </Button>
+              <Button
+                variant="ghost"
+                onClick={handleConfirmProfileReset}
+                className="bg-blue-600 text-white hover:bg-blue-700 text-sm px-4"
+              >
+                Yes, update profile
+              </Button>
+            </div>
+          </div>
+        </div>
+      )}
     </header>
   );
 }
