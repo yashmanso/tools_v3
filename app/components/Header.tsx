@@ -382,16 +382,16 @@ export function Header({ allResources }: HeaderProps) {
           </div>
           <div className="flex justify-end gap-2">
             <Button
-              variant="outline"
+              variant="ghost"
               onClick={() => setShowProfileDialog(false)}
-              className="text-sm"
+              className="text-sm text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-100 px-3 py-2"
             >
               Cancel
             </Button>
             <Button
               variant="ghost"
               onClick={handleConfirmProfileReset}
-              className="bg-blue-600 text-white hover:bg-blue-700 text-sm px-4"
+              className="px-4 py-2 bg-blue-600 text-white rounded-full hover:bg-blue-700 transition-colors font-medium text-sm"
             >
               Yes, update profile
             </Button>
