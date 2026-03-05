@@ -47,7 +47,7 @@ export default function HomePage() {
               <h2 className="text-xl font-semibold mb-3 text-[var(--text-primary)]">
                 Tools & methods
               </h2>
-              <p className="text-sm text-[var(--text-secondary)] text-left leading-relaxed">
+              <p className="text-sm text-[var(--text-secondary)] text-center leading-relaxed">
                 Individual tools, methods, frameworks, and guides for sustainable innovation
               </p>
             </Link>
@@ -63,7 +63,7 @@ export default function HomePage() {
               <h2 className="text-xl font-semibold mb-3 text-[var(--text-primary)]">
                 Collections & kits
               </h2>
-              <p className="text-sm text-[var(--text-secondary)] text-left leading-relaxed">
+              <p className="text-sm text-[var(--text-secondary)] text-center leading-relaxed">
                 Curated collections, compendia, and toolkits for comprehensive learning
               </p>
             </Link>
@@ -79,7 +79,7 @@ export default function HomePage() {
               <h2 className="text-xl font-semibold mb-3 text-[var(--text-primary)]">
                 Academic articles
               </h2>
-              <p className="text-sm text-[var(--text-secondary)] text-left leading-relaxed">
+              <p className="text-sm text-[var(--text-secondary)] text-center leading-relaxed">
                 Peer-reviewed research on sustainable entrepreneurship and innovation
               </p>
             </Link>
@@ -99,7 +99,7 @@ export default function HomePage() {
               <p>
                 This collection brings together practical tools, methods, and frameworks for integrating 
                 sustainability into entrepreneurial and innovation work. The resources here have been gathered 
-                from various sources—academic research, practitioner guides, and established frameworks—to 
+                from various sources, academic research, practitioner guides, and established frameworks, to 
                 provide a starting point for those working on sustainable innovation challenges.
               </p>
             </ScrollAnimation>
@@ -118,8 +118,8 @@ export default function HomePage() {
               <p>
                 These resources may be useful if you're working on product or service design, developing 
                 business models, planning organizational change, conducting research, or teaching others 
-                about sustainable innovation. They span different levels of complexity—from simple canvases 
-                and checklists to more involved frameworks requiring facilitation or deeper engagement.
+                about sustainable innovation. They span different levels of complexity that include simple canvases 
+                and checklists or be more involved frameworks requiring facilitation or deeper engagement.
               </p>
             </ScrollAnimation>
 

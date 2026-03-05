@@ -510,7 +510,7 @@ export function ExploreSection({ allResources, graphData }: ExploreSectionProps)
                       Explore our full collection at your own pace. Browse by category, search by keywords,
                       or filter by tags. Perfect for discovering what's available and getting inspired.
                     </p>
-                    <div className="mt-auto pt-4 text-blue-600 dark:text-blue-400 text-sm font-medium">
+                    <div className="mt-auto pt-4 text-center text-blue-600 dark:text-blue-400 text-sm font-medium">
                       Start browsing →
                     </div>
                   </div>
@@ -526,7 +526,7 @@ export function ExploreSection({ allResources, graphData }: ExploreSectionProps)
                       Answer a few quick questions about your needs, context, and goals.
                       We'll recommend the most relevant tools tailored to your specific situation.
                     </p>
-                    <div className="mt-auto pt-4 text-blue-600 dark:text-blue-400 text-sm font-medium">
+                    <div className="mt-auto pt-4 text-center text-blue-600 dark:text-blue-400 text-sm font-medium">
                       Start questionnaire →
                     </div>
                   </div>
@@ -542,7 +542,7 @@ export function ExploreSection({ allResources, graphData }: ExploreSectionProps)
                       Select up to 3 tools and see how they differ across dimensions, features, and use cases.
                       Perfect for choosing the right tool for your needs.
                     </p>
-                    <div className="mt-auto pt-4 text-blue-600 dark:text-blue-400 text-sm font-medium">
+                    <div className="mt-auto pt-4 text-center text-blue-600 dark:text-blue-400 text-sm font-medium">
                       Start comparing →
                     </div>
                   </div>
@@ -558,7 +558,7 @@ export function ExploreSection({ allResources, graphData }: ExploreSectionProps)
                       Explore tools organized by innovation process stages, from ideation through implementation.
                       See where each tool fits in your innovation journey.
                     </p>
-                    <div className="mt-auto pt-4 text-blue-600 dark:text-blue-400 text-sm font-medium">
+                    <div className="mt-auto pt-4 text-center text-blue-600 dark:text-blue-400 text-sm font-medium">
                       View timeline →
                     </div>
                   </div>
@@ -574,7 +574,7 @@ export function ExploreSection({ allResources, graphData }: ExploreSectionProps)
                       Visualize how tools are connected through shared tags and relationships.
                       Explore the network of interconnected resources and discover unexpected connections.
                     </p>
-                    <div className="mt-auto pt-4 text-blue-600 dark:text-blue-400 text-sm font-medium">
+                    <div className="mt-auto pt-4 text-center text-blue-600 dark:text-blue-400 text-sm font-medium">
                       View network →
                     </div>
                   </div>
@@ -590,7 +590,7 @@ export function ExploreSection({ allResources, graphData }: ExploreSectionProps)
                       Create step-by-step workflows combining multiple tools. Design custom processes
                       for your sustainability projects and save them for future use.
                     </p>
-                    <div className="mt-auto pt-4 text-blue-600 dark:text-blue-400 text-sm font-medium">
+                    <div className="mt-auto pt-4 text-center text-blue-600 dark:text-blue-400 text-sm font-medium">
                       Create workflow →
                     </div>
                   </div>
@@ -606,7 +606,7 @@ export function ExploreSection({ allResources, graphData }: ExploreSectionProps)
                       See which tools work well together, identify complementary tools, and get warnings
                       about potential conflicts or overlaps in your tool selection.
                     </p>
-                    <div className="mt-auto pt-4 text-blue-600 dark:text-blue-400 text-sm font-medium">
+                    <div className="mt-auto pt-4 text-center text-blue-600 dark:text-blue-400 text-sm font-medium">
                       Check compatibility →
                     </div>
                   </div>
@@ -622,7 +622,7 @@ export function ExploreSection({ allResources, graphData }: ExploreSectionProps)
                       Interactive decision tree with visual filters. Answer questions about your goal,
                       audience, and timeline, then refine with sliders and toggles.
                     </p>
-                    <div className="mt-auto pt-4 text-blue-600 dark:text-blue-400 text-sm font-medium">
+                    <div className="mt-auto pt-4 text-center text-blue-600 dark:text-blue-400 text-sm font-medium">
                       Start selecting →
                     </div>
                   </div>

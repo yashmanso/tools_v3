@@ -79,7 +79,7 @@ export function MostViewedTools({ allResources }: MostViewedToolsProps) {
                     {formatCardOverview(tool.overview)}
                   </p>
                 )}
-                <div className="mt-4 text-blue-600 dark:text-blue-400 text-sm font-medium">
+                <div className="mt-4 text-center text-blue-600 dark:text-blue-400 text-sm font-medium">
                   View tool →
                 </div>
               </CardLink>

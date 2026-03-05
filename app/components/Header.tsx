@@ -147,13 +147,13 @@ export function Header({ allResources }: HeaderProps) {
           <Link
             href="/auto-create-tool"
             onClick={clearPanels}
-            className={`px-3 py-1.5 text-sm font-medium rounded-full whitespace-nowrap transition-colors ${
+            className={`px-3 py-1.5 text-sm font-medium rounded-full transition-colors ${
               isActive('/auto-create-tool')
                 ? 'text-[var(--text-primary)]'
                 : 'text-[var(--text-secondary)] hover:text-[var(--text-primary)] hover:bg-[var(--border-subtle)]'
             }`}
           >
-            Auto create a tool page
+            Auto create
           </Link>
 
           <div className="ml-2 pl-2 border-l border-[var(--border)] flex items-center gap-2">
@@ -350,13 +350,13 @@ export function Header({ allResources }: HeaderProps) {
             <Link
               href="/auto-create-tool"
               onClick={() => { clearPanels(); setMobileMenuOpen(false); }}
-              className={`block px-3 py-2 text-sm font-medium rounded-lg whitespace-nowrap transition-colors ${
+              className={`block px-3 py-2 text-sm font-medium rounded-lg transition-colors ${
                 isActive('/auto-create-tool')
                   ? 'text-[var(--text-primary)] bg-[var(--bg-secondary)]'
                   : 'text-[var(--text-secondary)] hover:text-[var(--text-primary)] hover:bg-[var(--bg-secondary)]'
               }`}
             >
-              Auto create a tool page
+              Auto create
             </Link>
           </nav>
         </div>
