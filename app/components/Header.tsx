@@ -65,8 +65,8 @@ export function Header({ allResources }: HeaderProps) {
     <header className="fixed top-0 left-0 right-0 z-50 backdrop-blur-md bg-[var(--bg-primary)]/90 border-b border-[var(--border)]">
       <div className="container mx-auto px-3 sm:px-6 py-3 sm:py-5 flex items-center justify-between max-w-5xl">
         <div className="flex items-center gap-2">
-          {/* Reserve space for sidebar toggle on desktop so title doesn't shift */}
-          <div className="hidden lg:inline-flex w-8 justify-center">
+          {/* Reserve space so title doesn't shift when sidebar toggle appears */}
+          <div className="hidden lg:inline-flex h-8 w-8 items-center justify-center">
             {pathname === '/' && !sidebarVisible && (
               <Button
                 variant="ghost"
