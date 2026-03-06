@@ -10,6 +10,7 @@ import { SlidingPanels } from './components/SlidingPanels';
 import { ContactForm } from './components/ContactForm';
 import { TagModal } from './components/TagModal';
 import { WelcomePopup } from './components/WelcomePopup';
+import { GoogleAnalytics } from './components/GoogleAnalytics';
 import { getAllResources } from './lib/markdown';
 
 export const metadata: Metadata = {
@@ -48,6 +49,7 @@ export default function RootLayout({
                 <WelcomePopup allResources={allResources} />
               </div>
               <Analytics />
+              <GoogleAnalytics />
             </TagModalProvider>
             </SidebarProvider>
           </PanelProvider>
