@@ -42,7 +42,7 @@ export function PageHeader({ title, children, resource }: PageHeaderProps) {
   };
 
   return (
-    <div className="mb-8">
+    <div className="pt-4 sm:pt-6 mb-8">
       {/* Header with title and action buttons */}
       <div className="flex items-start justify-between gap-4 mb-4">
         <h1 className="text-4xl font-bold flex-1">{title}</h1>
