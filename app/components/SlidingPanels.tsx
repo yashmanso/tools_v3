@@ -308,7 +308,7 @@ export function SlidingPanels({ children, allResources = [] }: SlidingPanelsProp
                 }}
               >
                 {/* Panel header with expand and close buttons */}
-                <div className="sticky top-0 z-10 flex justify-end gap-2 p-4 bg-[var(--bg-secondary)]">
+                <div className="sticky top-0 z-10 flex justify-end gap-2 px-4 py-6 bg-[var(--bg-secondary)]">
                   {/* Expand/Collapse button */}
                   <Button variant="ghost"
                     onClick={() => togglePanelExpand(panel.id)}
