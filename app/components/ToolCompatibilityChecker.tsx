@@ -82,6 +82,15 @@ export function ToolCompatibilityChecker({ allResources }: ToolCompatibilityChec
     }
   };
 
+  const getRecommendationTone = (rec: string): 'danger' | 'warning' | 'success' => {
+    const lower = rec.toLowerCase();
+    if (lower.includes('may conflict') || lower.includes('potential conflict') || lower.includes('conflict')) return 'danger';
+    if (lower.includes('overlap')) return 'warning';
+    return 'success';
+  };
+
+  const sanitizeRecommendation = (rec: string) => rec.replace(/[⚠️ℹ️✓]/g, '').replace(/\s+/g, ' ').trim();
+
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6">
       <div className="mb-4 sm:mb-6">
@@ -131,20 +140,24 @@ export function ToolCompatibilityChecker({ allResources }: ToolCompatibilityChec
       {/* Recommendations */}
       {analysis.recommendations.length > 0 && (
         <div className="mb-4 sm:mb-6 space-y-2">
-          {analysis.recommendations.map((rec, index) => (
+          {analysis.recommendations.map((rec, index) => {
+            const cleanRec = sanitizeRecommendation(rec);
+            const tone = getRecommendationTone(cleanRec);
+            return (
             <div
               key={index}
               className={`p-3 sm:p-4 rounded-lg sm:rounded-xl border ${
-                rec.includes('⚠️')
+                tone === 'danger'
                   ? 'bg-red-50 dark:bg-red-900/20 border-red-200 dark:border-red-800 text-red-800 dark:text-red-200'
-                  : rec.includes('ℹ️')
+                  : tone === 'warning'
                   ? 'bg-yellow-50 dark:bg-yellow-900/20 border-yellow-200 dark:border-yellow-800 text-yellow-800 dark:text-yellow-200'
                   : 'bg-green-50 dark:bg-green-900/20 border-green-200 dark:border-green-800 text-green-800 dark:text-green-200'
               }`}
             >
-              <p className="text-xs sm:text-sm font-medium">{rec}</p>
+              <p className="text-xs sm:text-sm font-medium">{cleanRec}</p>
             </div>
-          ))}
+            );
+          })}
         </div>
       )}
 
@@ -333,9 +346,6 @@ export function ToolCompatibilityChecker({ allResources }: ToolCompatibilityChec
                       Conflicting Tools ({analysis.conflictingTools.length})
                     </h3>
                   </div>
-                  <p className="text-xs sm:text-sm text-gray-600 dark:text-gray-400 mb-3 sm:mb-4">
-                    ⚠️ Warning: These tools may conflict with your selection or overlap too much
-                  </p>
                   <div className="space-y-2 sm:space-y-3">
                     {analysis.conflictingTools.map((result) => (
                       <div
@@ -347,18 +357,13 @@ export function ToolCompatibilityChecker({ allResources }: ToolCompatibilityChec
                             <h4 className="text-sm sm:text-base font-semibold text-gray-900 dark:text-gray-100 mb-1 break-words">
                               {result.tool.title}
                             </h4>
-                            <div className="flex items-center gap-2 mb-2">
-                              <span className="text-[10px] sm:text-xs font-medium">
-                                Conflict score: {Math.round(result.score)}%
-                              </span>
-                            </div>
                           </div>
                         </div>
                         {result.reasons.length > 0 && (
                           <ul className="text-xs space-y-1">
                             {result.reasons.map((reason, idx) => (
                               <li key={idx} className="flex items-start gap-1">
-                                <span>⚠️</span>
+                                <span>•</span>
                                 <span>{reason}</span>
                               </li>
                             ))}

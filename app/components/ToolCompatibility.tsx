@@ -74,20 +74,6 @@ export function ToolCompatibility({ currentTool, allResources }: ToolCompatibili
         See which tools work well with <strong>{currentTool.title}</strong>, which overlap, and which might conflict
       </p>
 
-      {/* Warnings */}
-      {analysis.recommendations.filter(r => r.includes('⚠️')).length > 0 && (
-        <div className="mb-6 space-y-2">
-          {analysis.recommendations.filter(r => r.includes('⚠️')).map((rec, index) => (
-            <div
-              key={index}
-              className="p-4 rounded-xl border bg-red-50 dark:bg-red-900/20 border-red-200 dark:border-red-800 text-red-800 dark:text-red-200"
-            >
-              <p className="text-sm font-medium">{rec}</p>
-            </div>
-          ))}
-        </div>
-      )}
-
       <div className="space-y-6">
         {/* Complementary Tools */}
         {analysis.complementaryTools.length > 0 && (
@@ -208,9 +194,6 @@ export function ToolCompatibility({ currentTool, allResources }: ToolCompatibili
                 Conflicting Tools ({analysis.conflictingTools.length})
               </h3>
             </div>
-            <p className="text-sm text-gray-600 dark:text-gray-400 mb-4">
-              ⚠️ Warning: These tools may conflict with <strong>{currentTool.title}</strong> or overlap too much
-            </p>
             <div className="grid md:grid-cols-2 gap-4">
               {analysis.conflictingTools.slice(0, 4).map((result) => (
                 <div
@@ -227,16 +210,11 @@ export function ToolCompatibility({ currentTool, allResources }: ToolCompatibili
                       </h4>
                     </PanelLink>
                   </div>
-                  <div className="flex items-center gap-2 mb-2">
-                    <span className="text-xs font-medium">
-                      Conflict score: {Math.round(result.score)}%
-                    </span>
-                  </div>
                   {result.reasons.length > 0 && (
                     <ul className="text-xs space-y-1">
                       {result.reasons.slice(0, 2).map((reason, idx) => (
                         <li key={idx} className="flex items-start gap-1">
-                          <span>⚠️</span>
+                          <span>•</span>
                           <span>{reason}</span>
                         </li>
                       ))}

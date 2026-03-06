@@ -240,15 +240,15 @@ export function analyzeCompatibility(
   const recommendations: string[] = [];
 
   if (conflictingTools.length > 0) {
-    recommendations.push(`⚠️ Warning: ${conflictingTools.length} tool(s) may conflict with your selection`);
+    recommendations.push(`${conflictingTools.length} tool(s) may conflict with your selection`);
   }
 
   if (overlappingTools.length > 0) {
-    recommendations.push(`ℹ️ Note: ${overlappingTools.length} tool(s) have significant overlap`);
+    recommendations.push(`${overlappingTools.length} tool(s) have significant overlap`);
   }
 
   if (complementaryTools.length > 0) {
-    recommendations.push(`✓ ${complementaryTools.length} complementary tool(s) found`);
+    recommendations.push(`${complementaryTools.length} complementary tool(s) found`);
   }
 
   // Check for internal conflicts within selected tools
@@ -256,9 +256,9 @@ export function analyzeCompatibility(
     for (let j = i + 1; j < selectedTools.length; j++) {
       const compat = calculateCompatibilityScore(selectedTools[i], selectedTools[j]);
       if (compat.relationship === 'conflict') {
-        recommendations.push(`⚠️ Conflict detected: "${selectedTools[i].title}" and "${selectedTools[j].title}" may overlap too much`);
+        recommendations.push(`Potential conflict: "${selectedTools[i].title}" and "${selectedTools[j].title}" may overlap too much`);
       } else if (compat.relationship === 'overlap') {
-        recommendations.push(`ℹ️ Overlap: "${selectedTools[i].title}" and "${selectedTools[j].title}" have similar functionality`);
+        recommendations.push(`Overlap: "${selectedTools[i].title}" and "${selectedTools[j].title}" have similar functionality`);
       }
     }
   }

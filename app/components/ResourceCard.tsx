@@ -214,7 +214,7 @@ export function ResourceCard({
             </div>
           )}
 
-          <div className="flex flex-wrap content-start gap-1 mt-auto h-[56px] overflow-hidden">
+          <div className="flex flex-wrap gap-1 mt-auto min-h-[64px] overflow-hidden">
             {resource.tags.slice(0, 5).map((tag) => (
               <ClickableTag
                 key={tag}
