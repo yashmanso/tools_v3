@@ -15,8 +15,14 @@ type SubmissionPayload = {
   dimensions?: Record<string, DimensionPayload>;
 };
 
-const TOOLS_DIR = path.join(process.cwd(), 'Content', '1 – Tools, methods, frameworks, or guides');
-const ATTACHMENTS_DIR = path.join(process.cwd(), 'public', 'attachments');
+// Submissions are first written to a dedicated submissions folder.
+// You can later review and move these markdown files (and any attachments)
+// into the appropriate Content subfolder when you want them to appear on the site.
+const SUBMISSIONS_DIR = path.join(process.cwd(), 'submissions');
+// Markdown files for new tools are written directly under the submissions folder
+// using the submitted tool name (with de-duplicated filenames).
+const TOOLS_DIR = SUBMISSIONS_DIR;
+const ATTACHMENTS_DIR = path.join(SUBMISSIONS_DIR, 'attachments');
 
 const DIMENSION_LABELS: Record<string, string> = {
   resourceType: 'Resource type',
@@ -156,11 +162,12 @@ export async function POST(request: Request) {
       await fs.mkdir(ATTACHMENTS_DIR, { recursive: true });
       
       for (const file of attachments) {
-        const arrayBuffer = await file.arrayBuffer();
-        const buffer = Buffer.from(arrayBuffer);
         const safeFilename = sanitizeFilename(file.name);
         const ext = path.extname(file.name);
         const nameWithoutExt = safeFilename.replace(/\.[^.]+$/, '') || `attachment-${Date.now()}`;
+
+        const arrayBuffer = await file.arrayBuffer();
+        const buffer = Buffer.from(arrayBuffer);
         const filename = await ensureUniqueFilename(ATTACHMENTS_DIR, nameWithoutExt, ext);
         const filePath = path.join(ATTACHMENTS_DIR, filename);
         await writeFile(filePath, buffer);
