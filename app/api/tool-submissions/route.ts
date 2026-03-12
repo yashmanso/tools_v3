@@ -134,6 +134,20 @@ const ensureUniqueFilename = async (dir: string, baseName: string, extension?: s
 
 export async function POST(request: Request) {
   try {
+    // In serverless production environments (e.g. Vercel), the deployment
+    // filesystem under /var/task is read-only. This endpoint is intended
+    // for local authoring only, where submissions are written into the repo.
+    if (process.env.VERCEL || process.env.NODE_ENV === 'production') {
+      return NextResponse.json(
+        {
+          error:
+            'Tool submissions are only supported in the local development environment. ' +
+            'Please run the site locally to submit a tool, then commit the generated files under the submissions folder.',
+        },
+        { status: 400 },
+      );
+    }
+
     const formData = await request.formData();
     const title = formData.get('title')?.toString() || '';
     const overview = formData.get('overview')?.toString() || '';
