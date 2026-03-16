@@ -301,7 +301,7 @@ export function VisualToolSelector({ allResources }: VisualToolSelectorProps) {
             )}
 
             {/* Step 3: Timeline */}
-            {decisionState.audience && (
+            {decisionState.audiences.length > 0 && (
               <div>
                 <div className="flex items-center gap-3 mb-4">
                   <div className="w-8 h-8 rounded-full flex items-center justify-center font-bold text-sm bg-blue-600 text-white">
