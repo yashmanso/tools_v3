@@ -10,13 +10,9 @@ interface ToolFinderProps {
   allResources: ResourceMetadata[];
 }
 
-interface Answers {
-  audience?: string;
-  stage?: string;
-  sustainabilityFocus?: string;
-  objective?: string;
-  innovationType?: string;
-}
+type AnswerKey = 'audience' | 'stage' | 'sustainabilityFocus' | 'objective' | 'innovationType';
+
+type Answers = Partial<Record<AnswerKey, string[]>>;
 
 const QUESTIONS = [
   {
@@ -97,12 +93,21 @@ export function ToolFinder({ allResources }: ToolFinderProps) {
   const [showResults, setShowResults] = useState(false);
 
   const handleAnswer = (questionId: string, value: string) => {
-    setAnswers((prev) => ({ ...prev, [questionId]: value }));
-    
+    setAnswers((prev) => {
+      const existing = prev[questionId as AnswerKey] ?? [];
+      const isSelected = existing.includes(value);
+      const nextValues = isSelected
+        ? existing.filter((v) => v !== value)
+        : [...existing, value];
+      return { ...prev, [questionId]: nextValues };
+    });
+  };
+
+  const goToNextStep = () => {
     if (currentStep < QUESTIONS.length - 1) {
-      setTimeout(() => setCurrentStep(currentStep + 1), 300);
+      setCurrentStep(currentStep + 1);
     } else {
-      setTimeout(() => setShowResults(true), 300);
+      setShowResults(true);
     }
   };
 
@@ -128,7 +133,9 @@ export function ToolFinder({ allResources }: ToolFinderProps) {
       return tools.map(tool => ({ tool, score: 0, matchPercentage: 0 }));
     }
 
-    const answerValues = Object.values(answers).filter(Boolean);
+    const answerValues = Object.values(answers)
+      .filter((arr): arr is string[] => Array.isArray(arr) && arr.length > 0)
+      .flat();
     const maxPossibleScore = answerValues.length * 20; // Maximum score if all answers match perfectly
 
     // Score each tool based on how well it matches the answers
@@ -163,18 +170,26 @@ export function ToolFinder({ allResources }: ToolFinderProps) {
       });
 
       // Additional scoring based on question-specific logic
-      if (answers.stage) {
+      if (answers.stage && answers.stage.length > 0) {
         // Stage-specific tags get bonus
         const stageTags = ['ideation', 'design', 'development', 'implementation', 'startup', 'growth', 'scale-up', 'maturity'];
-        if (stageTags.some(stage => tool.tags.includes(stage) && stage === answers.stage)) {
+        if (
+          stageTags.some((stage) =>
+            tool.tags.includes(stage) && answers.stage?.includes(stage)
+          )
+        ) {
           score += 15;
         }
       }
       
-      if (answers.objective) {
+      if (answers.objective && answers.objective.length > 0) {
         // Objective-specific tags get bonus
         const objectiveTags = ['map', 'assess', 'report', 'align'];
-        if (objectiveTags.some(obj => tool.tags.includes(obj) && obj === answers.objective)) {
+        if (
+          objectiveTags.some((obj) =>
+            tool.tags.includes(obj) && answers.objective?.includes(obj)
+          )
+        ) {
           score += 15;
         }
       }
@@ -223,18 +238,19 @@ export function ToolFinder({ allResources }: ToolFinderProps) {
           <div className="flex flex-wrap gap-2 mb-4 sm:mb-6">
             {Object.entries(answers).map(([key, value]) => {
               const question = QUESTIONS.find((q) => q.id === key);
-              const option = question?.options.find((opt) => opt.value === value);
-              if (option) {
+              if (!question || !Array.isArray(value)) return null;
+              return value.map((v) => {
+                const option = question.options.find((opt) => opt.value === v);
+                if (!option) return null;
                 return (
                   <span
-                    key={key}
+                    key={`${key}-${v}`}
                     className="text-xs px-3 py-1 rounded-full bg-blue-100 dark:bg-blue-900/30 text-blue-700 dark:text-blue-300"
                   >
                     {option.label}
                   </span>
                 );
-              }
-              return null;
+              });
             })}
           </div>
         </div>
@@ -336,7 +352,7 @@ export function ToolFinder({ allResources }: ToolFinderProps) {
               key={option.value}
               onClick={() => handleAnswer(currentQuestion.id, option.value)}
               className={`p-3 sm:p-4 rounded-lg border-2 text-left transition-all h-auto whitespace-normal min-h-[44px] ${
-                answers[currentQuestion.id as keyof Answers] === option.value
+                (answers[currentQuestion.id as AnswerKey] ?? []).includes(option.value)
                   ? 'border-blue-500 bg-blue-50 dark:bg-blue-900/20'
                   : 'border-gray-200 dark:border-gray-700 hover:border-blue-300 dark:hover:border-blue-600'
               }`}
@@ -357,14 +373,17 @@ export function ToolFinder({ allResources }: ToolFinderProps) {
       </div>
 
       {/* Skip option */}
-      <div className="text-center px-2 sm:px-0">
+      <div className="flex items-center justify-between px-2 sm:px-0">
+        <Button
+          variant="outline"
+          onClick={goToNextStep}
+          className="text-xs sm:text-sm px-3 py-2"
+        >
+          {currentStep < QUESTIONS.length - 1 ? 'Next question →' : 'See results →'}
+        </Button>
         <Button variant="ghost"
           onClick={() => {
-            if (currentStep < QUESTIONS.length - 1) {
-              setCurrentStep(currentStep + 1);
-            } else {
-              setShowResults(true);
-            }
+            goToNextStep();
           }}
           className="text-xs sm:text-sm text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-100 px-3 py-2"
         >

@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useMemo } from 'react';
 import Link from 'next/link';
 import { useTheme } from './ThemeProvider';
 import { usePathname } from 'next/navigation';
@@ -22,9 +22,34 @@ export function Header({ allResources }: HeaderProps) {
   const [recentViewsOpen, setRecentViewsOpen] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [showProfileDialog, setShowProfileDialog] = useState(false);
+  const [searchOpen, setSearchOpen] = useState(false);
+  const [searchQuery, setSearchQuery] = useState('');
   const pathname = usePathname();
   const { clearPanels } = usePanels();
   const { sidebarVisible, toggleSidebar } = useSidebar();
+
+  const tools = useMemo(
+    () => allResources.filter((r) => r.category === 'tools'),
+    [allResources],
+  );
+
+  const filteredTools = useMemo(() => {
+    const q = searchQuery.trim().toLowerCase();
+    if (!q) return [];
+
+    return tools
+      .filter((tool) => {
+        const title = (tool.title ?? '').toLowerCase();
+        const overview = (tool.overview ?? '').toLowerCase();
+        const tags = (tool.tags ?? []).join(' ').toLowerCase();
+        return (
+          title.includes(q) ||
+          overview.includes(q) ||
+          tags.includes(q)
+        );
+      })
+      .slice(0, 10);
+  }, [tools, searchQuery]);
 
   useEffect(() => {
     setMounted(true);
@@ -156,7 +181,55 @@ export function Header({ allResources }: HeaderProps) {
             Auto create
           </Link>
 
-          <div className="ml-2 pl-2 border-l border-[var(--border)] flex items-center gap-2">
+          <div className="ml-2 pl-2 border-l border-[var(--border)] flex items-center gap-2 relative">
+            {searchOpen && (
+              <div className="absolute -left-56 -bottom-14 hidden xl:block">
+                <div className="relative">
+                  <input
+                    type="text"
+                    value={searchQuery}
+                    onChange={(e) => setSearchQuery(e.target.value)}
+                    placeholder="Search tools..."
+                    autoFocus
+                    className="w-56 rounded-full border border-[var(--border)] bg-[var(--bg-primary)] px-8 py-1.5 text-xs text-[var(--text-primary)] placeholder:text-[var(--text-secondary)] focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  />
+                  <span className="pointer-events-none absolute left-2.5 top-1/2 -translate-y-1/2 text-[var(--text-secondary)]">
+                    <svg
+                      className="w-3.5 h-3.5"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      strokeWidth={2}
+                    >
+                      <circle cx="11" cy="11" r="6" />
+                      <line x1="16.5" y1="16.5" x2="20" y2="20" />
+                    </svg>
+                  </span>
+                </div>
+              </div>
+            )}
+            <Button
+              variant="ghost"
+              size="icon"
+              onClick={() => {
+                setSearchOpen((prev) => !prev);
+                setSearchQuery('');
+              }}
+              className="h-7 w-7 text-[var(--text-secondary)] hover:text-[var(--text-primary)] hover:bg-[var(--border-subtle)]"
+              aria-label="Search tools"
+              title="Search tools"
+            >
+              <svg
+                className="w-4 h-4"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth={2}
+              >
+                <circle cx="11" cy="11" r="6" />
+                <line x1="16.5" y1="16.5" x2="20" y2="20" />
+              </svg>
+            </Button>
             <Button variant="ghost"
               onClick={() => setRecentViewsOpen(!recentViewsOpen)}
               className="p-1.5 rounded-full text-[var(--text-secondary)] hover:text-[var(--text-primary)] hover:bg-[var(--border-subtle)] transition-colors relative"
@@ -287,6 +360,59 @@ export function Header({ allResources }: HeaderProps) {
           </div>
         </div>
       </div>
+
+      {/* Global search results dropdown (desktop) */}
+      {searchOpen && filteredTools.length > 0 && (
+        <div className="hidden md:block fixed top-[3.5rem] left-0 right-0 z-[60]">
+          <div className="mx-auto max-w-3xl px-4">
+            <div className="rounded-2xl border border-[var(--border)] bg-[var(--bg-secondary)] shadow-lg overflow-hidden">
+              <div className="px-4 py-2 border-b border-[var(--border)] text-xs text-[var(--text-secondary)] flex items-center justify-between">
+                <span>
+                  Showing {filteredTools.length} tool{filteredTools.length !== 1 ? 's' : ''} for "{searchQuery}"
+                </span>
+                <button
+                  type="button"
+                  onClick={() => {
+                    setSearchOpen(false);
+                    setSearchQuery('');
+                  }}
+                  className="text-[var(--text-secondary)] hover:text-[var(--text-primary)] text-xs"
+                >
+                  Close
+                </button>
+              </div>
+              <ul className="max-h-80 overflow-y-auto">
+                {filteredTools.map((tool) => (
+                  <li key={tool.slug}>
+                    <Link
+                      href={tool.slug.startsWith('/') ? tool.slug : `/tools/${tool.slug}`}
+                      onClick={() => {
+                        setSearchOpen(false);
+                        setSearchQuery('');
+                      }}
+                      className="flex flex-col px-4 py-2 hover:bg-[var(--border-subtle)] transition-colors"
+                    >
+                      <span className="text-sm font-medium text-[var(--text-primary)]">
+                        {tool.title}
+                      </span>
+                      {tool.overview && (
+                        <span className="mt-0.5 text-xs text-[var(--text-secondary)] line-clamp-2">
+                          {tool.overview}
+                        </span>
+                      )}
+                      {tool.tags && tool.tags.length > 0 && (
+                        <span className="mt-1 text-[10px] uppercase tracking-wide text-[var(--text-secondary)]">
+                          {tool.tags.slice(0, 4).join(' • ')}
+                        </span>
+                      )}
+                    </Link>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          </div>
+        </div>
+      )}
 
       {/* Mobile Menu */}
       {mobileMenuOpen && (

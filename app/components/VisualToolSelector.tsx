@@ -11,9 +11,9 @@ interface VisualToolSelectorProps {
 }
 
 interface DecisionState {
-  goal: string | null;
-  audience: string | null;
-  timeline: string | null;
+  goals: string[];
+  audiences: string[];
+  timelines: string[];
 }
 
 const GOALS = [
@@ -45,10 +45,13 @@ const TIMELINES = [
 ];
 export function VisualToolSelector({ allResources }: VisualToolSelectorProps) {
   const [decisionState, setDecisionState] = useState<DecisionState>({
-    goal: null,
-    audience: null,
-    timeline: null,
+    goals: [],
+    audiences: [],
+    timelines: [],
   });
+
+  const [searchOpen, setSearchOpen] = useState(false);
+  const [searchQuery, setSearchQuery] = useState('');
 
   const [filters, setFilters] = useState({
     sustainabilityFocus: [] as string[],
@@ -65,11 +68,20 @@ export function VisualToolSelector({ allResources }: VisualToolSelectorProps) {
     let filtered = [...tools];
 
     // Filter by decision tree selections
-    if (decisionState.goal) {
-      filtered = filtered.filter(tool => tool.tags.includes(decisionState.goal!));
+    if (decisionState.goals.length > 0) {
+      filtered = filtered.filter(tool =>
+        decisionState.goals.some(goalId => tool.tags.includes(goalId))
+      );
     }
-    if (decisionState.audience) {
-      filtered = filtered.filter(tool => tool.tags.includes(decisionState.audience!));
+    if (decisionState.audiences.length > 0) {
+      filtered = filtered.filter(tool =>
+        decisionState.audiences.some(audienceId => tool.tags.includes(audienceId))
+      );
+    }
+    if (decisionState.timelines.length > 0) {
+      filtered = filtered.filter(tool =>
+        decisionState.timelines.some(timelineId => tool.tags.includes(timelineId))
+      );
     }
 
     // Filter by sustainability focus
@@ -93,28 +105,60 @@ export function VisualToolSelector({ allResources }: VisualToolSelectorProps) {
       );
     }
 
+    // Filter by free‑text search
+    const query = searchQuery.trim().toLowerCase();
+    if (query) {
+      filtered = filtered.filter((tool) => {
+        const title = (tool.title ?? '').toLowerCase();
+        const summary =
+          (// @ts-expect-error: some resources may not define summary but it's safe to access
+          (tool.summary ?? tool.description ?? '') as string).toLowerCase();
+        const tags = (tool.tags ?? []).join(' ').toLowerCase();
+        return (
+          title.includes(query) ||
+          summary.includes(query) ||
+          tags.includes(query)
+        );
+      });
+    }
+
     return filtered;
-  }, [tools, decisionState, filters]);
+  }, [tools, decisionState, filters, searchQuery]);
 
   const handleGoalSelect = (goalId: string) => {
-    setDecisionState(prev => ({
-      ...prev,
-      goal: prev.goal === goalId ? null : goalId,
-    }));
+    setDecisionState(prev => {
+      const isSelected = prev.goals.includes(goalId);
+      return {
+        ...prev,
+        goals: isSelected
+          ? prev.goals.filter(id => id !== goalId)
+          : [...prev.goals, goalId],
+      };
+    });
   };
 
   const handleAudienceSelect = (audienceId: string) => {
-    setDecisionState(prev => ({
-      ...prev,
-      audience: prev.audience === audienceId ? null : audienceId,
-    }));
+    setDecisionState(prev => {
+      const isSelected = prev.audiences.includes(audienceId);
+      return {
+        ...prev,
+        audiences: isSelected
+          ? prev.audiences.filter(id => id !== audienceId)
+          : [...prev.audiences, audienceId],
+      };
+    });
   };
 
   const handleTimelineSelect = (timelineId: string) => {
-    setDecisionState(prev => ({
-      ...prev,
-      timeline: prev.timeline === timelineId ? null : timelineId,
-    }));
+    setDecisionState(prev => {
+      const isSelected = prev.timelines.includes(timelineId);
+      return {
+        ...prev,
+        timelines: isSelected
+          ? prev.timelines.filter(id => id !== timelineId)
+          : [...prev.timelines, timelineId],
+      };
+    });
   };
 
   const handleFilterToggle = (category: keyof typeof filters, value: string) => {
@@ -140,7 +184,7 @@ export function VisualToolSelector({ allResources }: VisualToolSelectorProps) {
   };
 
   const resetFilters = () => {
-    setDecisionState({ goal: null, audience: null, timeline: null });
+    setDecisionState({ goals: [], audiences: [], timelines: [] });
     setFilters({
       sustainabilityFocus: [],
       innovationType: [],
@@ -149,7 +193,12 @@ export function VisualToolSelector({ allResources }: VisualToolSelectorProps) {
     });
   };
 
-  const currentStep = decisionState.goal ? (decisionState.audience ? 3 : 2) : 1;
+  const currentStep =
+    decisionState.goals.length > 0
+      ? decisionState.audiences.length > 0
+        ? 3
+        : 2
+      : 1;
 
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6">
@@ -187,7 +236,7 @@ export function VisualToolSelector({ allResources }: VisualToolSelectorProps) {
                     key={goal.id}
                     onClick={() => handleGoalSelect(goal.id)}
                     className={`p-4 rounded-2xl border-2 transition-all text-left whitespace-normal h-full items-start justify-start min-h-[64px] ${
-                      decisionState.goal === goal.id
+                      decisionState.goals.includes(goal.id)
                         ? 'border-blue-500 bg-blue-50 dark:bg-blue-900/20'
                         : 'border-gray-200 dark:border-gray-700 hover:border-blue-300 dark:hover:border-blue-600'
                     }`}
@@ -203,14 +252,14 @@ export function VisualToolSelector({ allResources }: VisualToolSelectorProps) {
             </div>
 
             {/* Connection Line */}
-            {decisionState.goal && (
+            {decisionState.goals.length > 0 && (
               <div className="flex justify-center mb-8">
                 <div className="w-0.5 h-8 bg-blue-400 dark:bg-blue-600"></div>
               </div>
             )}
 
             {/* Step 2: Audience */}
-            {decisionState.goal && (
+            {decisionState.goals.length > 0 && (
               <div className="mb-8">
                 <div className="flex items-center gap-3 mb-4">
                   <div className={`w-8 h-8 rounded-full flex items-center justify-center font-bold text-sm ${
@@ -228,7 +277,7 @@ export function VisualToolSelector({ allResources }: VisualToolSelectorProps) {
                       key={audience.id}
                       onClick={() => handleAudienceSelect(audience.id)}
                       className={`p-3 rounded-2xl border-2 transition-all text-center whitespace-normal h-full items-center justify-center w-full min-h-[56px] ${
-                        decisionState.audience === audience.id
+                        decisionState.audiences.includes(audience.id)
                           ? 'border-blue-500 bg-blue-50 dark:bg-blue-900/20'
                           : 'border-gray-200 dark:border-gray-700 hover:border-blue-300 dark:hover:border-blue-600'
                       }`}
@@ -245,7 +294,7 @@ export function VisualToolSelector({ allResources }: VisualToolSelectorProps) {
             )}
 
             {/* Connection Line */}
-            {decisionState.audience && (
+            {decisionState.audiences.length > 0 && (
               <div className="flex justify-center mb-8">
                 <div className="w-0.5 h-8 bg-blue-400 dark:bg-blue-600"></div>
               </div>
@@ -268,7 +317,7 @@ export function VisualToolSelector({ allResources }: VisualToolSelectorProps) {
                       key={timeline.id}
                       onClick={() => handleTimelineSelect(timeline.id)}
                       className={`p-3 rounded-2xl border-2 transition-all text-center whitespace-normal h-full items-center justify-center w-full min-h-[56px] ${
-                        decisionState.timeline === timeline.id
+                        decisionState.timelines.includes(timeline.id)
                           ? 'border-blue-500 bg-blue-50 dark:bg-blue-900/20'
                           : 'border-gray-200 dark:border-gray-700 hover:border-blue-300 dark:hover:border-blue-600'
                       }`}
@@ -285,7 +334,9 @@ export function VisualToolSelector({ allResources }: VisualToolSelectorProps) {
             )}
 
             {/* Reset Button */}
-            {(decisionState.goal || decisionState.audience || decisionState.timeline) && (
+            {(decisionState.goals.length > 0 ||
+              decisionState.audiences.length > 0 ||
+              decisionState.timelines.length > 0) && (
               <div className="mt-6 flex justify-end">
                 <Button variant="ghost"
                   onClick={resetFilters}
@@ -299,10 +350,57 @@ export function VisualToolSelector({ allResources }: VisualToolSelectorProps) {
 
           {/* Results */}
           <div>
-            <div className="flex items-center justify-between mb-4">
+            <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 mb-4">
               <h3 className="text-xl font-semibold text-gray-900 dark:text-gray-100">
                 Results ({filteredTools.length})
               </h3>
+              <div className="flex items-center gap-2 self-start sm:self-auto">
+                {searchOpen && (
+                  <div className="relative">
+                    <input
+                      type="text"
+                      value={searchQuery}
+                      onChange={(e) => setSearchQuery(e.target.value)}
+                      placeholder="Search tools..."
+                      autoFocus
+                      className="w-52 sm:w-64 rounded-full border border-gray-300 dark:border-gray-600 bg-[var(--bg-primary)] px-9 py-1.5 text-sm text-[var(--text-primary)] placeholder:text-[var(--text-secondary)] focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    />
+                    <span className="pointer-events-none absolute left-2.5 top-1/2 -translate-y-1/2 text-gray-400">
+                      <svg
+                        className="w-4 h-4"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke="currentColor"
+                        strokeWidth={2}
+                      >
+                        <circle cx="11" cy="11" r="6" />
+                        <line x1="16.5" y1="16.5" x2="20" y2="20" />
+                      </svg>
+                    </span>
+                  </div>
+                )}
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  onClick={() => {
+                    setSearchOpen((prev) => !prev);
+                    setSearchQuery('');
+                  }}
+                  className="h-8 w-8 rounded-full text-[var(--text-secondary)] hover:text-[var(--text-primary)] hover:bg-[var(--border-subtle)]"
+                  aria-label="Search tools"
+                >
+                  <svg
+                    className="w-4 h-4"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    strokeWidth={2}
+                  >
+                    <circle cx="11" cy="11" r="6" />
+                    <line x1="16.5" y1="16.5" x2="20" y2="20" />
+                  </svg>
+                </Button>
+              </div>
             </div>
             {filteredTools.length === 0 ? (
               <div className="text-center py-12 bg-[var(--bg-secondary)] rounded-3xl border border-gray-200 dark:border-gray-700 border-dashed">
