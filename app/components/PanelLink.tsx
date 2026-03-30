@@ -3,6 +3,7 @@
 import { ReactNode, MouseEvent } from 'react';
 import { usePanels } from './PanelContext';
 import { ResourcePanelContent } from './ResourcePanelContent';
+import { CLOSE_FILTERS_SIDEBAR_EVENT } from '../lib/layoutEvents';
 
 interface PanelLinkProps {
   href: string;
@@ -36,6 +37,7 @@ export function PanelLink({ href, children, className, openInPanel = true, onCli
       path: href,
       content: <ResourcePanelContent path={href} />,
     });
+    window.dispatchEvent(new CustomEvent(CLOSE_FILTERS_SIDEBAR_EVENT));
   };
 
   return (

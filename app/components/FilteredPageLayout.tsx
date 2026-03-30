@@ -6,6 +6,7 @@ import { QuickFiltersSidebar, FilterState } from './QuickFiltersSidebar';
 import { FilteredResourceList } from './FilteredResourceList';
 import { FilterButton } from './FilterButton';
 import { getWelcomeAnswers, reorderResourcesByWelcomeAnswers } from '../lib/welcomeAnswers';
+import { CLOSE_FILTERS_SIDEBAR_EVENT } from '../lib/layoutEvents';
 
 interface FilteredPageLayoutProps {
   resources: ResourceMetadata[];
@@ -52,6 +53,13 @@ export function FilteredPageLayout({
       window.removeEventListener('welcome-answers-updated', handleWelcomeUpdate);
       window.removeEventListener('storage', handleWelcomeUpdate);
     };
+  }, []);
+
+  // When a resource opens in a side panel, reclaim horizontal space for the list + panels.
+  useEffect(() => {
+    const closeFilters = () => setIsFiltersOpen(false);
+    window.addEventListener(CLOSE_FILTERS_SIDEBAR_EVENT, closeFilters);
+    return () => window.removeEventListener(CLOSE_FILTERS_SIDEBAR_EVENT, closeFilters);
   }, []);
 
   const activeFilterCount = filters.selectedTags.size + (filters.searchQuery.length > 0 ? 1 : 0);
