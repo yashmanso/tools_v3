@@ -51,7 +51,13 @@ export function ToolSubmissionSection() {
   const [attachments, setAttachments] = useState<File[]>([]);
   const [dimensions, setDimensions] = useState(DEFAULT_DIMENSIONS);
   const [submitting, setSubmitting] = useState(false);
-  const [status, setStatus] = useState<{ type: 'success' | 'error'; message: string } | null>(null);
+  const [status, setStatus] = useState<{
+    type: 'success' | 'error';
+    message: string;
+    pageUrl?: string;
+    githubFileUrl?: string;
+    notificationIssueUrl?: string | null;
+  } | null>(null);
   const [activeDimensionIndex, setActiveDimensionIndex] = useState(0);
 
   const [visitedDimensions, setVisitedDimensions] = useState<Set<number>>(new Set([0]));
@@ -145,7 +151,10 @@ export function ToolSubmissionSection() {
 
       setStatus({
         type: 'success',
-        message: 'Thanks! Your tool was added and will appear shortly.',
+        message: 'Thanks! Your tool page was created successfully.',
+        pageUrl: payload?.pageUrl,
+        githubFileUrl: payload?.githubFileUrl,
+        notificationIssueUrl: payload?.notificationIssueUrl,
       });
       setTitle('');
       setOverview('');
@@ -323,7 +332,42 @@ export function ToolSubmissionSection() {
                 : 'border-red-200 bg-red-50 text-red-800 dark:border-red-900/40 dark:bg-red-900/20 dark:text-red-200'
             }`}
           >
-            {status.message}
+            <p>{status.message}</p>
+            {status.type === 'success' && (
+              <div className="mt-2 space-y-1 text-xs">
+                {status.pageUrl && (
+                  <p>
+                    Page: <a href={status.pageUrl} className="underline font-medium">{status.pageUrl}</a>
+                  </p>
+                )}
+                {status.githubFileUrl && (
+                  <p>
+                    GitHub file:{' '}
+                    <a
+                      href={status.githubFileUrl}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="underline font-medium"
+                    >
+                      view source
+                    </a>
+                  </p>
+                )}
+                {status.notificationIssueUrl && (
+                  <p>
+                    Notification:{' '}
+                    <a
+                      href={status.notificationIssueUrl}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="underline font-medium"
+                    >
+                      GitHub issue created
+                    </a>
+                  </p>
+                )}
+              </div>
+            )}
           </div>
         )}
 

@@ -15,14 +15,13 @@ type SubmissionPayload = {
   dimensions?: Record<string, DimensionPayload>;
 };
 
-// Submissions are first written to a dedicated submissions folder.
-// You can later review and move these markdown files (and any attachments)
-// into the appropriate Content subfolder when you want them to appear on the site.
-const SUBMISSIONS_DIR = path.join(process.cwd(), 'submissions');
-// Markdown files for new tools are written directly under the submissions folder
-// using the submitted tool name (with de-duplicated filenames).
-const TOOLS_DIR = SUBMISSIONS_DIR;
-const ATTACHMENTS_DIR = path.join(SUBMISSIONS_DIR, 'attachments');
+const TOOLS_CATEGORY_DIR = 'Content/1 – Tools, methods, frameworks, or guides';
+const TOOLS_DIR = path.join(process.cwd(), TOOLS_CATEGORY_DIR);
+const ATTACHMENTS_PUBLIC_DIR = 'public/attachments';
+const ATTACHMENTS_DIR = path.join(process.cwd(), ATTACHMENTS_PUBLIC_DIR);
+const GITHUB_OWNER = process.env.GITHUB_OWNER || 'yashmanso';
+const GITHUB_REPO = process.env.GITHUB_REPO || 'tools_v3';
+const GITHUB_BRANCH = process.env.GITHUB_BRANCH || 'main';
 
 const DIMENSION_LABELS: Record<string, string> = {
   resourceType: 'Resource type',
@@ -114,6 +113,130 @@ const buildResourcesSection = (resourcesRaw?: string, attachmentFilenames: strin
 const sanitizeFilename = (value: string) =>
   value.replace(/[\/\\?%*:|"<>]/g, '').trim();
 
+const encodeGitHubPath = (value: string) =>
+  value
+    .split('/')
+    .map((part) => encodeURIComponent(part))
+    .join('/');
+
+const getGitHubApiUrl = (filePath: string) =>
+  `https://api.github.com/repos/${GITHUB_OWNER}/${GITHUB_REPO}/contents/${encodeGitHubPath(filePath)}`;
+
+const getGitHubHeaders = (githubToken: string) => ({
+  Authorization: `Bearer ${githubToken}`,
+  Accept: 'application/vnd.github+json',
+  'Content-Type': 'application/json',
+  'X-GitHub-Api-Version': '2022-11-28',
+  'User-Agent': 'tools-v3-tool-submissions',
+});
+
+const getGitHubFileSha = async (filePath: string, githubToken: string): Promise<string | undefined> => {
+  const response = await fetch(getGitHubApiUrl(filePath), {
+    method: 'GET',
+    headers: getGitHubHeaders(githubToken),
+  });
+
+  if (response.status === 404) {
+    return undefined;
+  }
+
+  if (!response.ok) {
+    throw new Error(`GitHub lookup failed for ${filePath}: ${response.status}`);
+  }
+
+  const payload = await response.json();
+  return payload.sha as string | undefined;
+};
+
+const ensureUniqueGitHubFilename = async (
+  dir: string,
+  baseName: string,
+  githubToken: string,
+  extension?: string,
+): Promise<string> => {
+  const ext = extension || '.md';
+  const nameWithoutExt = baseName.replace(/\.[^.]+$/, '');
+  let candidate = `${nameWithoutExt}${ext}`;
+  let index = 2;
+
+  while (true) {
+    const candidatePath = `${dir}/${candidate}`;
+    const sha = await getGitHubFileSha(candidatePath, githubToken);
+    if (!sha) {
+      return candidate;
+    }
+    candidate = `${nameWithoutExt} (${index})${ext}`;
+    index += 1;
+  }
+};
+
+const saveGitHubFile = async (
+  filePath: string,
+  content: Buffer | string,
+  message: string,
+  githubToken: string,
+) => {
+  const sha = await getGitHubFileSha(filePath, githubToken);
+  const buffer = Buffer.isBuffer(content) ? content : Buffer.from(content, 'utf8');
+  const response = await fetch(getGitHubApiUrl(filePath), {
+    method: 'PUT',
+    headers: getGitHubHeaders(githubToken),
+    body: JSON.stringify({
+      message,
+      content: buffer.toString('base64'),
+      branch: GITHUB_BRANCH,
+      ...(sha ? { sha } : {}),
+    }),
+  });
+
+  if (!response.ok) {
+    const details = await response.text();
+    throw new Error(`GitHub save failed for ${filePath}: ${details}`);
+  }
+};
+
+const createGitHubNotificationIssue = async ({
+  githubToken,
+  title,
+  pageUrl,
+  githubFileUrl,
+  submitterTitle,
+}: {
+  githubToken: string;
+  title: string;
+  pageUrl: string;
+  githubFileUrl: string;
+  submitterTitle: string;
+}): Promise<string | null> => {
+  try {
+    const response = await fetch(`https://api.github.com/repos/${GITHUB_OWNER}/${GITHUB_REPO}/issues`, {
+      method: 'POST',
+      headers: getGitHubHeaders(githubToken),
+      body: JSON.stringify({
+        title,
+        body: [
+          'A new tool page was created from the submit form.',
+          '',
+          `- Tool: ${submitterTitle}`,
+          `- Site page: ${pageUrl}`,
+          `- GitHub file: ${githubFileUrl}`,
+          `- Branch: ${GITHUB_BRANCH}`,
+        ].join('\n'),
+        labels: ['tool-submission'],
+      }),
+    });
+
+    if (!response.ok) {
+      return null;
+    }
+
+    const payload = await response.json();
+    return payload.html_url || null;
+  } catch {
+    return null;
+  }
+};
+
 const ensureUniqueFilename = async (dir: string, baseName: string, extension?: string) => {
   const ext = extension || '.md';
   const nameWithoutExt = baseName.replace(/\.[^.]+$/, '');
@@ -134,20 +257,6 @@ const ensureUniqueFilename = async (dir: string, baseName: string, extension?: s
 
 export async function POST(request: Request) {
   try {
-    // In serverless production environments (e.g. Vercel), the deployment
-    // filesystem under /var/task is read-only. This endpoint is intended
-    // for local authoring only, where submissions are written into the repo.
-    if (process.env.VERCEL || process.env.NODE_ENV === 'production') {
-      return NextResponse.json(
-        {
-          error:
-            'Tool submissions are only supported in the local development environment. ' +
-            'Please run the site locally to submit a tool, then commit the generated files under the submissions folder.',
-        },
-        { status: 400 },
-      );
-    }
-
     const formData = await request.formData();
     const title = formData.get('title')?.toString() || '';
     const overview = formData.get('overview')?.toString() || '';
@@ -170,21 +279,41 @@ export async function POST(request: Request) {
       // If parsing fails, use empty object
     }
 
+    const isProduction = process.env.VERCEL === '1' || process.env.NODE_ENV === 'production';
+    const githubToken = process.env.GITHUB_TOKEN;
+    if (isProduction && !githubToken) {
+      return NextResponse.json(
+        { error: 'GITHUB_TOKEN is not configured. Please set it in the deployment environment.' },
+        { status: 500 },
+      );
+    }
+
     // Save attachments
     const attachmentFilenames: string[] = [];
     if (attachments.length > 0) {
-      await fs.mkdir(ATTACHMENTS_DIR, { recursive: true });
-      
       for (const file of attachments) {
         const safeFilename = sanitizeFilename(file.name);
         const ext = path.extname(file.name);
         const nameWithoutExt = safeFilename.replace(/\.[^.]+$/, '') || `attachment-${Date.now()}`;
-
         const arrayBuffer = await file.arrayBuffer();
         const buffer = Buffer.from(arrayBuffer);
-        const filename = await ensureUniqueFilename(ATTACHMENTS_DIR, nameWithoutExt, ext);
-        const filePath = path.join(ATTACHMENTS_DIR, filename);
-        await writeFile(filePath, buffer);
+
+        let filename: string;
+        if (isProduction) {
+          filename = await ensureUniqueGitHubFilename(ATTACHMENTS_PUBLIC_DIR, nameWithoutExt, githubToken!, ext);
+          await saveGitHubFile(
+            `${ATTACHMENTS_PUBLIC_DIR}/${filename}`,
+            buffer,
+            `Add attachment for tool submission: ${normalizedTitle}`,
+            githubToken!,
+          );
+        } else {
+          await fs.mkdir(ATTACHMENTS_DIR, { recursive: true });
+          filename = await ensureUniqueFilename(ATTACHMENTS_DIR, nameWithoutExt, ext);
+          const filePath = path.join(ATTACHMENTS_DIR, filename);
+          await writeFile(filePath, buffer);
+        }
+
         attachmentFilenames.push(filename);
       }
     }
@@ -213,12 +342,49 @@ export async function POST(request: Request) {
       '',
     ].join('\n');
 
-    await fs.mkdir(TOOLS_DIR, { recursive: true });
     const safeTitle = sanitizeFilename(normalizedTitle);
-    const filename = await ensureUniqueFilename(TOOLS_DIR, safeTitle || slugify(normalizedTitle) || 'New Tool');
-    await fs.writeFile(path.join(TOOLS_DIR, filename), markdown, 'utf8');
+    const baseTitle = safeTitle || slugify(normalizedTitle) || 'New Tool';
+    let filename = '';
 
-    return NextResponse.json({ ok: true, filename, attachments: attachmentFilenames });
+    if (isProduction) {
+      filename = await ensureUniqueGitHubFilename(TOOLS_CATEGORY_DIR, baseTitle, githubToken!, '.md');
+      await saveGitHubFile(
+        `${TOOLS_CATEGORY_DIR}/${filename}`,
+        markdown,
+        `Add tool submission: ${filename}`,
+        githubToken!,
+      );
+    } else {
+      await fs.mkdir(TOOLS_DIR, { recursive: true });
+      filename = await ensureUniqueFilename(TOOLS_DIR, baseTitle, '.md');
+      await fs.writeFile(path.join(TOOLS_DIR, filename), markdown, 'utf8');
+    }
+
+    const slug = slugify(filename.replace(/\.md$/, ''));
+    const pageUrl = `/tools/${slug}`;
+    const githubFileUrl = `https://github.com/${GITHUB_OWNER}/${GITHUB_REPO}/blob/${GITHUB_BRANCH}/${encodeGitHubPath(
+      `${TOOLS_CATEGORY_DIR}/${filename}`,
+    )}`;
+
+    const notificationIssueUrl =
+      isProduction && githubToken
+        ? await createGitHubNotificationIssue({
+            githubToken,
+            title: `New tool page created: ${filename.replace(/\.md$/, '')}`,
+            pageUrl,
+            githubFileUrl,
+            submitterTitle: normalizedTitle,
+          })
+        : null;
+
+    return NextResponse.json({
+      ok: true,
+      filename,
+      attachments: attachmentFilenames,
+      pageUrl,
+      githubFileUrl,
+      notificationIssueUrl,
+    });
   } catch (error) {
     return NextResponse.json(
       { error: error instanceof Error ? error.message : 'Failed to submit tool.' },
