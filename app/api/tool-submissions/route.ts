@@ -8,17 +8,8 @@ import { slugify } from '@/app/lib/slugify';
 export const dynamic = 'force-dynamic';
 
 type DimensionPayload = { description: string; tags: string[] | string };
-type SubmissionPayload = {
-  title?: string;
-  overview?: string;
-  resources?: string;
-  dimensions?: Record<string, DimensionPayload>;
-};
-
-const TOOLS_CATEGORY_DIR = 'Content/1 – Tools, methods, frameworks, or guides';
-const TOOLS_DIR = path.join(process.cwd(), TOOLS_CATEGORY_DIR);
-const ATTACHMENTS_PUBLIC_DIR = 'public/attachments';
-const ATTACHMENTS_DIR = path.join(process.cwd(), ATTACHMENTS_PUBLIC_DIR);
+const SUBMISSIONS_DIR = 'submissions';
+const SUBMISSIONS_ABSOLUTE_DIR = path.join(process.cwd(), SUBMISSIONS_DIR);
 const GITHUB_OWNER = process.env.GITHUB_OWNER || 'yashmanso';
 const GITHUB_REPO = process.env.GITHUB_REPO || 'tools_v3';
 const GITHUB_BRANCH = process.env.GITHUB_BRANCH || 'main';
@@ -195,48 +186,6 @@ const saveGitHubFile = async (
   }
 };
 
-const createGitHubNotificationIssue = async ({
-  githubToken,
-  title,
-  pageUrl,
-  githubFileUrl,
-  submitterTitle,
-}: {
-  githubToken: string;
-  title: string;
-  pageUrl: string;
-  githubFileUrl: string;
-  submitterTitle: string;
-}): Promise<string | null> => {
-  try {
-    const response = await fetch(`https://api.github.com/repos/${GITHUB_OWNER}/${GITHUB_REPO}/issues`, {
-      method: 'POST',
-      headers: getGitHubHeaders(githubToken),
-      body: JSON.stringify({
-        title,
-        body: [
-          'A new tool page was created from the submit form.',
-          '',
-          `- Tool: ${submitterTitle}`,
-          `- Site page: ${pageUrl}`,
-          `- GitHub file: ${githubFileUrl}`,
-          `- Branch: ${GITHUB_BRANCH}`,
-        ].join('\n'),
-        labels: ['tool-submission'],
-      }),
-    });
-
-    if (!response.ok) {
-      return null;
-    }
-
-    const payload = await response.json();
-    return payload.html_url || null;
-  } catch {
-    return null;
-  }
-};
-
 const ensureUniqueFilename = async (dir: string, baseName: string, extension?: string) => {
   const ext = extension || '.md';
   const nameWithoutExt = baseName.replace(/\.[^.]+$/, '');
@@ -253,6 +202,12 @@ const ensureUniqueFilename = async (dir: string, baseName: string, extension?: s
       return candidate;
     }
   }
+};
+
+const getSubmissionFolderName = (normalizedTitle: string) => {
+  const titleSlug = slugify(normalizedTitle) || 'tool-submission';
+  const timestamp = new Date().toISOString().replace(/[:.]/g, '-');
+  return `${titleSlug}-${timestamp}`;
 };
 
 export async function POST(request: Request) {
@@ -288,7 +243,13 @@ export async function POST(request: Request) {
       );
     }
 
-    // Save attachments
+    const safeTitle = sanitizeFilename(normalizedTitle);
+    const baseTitle = safeTitle || slugify(normalizedTitle) || 'New Tool';
+    const submissionFolder = getSubmissionFolderName(normalizedTitle);
+    const submissionFolderRelativePath = `${SUBMISSIONS_DIR}/${submissionFolder}`;
+    const submissionFolderAbsolutePath = path.join(SUBMISSIONS_ABSOLUTE_DIR, submissionFolder);
+
+    // Save attachments into the submission folder
     const attachmentFilenames: string[] = [];
     if (attachments.length > 0) {
       for (const file of attachments) {
@@ -300,17 +261,17 @@ export async function POST(request: Request) {
 
         let filename: string;
         if (isProduction) {
-          filename = await ensureUniqueGitHubFilename(ATTACHMENTS_PUBLIC_DIR, nameWithoutExt, githubToken!, ext);
+          filename = await ensureUniqueGitHubFilename(submissionFolderRelativePath, nameWithoutExt, githubToken!, ext);
           await saveGitHubFile(
-            `${ATTACHMENTS_PUBLIC_DIR}/${filename}`,
+            `${submissionFolderRelativePath}/${filename}`,
             buffer,
             `Add attachment for tool submission: ${normalizedTitle}`,
             githubToken!,
           );
         } else {
-          await fs.mkdir(ATTACHMENTS_DIR, { recursive: true });
-          filename = await ensureUniqueFilename(ATTACHMENTS_DIR, nameWithoutExt, ext);
-          const filePath = path.join(ATTACHMENTS_DIR, filename);
+          await fs.mkdir(submissionFolderAbsolutePath, { recursive: true });
+          filename = await ensureUniqueFilename(submissionFolderAbsolutePath, nameWithoutExt, ext);
+          const filePath = path.join(submissionFolderAbsolutePath, filename);
           await writeFile(filePath, buffer);
         }
 
@@ -342,48 +303,27 @@ export async function POST(request: Request) {
       '',
     ].join('\n');
 
-    const safeTitle = sanitizeFilename(normalizedTitle);
-    const baseTitle = safeTitle || slugify(normalizedTitle) || 'New Tool';
-    let filename = '';
+    const filename = `${baseTitle}.md`;
+    const markdownPathRelative = `${submissionFolderRelativePath}/${filename}`;
 
     if (isProduction) {
-      filename = await ensureUniqueGitHubFilename(TOOLS_CATEGORY_DIR, baseTitle, githubToken!, '.md');
       await saveGitHubFile(
-        `${TOOLS_CATEGORY_DIR}/${filename}`,
+        markdownPathRelative,
         markdown,
-        `Add tool submission: ${filename}`,
+        `Add tool submission: ${submissionFolder}/${filename}`,
         githubToken!,
       );
     } else {
-      await fs.mkdir(TOOLS_DIR, { recursive: true });
-      filename = await ensureUniqueFilename(TOOLS_DIR, baseTitle, '.md');
-      await fs.writeFile(path.join(TOOLS_DIR, filename), markdown, 'utf8');
+      await fs.mkdir(submissionFolderAbsolutePath, { recursive: true });
+      await fs.writeFile(path.join(submissionFolderAbsolutePath, filename), markdown, 'utf8');
     }
-
-    const slug = slugify(filename.replace(/\.md$/, ''));
-    const pageUrl = `/tools/${slug}`;
-    const githubFileUrl = `https://github.com/${GITHUB_OWNER}/${GITHUB_REPO}/blob/${GITHUB_BRANCH}/${encodeGitHubPath(
-      `${TOOLS_CATEGORY_DIR}/${filename}`,
-    )}`;
-
-    const notificationIssueUrl =
-      isProduction && githubToken
-        ? await createGitHubNotificationIssue({
-            githubToken,
-            title: `New tool page created: ${filename.replace(/\.md$/, '')}`,
-            pageUrl,
-            githubFileUrl,
-            submitterTitle: normalizedTitle,
-          })
-        : null;
 
     return NextResponse.json({
       ok: true,
-      filename,
+      message: 'Thanks for your submission.',
+      submissionFolder,
+      markdownFile: filename,
       attachments: attachmentFilenames,
-      pageUrl,
-      githubFileUrl,
-      notificationIssueUrl,
     });
   } catch (error) {
     return NextResponse.json(
