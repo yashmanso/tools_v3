@@ -2,18 +2,6 @@
 
 A modern website built with Next.js to showcase tools, methods, and resources for sustainable entrepreneurship and innovation.
 
-## Features
-
-- 🎨 **Modern Design**: Clean, minimal interface with light/dark theme support
-- 🔍 **Search & Filter**: Find resources by title, description, or tags
-- 📱 **Responsive**: Works beautifully on all devices
-- ⚡ **Fast**: Static site generation for optimal performance
-- 🔗 **Smart Links**: Automatic conversion of Obsidian wiki-links
-- 📚 **Three Categories**:
-  - Tools, Methods & Frameworks
-  - Collections, Compendia & Kits
-  - Practical Academic Articles & Scientific Reports
-
 ## Tech Stack
 
 - **Next.js 16** - React framework with App Router
@@ -82,8 +70,6 @@ The system is set up to display 95 attachments:
 - 4 JPEGs
 - 5 JPGs
 
-**Note**: Attachment files are not currently in the repository and need to be added.
-
 ### How to Add Attachments
 
 1. **Find your Obsidian attachments folder** (usually in your vault directory)
@@ -127,12 +113,6 @@ When users click the "Contact us" button:
 - Users can compose and send their message directly from their email client
 
 This approach requires no backend server or email service setup - it works entirely client-side using the standard `mailto:` protocol.
-
-## Theme
-
-The color scheme matches the original Obsidian Publish site:
-- **Light mode**: White background (#ffffff) with dark text (#222222)
-- **Dark mode**: Dark gray background (#1e1e1e) with light text (#dadada)
 
 ## License
 
