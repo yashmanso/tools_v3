@@ -1,0 +1,118 @@
+name: Update View Counts
+
+on:
+  schedule:
+    # Run daily at 6 AM UTC
+    - cron: '0 6 * * *'
+  workflow_dispatch: # Allow manual trigger
+
+jobs:
+  update-counts:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Fetch Vercel Analytics and update counts
+        env:
+          VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
+          VERCEL_PROJECT_ID: ${{ secrets.VERCEL_PROJECT_ID }}
+        run: |
+          node << 'EOF'
+          const https = require('https');
+          const fs = require('fs');
+
+          const token = process.env.VERCEL_TOKEN;
+          const projectId = process.env.VERCEL_PROJECT_ID;
+
+          // Calculate date range (last 30 days)
+          const now = new Date();
+          const from = new Date(now.getTime() - 30 * 24 * 60 * 60 * 1000);
+
+          const fromStr = from.toISOString().split('T')[0];
+          const toStr = now.toISOString().split('T')[0];
+
+          // Read existing counts to preserve them
+          let existingCounts = {};
+          try {
+            const existing = fs.readFileSync('data/view-counts.json', 'utf-8');
+            existingCounts = JSON.parse(existing);
+          } catch (e) {
+            console.log('No existing counts file, starting fresh');
+          }
+
+          // Fetch top pages from Vercel Analytics
+          const url = `https://vercel.com/api/web-analytics/pages?projectId=${projectId}&from=${fromStr}&to=${toStr}&limit=50`;
+
+          const options = {
+            headers: {
+              'Authorization': `Bearer ${token}`,
+              'Content-Type': 'application/json'
+            }
+          };
+
+          https.get(url, options, (res) => {
+            let data = '';
+            res.on('data', chunk => data += chunk);
+            res.on('end', () => {
+              if (res.statusCode !== 200) {
+                console.error('API Error:', res.statusCode, data);
+                console.log('Keeping existing counts');
+                process.exit(0);
+              }
+
+              try {
+                const result = JSON.parse(data);
+                console.log('Fetched', result.data?.length || 0, 'pages from Analytics');
+
+                // Merge Analytics data with existing counts
+                const newCounts = { ...existingCounts };
+
+                if (result.data && Array.isArray(result.data)) {
+                  result.data.forEach(page => {
+                    // Match paths like /tools/slug or /collections/slug
+                    const match = page.path?.match(/^\/(tools|collections|articles)\/([^\/]+)\/?$/);
+                    if (match) {
+                      const key = `${match[1]}/${match[2]}`;
+                      const analyticsViews = page.pageViews || page.visitors || 0;
+
+                      // Use the higher of analytics or existing count
+                      newCounts[key] = Math.max(newCounts[key] || 0, analyticsViews);
+                    }
+                  });
+                }
+
+                fs.writeFileSync('data/view-counts.json', JSON.stringify(newCounts, null, 2));
+                console.log('Updated view-counts.json');
+                console.log('Top tools:', Object.entries(newCounts)
+                  .filter(([k]) => k.startsWith('tools/'))
+                  .sort((a, b) => b[1] - a[1])
+                  .slice(0, 5)
+                  .map(([k, v]) => `${k}: ${v}`)
+                  .join(', '));
+              } catch (e) {
+                console.error('Failed to process:', e.message);
+                process.exit(1);
+              }
+            });
+          }).on('error', (e) => {
+            console.error('Request error:', e);
+            process.exit(1);
+          });
+          EOF
+
+      - name: Commit and push if changed
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add data/view-counts.json
+          git diff --staged --quiet || git commit -m "Update view counts from Vercel Analytics [skip ci]"
+          git push
