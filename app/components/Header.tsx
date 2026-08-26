@@ -109,14 +109,14 @@ export function Header({ allResources }: HeaderProps) {
           <Link
             href="/"
             onClick={clearPanels}
-            className="text-sm sm:text-base font-semibold tracking-tight hover:text-[var(--text-secondary)] transition-colors"
+            className="text-sm sm:text-base font-semibold tracking-tight hover:text-[var(--text-secondary)] transition-colors whitespace-nowrap"
           >
             Sustainability Atlas
           </Link>
         </div>
 
         {/* Desktop Navigation */}
-        <nav className="hidden md:flex items-center gap-2 px-3 py-2 rounded-full bg-[var(--bg-secondary)] border border-[var(--border)]">
+        <nav className="hidden md:flex items-center gap-2 px-3 py-2 rounded-full bg-[var(--bg-secondary)] border border-[var(--border)] flex-nowrap whitespace-nowrap">
           <Link
             href="/"
             onClick={clearPanels}
