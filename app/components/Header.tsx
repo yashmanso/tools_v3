@@ -89,7 +89,7 @@ export function Header({ allResources }: HeaderProps) {
     <>
     <header className="fixed top-0 left-0 right-0 z-50 backdrop-blur-md bg-[var(--bg-primary)]/90 border-b border-[var(--border)]">
       <div className="container mx-auto px-3 sm:px-6 py-3 sm:py-5 flex items-center justify-between max-w-5xl">
-        <div className="flex items-center gap-2">
+        <div className="flex items-center gap-2 mr-4">
           {/* Show sidebar toggle in header only when sidebar is hidden (so user can bring it back) */}
           {pathname === '/' && !sidebarVisible && (
             <Button
