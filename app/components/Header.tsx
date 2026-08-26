@@ -96,7 +96,7 @@ export function Header({ allResources }: HeaderProps) {
               variant="ghost"
               size="icon"
               onClick={toggleSidebar}
-              className="hidden lg:inline-flex h-8 w-8 text-[var(--text-secondary)] hover:text-[var(--text-primary)]"
+              className="hidden md:inline-flex h-8 w-8 text-[var(--text-secondary)] hover:text-[var(--text-primary)]"
               aria-label="Show sidebar"
               title="Show sidebar"
             >
