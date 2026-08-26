@@ -94,7 +94,7 @@ jobs:
                   result.data.forEach(entry => {
                     // Match paths like /tools/slug or /collections/slug
                     const path = entry.requestPath || entry.key;
-                    const views = entry.pageViews || entry.visits || entry.value || 0;
+                    const views = entry.pageviews || entry.visitors || entry.value || 0;
 
                     if (path) {
                       const match = path.match(/^\/(tools|collections|articles)\/([^\/]+)\/?$/);
