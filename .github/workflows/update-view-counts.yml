@@ -49,8 +49,20 @@ jobs:
             console.log('No existing counts file, starting fresh');
           }
 
-          // Fetch top pages from Vercel Analytics
-          const url = `https://vercel.com/api/web-analytics/pages?projectId=${projectId}&from=${fromStr}&to=${toStr}&limit=50`;
+          // Fetch page views from Vercel Analytics API
+          // Using the correct v1 query endpoint with requestPath breakdown
+          const since = from.getTime();
+          const until = now.getTime();
+          const params = new URLSearchParams({
+            projectId: projectId,
+            since: since.toString(),
+            until: until.toString(),
+            limit: '100'
+          });
+          // Add 'by' parameter for requestPath breakdown
+          params.append('by', 'requestPath');
+
+          const url = `https://api.vercel.com/v1/query/web-analytics/visits/aggregate?${params.toString()}`;
 
           const options = {
             headers: {
@@ -71,21 +83,26 @@ jobs:
 
               try {
                 const result = JSON.parse(data);
-                console.log('Fetched', result.data?.length || 0, 'pages from Analytics');
+                console.log('API Response:', JSON.stringify(result, null, 2).slice(0, 500));
 
                 // Merge Analytics data with existing counts
                 const newCounts = { ...existingCounts };
 
                 if (result.data && Array.isArray(result.data)) {
-                  result.data.forEach(page => {
-                    // Match paths like /tools/slug or /collections/slug
-                    const match = page.path?.match(/^\/(tools|collections|articles)\/([^\/]+)\/?$/);
-                    if (match) {
-                      const key = `${match[1]}/${match[2]}`;
-                      const analyticsViews = page.pageViews || page.visitors || 0;
+                  console.log('Fetched', result.data.length, 'paths from Analytics');
 
-                      // Use the higher of analytics or existing count
-                      newCounts[key] = Math.max(newCounts[key] || 0, analyticsViews);
+                  result.data.forEach(entry => {
+                    // Match paths like /tools/slug or /collections/slug
+                    const path = entry.requestPath || entry.key;
+                    const views = entry.pageViews || entry.visits || entry.value || 0;
+
+                    if (path) {
+                      const match = path.match(/^\/(tools|collections|articles)\/([^\/]+)\/?$/);
+                      if (match) {
+                        const key = `${match[1]}/${match[2]}`;
+                        // Use the higher of analytics or existing count
+                        newCounts[key] = Math.max(newCounts[key] || 0, views);
+                      }
                     }
                   });
                 }
