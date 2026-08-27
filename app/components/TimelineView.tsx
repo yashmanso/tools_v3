@@ -40,15 +40,18 @@ export function TimelineView({ allResources }: TimelineViewProps) {
 
     tools.forEach(tool => {
       // Check if tool has any entrepreneurship-stage tags
+      // Normalize tags: scaleup -> scale-up for consistency
+      const normalizedTags = tool.tags.map(tag => tag === 'scaleup' ? 'scale-up' : tag);
       const stageTags = ['ideation', 'design', 'development', 'implementation', 'startup', 'growth', 'scale-up', 'maturity'];
-      const toolStages = tool.tags.filter(tag => stageTags.includes(tag));
-      
+      const toolStages = normalizedTags.filter(tag => stageTags.includes(tag));
+
       if (toolStages.length > 0) {
-        // Add tool to the first matching stage (tools can have multiple stages, but we'll show in first one)
-        const firstStage = toolStages[0];
-        if (grouped[firstStage]) {
-          grouped[firstStage].push(tool);
-        }
+        // Add tool to ALL matching stages (tools can span multiple stages)
+        toolStages.forEach(stage => {
+          if (grouped[stage]) {
+            grouped[stage].push(tool);
+          }
+        });
       } else {
         grouped['uncategorized'].push(tool);
       }
