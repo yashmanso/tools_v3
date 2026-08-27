@@ -1,6 +1,6 @@
 'use client';
 
-import { useMemo } from 'react';
+import { useMemo, useRef, useState, useEffect } from 'react';
 import type { ResourceMetadata } from '../lib/markdown';
 import { ResourceCard } from './ResourceCard';
 
@@ -21,6 +21,11 @@ const INNOVATION_STAGES = [
 ];
 
 export function TimelineView({ allResources }: TimelineViewProps) {
+  // Currently selected stage (null = show every stage)
+  const [selectedStage, setSelectedStage] = useState<string | null>(null);
+  // Refs to each stage section so we can scroll to it when its marker is clicked
+  const sectionRefs = useRef<Record<string, HTMLDivElement | null>>({});
+
   // Filter only tools (not collections or articles)
   const tools = useMemo(() => {
     return allResources.filter(r => r.category === 'tools');
@@ -60,6 +65,20 @@ export function TimelineView({ allResources }: TimelineViewProps) {
     return grouped;
   }, [tools]);
 
+  // Scroll the selected stage's section into view once it has rendered
+  useEffect(() => {
+    if (!selectedStage) return;
+    const el = sectionRefs.current[selectedStage];
+    if (el) {
+      el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
+  }, [selectedStage]);
+
+  const handleStageClick = (stageId: string) => {
+    // Clicking the active stage again clears the filter
+    setSelectedStage(prev => (prev === stageId ? null : stageId));
+  };
+
   return (
     <div className="max-w-6xl mx-auto px-4 sm:px-6">
       <div className="mb-6 sm:mb-8">
@@ -79,34 +98,93 @@ export function TimelineView({ allResources }: TimelineViewProps) {
           <div className="relative flex justify-between items-start gap-2 min-w-[640px] lg:min-w-0">
             {INNOVATION_STAGES.map((stage, index) => {
               const toolCount = toolsByStage[stage.id]?.length || 0;
+              const isSelected = selectedStage === stage.id;
+              const isDimmed = selectedStage !== null && !isSelected;
+              const isEmpty = toolCount === 0;
+
               return (
-                <div key={stage.id} className="flex flex-col items-center w-[75px] lg:flex-1">
-                  <div className={`relative z-10 w-12 h-12 lg:w-16 lg:h-16 rounded-full ${stage.color} flex items-center justify-center font-semibold text-xs lg:text-sm mb-2 border-2 border-white dark:border-gray-800 shadow-lg`}>
+                <button
+                  key={stage.id}
+                  type="button"
+                  onClick={() => handleStageClick(stage.id)}
+                  disabled={isEmpty}
+                  aria-pressed={isSelected}
+                  title={
+                    isEmpty
+                      ? `No tools in ${stage.label}`
+                      : isSelected
+                        ? `Show all stages`
+                        : `Show ${toolCount} ${toolCount === 1 ? 'tool' : 'tools'} in ${stage.label}`
+                  }
+                  className={`flex flex-col items-center w-[75px] lg:flex-1 bg-transparent rounded-xl p-1 transition-opacity ${
+                    isEmpty ? 'cursor-default opacity-40' : 'cursor-pointer'
+                  } ${isDimmed ? 'opacity-50 hover:opacity-100' : 'opacity-100'}`}
+                >
+                  <div
+                    className={`relative z-10 w-12 h-12 lg:w-16 lg:h-16 rounded-full ${stage.color} flex items-center justify-center font-semibold text-xs lg:text-sm mb-2 border-2 border-white dark:border-gray-800 shadow-lg transition-transform ${
+                      isSelected
+                        ? 'ring-2 ring-offset-2 ring-blue-500 dark:ring-offset-gray-900 scale-110'
+                        : isEmpty
+                          ? ''
+                          : 'hover:scale-105'
+                    }`}
+                  >
                     {index + 1}
                   </div>
                   <div className="text-center">
-                    <div className="font-semibold text-[11px] lg:text-sm text-gray-900 dark:text-gray-100 mb-1 whitespace-nowrap">
+                    <div
+                      className={`font-semibold text-[11px] lg:text-sm mb-1 whitespace-nowrap ${
+                        isSelected
+                          ? 'text-blue-600 dark:text-blue-400'
+                          : 'text-gray-900 dark:text-gray-100'
+                      }`}
+                    >
                       {stage.label}
                     </div>
                     <div className="text-[10px] lg:text-xs text-gray-500 dark:text-gray-400 mb-1 whitespace-nowrap">
                       {toolCount} {toolCount === 1 ? 'tool' : 'tools'}
                     </div>
                   </div>
-                </div>
+                </button>
               );
             })}
           </div>
         </div>
       </div>
 
+      {/* Active filter indicator */}
+      {selectedStage && (
+        <div className="flex items-center justify-center gap-3 mb-6 sm:mb-8">
+          <span className="text-xs sm:text-sm text-gray-600 dark:text-gray-400">
+            Showing tools for{' '}
+            <span className="font-semibold text-gray-900 dark:text-gray-100">
+              {INNOVATION_STAGES.find(s => s.id === selectedStage)?.label}
+            </span>
+          </span>
+          <button
+            type="button"
+            onClick={() => setSelectedStage(null)}
+            className="px-3 py-1.5 text-xs sm:text-sm font-medium rounded-full border border-[var(--border)] text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors"
+          >
+            Show all stages
+          </button>
+        </div>
+      )}
+
       {/* Tools organized by stage */}
       <div className="space-y-8 sm:space-y-12">
         {INNOVATION_STAGES.map((stage) => {
           const stageTools = toolsByStage[stage.id] || [];
           if (stageTools.length === 0) return null;
+          // When a stage is selected, only render that stage's section
+          if (selectedStage && selectedStage !== stage.id) return null;
 
           return (
-            <div key={stage.id} className="relative">
+            <div
+              key={stage.id}
+              ref={el => { sectionRefs.current[stage.id] = el; }}
+              className="relative scroll-mt-24"
+            >
               {/* Stage header */}
               <div className="flex flex-col sm:flex-row items-start sm:items-center gap-2 sm:gap-4 mb-4 sm:mb-6">
                 <div className={`px-3 sm:px-4 py-1.5 sm:py-2 rounded-full ${stage.color} font-semibold text-xs sm:text-sm`}>
@@ -132,8 +210,8 @@ export function TimelineView({ allResources }: TimelineViewProps) {
           );
         })}
 
-        {/* Uncategorized tools */}
-        {toolsByStage['uncategorized'] && toolsByStage['uncategorized'].length > 0 && (
+        {/* Uncategorized tools - hidden while a specific stage is selected */}
+        {!selectedStage && toolsByStage['uncategorized'] && toolsByStage['uncategorized'].length > 0 && (
           <div className="relative">
             <div className="flex flex-col sm:flex-row items-start sm:items-center gap-2 sm:gap-4 mb-4 sm:mb-6">
               <div className="px-3 sm:px-4 py-1.5 sm:py-2 rounded-full bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300 font-semibold text-xs sm:text-sm">
