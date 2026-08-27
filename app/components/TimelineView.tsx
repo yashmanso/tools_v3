@@ -69,28 +69,30 @@ export function TimelineView({ allResources }: TimelineViewProps) {
       {/* Timeline visualization */}
       <div className="relative mb-8 sm:mb-12">
         {/* Timeline line - hidden on mobile, visible on larger screens */}
-        <div className="hidden sm:block absolute left-0 right-0 top-8 h-1 bg-gradient-to-r from-blue-500 via-purple-500 via-green-500 via-orange-500 to-indigo-500 rounded-full"></div>
-        
-        {/* Stage markers */}
-        <div className="relative flex flex-wrap sm:flex-nowrap justify-center sm:justify-between items-start gap-4 sm:gap-0">
-          {INNOVATION_STAGES.map((stage, index) => {
-            const toolCount = toolsByStage[stage.id]?.length || 0;
-            return (
-              <div key={stage.id} className="flex flex-col items-center flex-1 min-w-[80px] sm:min-w-0">
-                <div className={`relative z-10 w-12 h-12 sm:w-16 sm:h-16 rounded-full ${stage.color} flex items-center justify-center font-semibold text-xs sm:text-sm mb-2 border-2 border-white dark:border-gray-800 shadow-lg`}>
-                  {index + 1}
-                </div>
-                <div className="text-center">
-                  <div className="font-semibold text-xs sm:text-sm text-gray-900 dark:text-gray-100 mb-1">
-                    {stage.label}
+        <div className="hidden lg:block absolute left-0 right-0 top-8 h-1 bg-gradient-to-r from-blue-500 via-purple-500 via-green-500 via-orange-500 to-indigo-500 rounded-full"></div>
+
+        {/* Stage markers - horizontally scrollable on small screens */}
+        <div className="overflow-x-auto pb-4 -mx-4 px-4 sm:mx-0 sm:px-0">
+          <div className="relative flex justify-between items-start gap-2 min-w-[640px] lg:min-w-0">
+            {INNOVATION_STAGES.map((stage, index) => {
+              const toolCount = toolsByStage[stage.id]?.length || 0;
+              return (
+                <div key={stage.id} className="flex flex-col items-center w-[75px] lg:flex-1">
+                  <div className={`relative z-10 w-12 h-12 lg:w-16 lg:h-16 rounded-full ${stage.color} flex items-center justify-center font-semibold text-xs lg:text-sm mb-2 border-2 border-white dark:border-gray-800 shadow-lg`}>
+                    {index + 1}
                   </div>
-                  <div className="text-[10px] sm:text-xs text-gray-500 dark:text-gray-400 mb-1">
-                    {toolCount} {toolCount === 1 ? 'tool' : 'tools'}
+                  <div className="text-center">
+                    <div className="font-semibold text-[11px] lg:text-sm text-gray-900 dark:text-gray-100 mb-1 whitespace-nowrap">
+                      {stage.label}
+                    </div>
+                    <div className="text-[10px] lg:text-xs text-gray-500 dark:text-gray-400 mb-1 whitespace-nowrap">
+                      {toolCount} {toolCount === 1 ? 'tool' : 'tools'}
+                    </div>
                   </div>
                 </div>
-              </div>
-            );
-          })}
+              );
+            })}
+          </div>
         </div>
       </div>
 
