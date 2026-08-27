@@ -1,6 +1,7 @@
 'use client';
 
 import { useEffect, useRef, useState } from 'react';
+import { formatCardOverview } from '../lib/markdownLinks';
 
 interface PreviewData {
   title: string;
@@ -196,7 +197,7 @@ export function ContentWithHoverPreviews({ html, className }: ContentWithHoverPr
             </div>
             {preview.data.overview && (
               <div className="text-sm text-gray-600 dark:text-gray-400 line-clamp-3">
-                {preview.data.overview}
+                {formatCardOverview(preview.data.overview)}
               </div>
             )}
           </div>

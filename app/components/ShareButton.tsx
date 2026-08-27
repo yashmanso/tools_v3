@@ -3,6 +3,7 @@
 import { useState, useRef, useEffect } from 'react';
 import type { ResourceMetadata } from '../lib/markdown';
 import { Button } from '@/components/ui/button';
+import { formatCardOverview } from '../lib/markdownLinks';
 
 interface ShareButtonProps {
   resource: ResourceMetadata;
@@ -59,7 +60,7 @@ export function ShareButton({ resource, size = 'md', className = '' }: ShareButt
 
   const handleEmailShare = () => {
     const subject = encodeURIComponent(`Check out: ${resource.title}`);
-    const body = encodeURIComponent(`I found this interesting tool:\n\n${resource.title}\n${url}\n\n${resource.overview?.substring(0, 200) || ''}`);
+    const body = encodeURIComponent(`I found this interesting tool:\n\n${resource.title}\n${url}\n\n${formatCardOverview(resource.overview || '').substring(0, 200)}`);
     window.location.href = `mailto:?subject=${subject}&body=${body}`;
     setShowMenu(false);
   };
