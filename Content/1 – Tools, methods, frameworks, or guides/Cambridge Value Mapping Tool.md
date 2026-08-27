@@ -27,7 +27,7 @@ The tool supports innovation in business models by encouraging users to consider
 
 **Entrepreneurship stage:**
 It is applicable across various stages of entrepreneurship, particularly useful during the design and implementation phases where sustainable value creation is critical.
-- Tags: #design, #implementation, #growth
+- Tags: #ideation, #design, #development, #implementation, #startup, #growth, #scale-up, #maturity
 
 **Scope of relevance:**
 While the tool can be applied globally, it can be more or less relevant depending on the size and spread of the value chain and business.

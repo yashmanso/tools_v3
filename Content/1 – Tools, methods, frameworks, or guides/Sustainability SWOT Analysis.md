@@ -26,7 +26,7 @@ The Sustainability SWOT Analysis supports innovation in business practices espec
 
 **Entrepreneurship stage:**
 This tool is applicable across various stages of entrepreneurship, especially when strategic decisions are critical.
-- Tags: #ideation, #design, #development, #implementation, #growth
+- Tags: #ideation, #design, #development, #implementation, #startup, #growth, #scale-up, #maturity
 
 **Scope of relevance:**
 The analysis can be applied to organizations operating at different scales, from local startups to global corporations.

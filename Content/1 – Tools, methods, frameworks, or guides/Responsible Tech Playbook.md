@@ -26,8 +26,8 @@ These resources support various types of innovation, such as product, process, a
 - Tags: #social-innovation, #technological-innovation, #business-model-innovation
 
 **Entrepreneurship stage:**
-The playbook and tool are relevant across different stages of entrepreneurship, especially during the design and development phases where ethical considerations are needed to be taken into account.
-- Tags: #design, #development
+The playbook and tool are relevant across different stages of entrepreneurship, from initial design through to mature organizations, as ethical considerations apply throughout the product lifecycle.
+- Tags: #ideation, #design, #development, #implementation, #startup, #growth, #scale-up, #maturity
 
 **Scope of relevance:**
 While the resources have a global perspective, they are applicable to national and local contexts, depending on the user's objectives and scope of work.

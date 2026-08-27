@@ -26,8 +26,8 @@ The tool supports organizations in developing social, technological and policy i
 - Tags: #social-innovation, #business-model-innovation, #technological-innovation , #policy-innovation
 
 **Entrepreneurship stage:**
-The tool is applicable across various stages of entrepreneurship, especially useful for those in the ideation and implementation phases.
-- Tags: #ideation, #implementation
+The tool is applicable across various stages of entrepreneurship, from early ideation through to mature organizations seeking to align with SDGs.
+- Tags: #ideation, #design, #development, #implementation, #startup, #growth, #scale-up, #maturity
 
 **Scope of relevance:**
 The tool has a global scope, as it is based on the universal SDGs, but it can be contextualized to national or local settings.

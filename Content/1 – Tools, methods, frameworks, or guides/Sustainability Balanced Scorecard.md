@@ -26,8 +26,8 @@ By incorporating sustainability into various aspects of business strategy, the S
 - Tags: #product-innovation, #process-innovation, #business-model-innovation
 
 **Entrepreneurship stage:**
-Although the SBSC is not intended to be used in entrepreneurial contexts, it can be applicable across various stages of entrepreneurship, especially during the design, development, and implementation phases where strategic alignment is crucial.
-- Tags: #design, #development, #implementation
+Although the SBSC is not intended to be used in entrepreneurial contexts, it can be applicable across various stages of entrepreneurship, especially during the design, development, and implementation phases where strategic alignment is crucial. It is particularly relevant for organizations in growth and maturity stages.
+- Tags: #design, #development, #implementation, #startup, #growth, #scale-up, #maturity
 
 **Scope of relevance:**
 There is no explicit mention of the scope for SBSC, but it can be applied globally and is adaptable to regional, national, or local contexts depending on the strategic objectives of the organization.

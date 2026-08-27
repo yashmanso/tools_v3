@@ -27,7 +27,7 @@ It supports innovation by prompting users to consider sustainable practices and 
 
 **Entrepreneurship stage:**
 The tool is relevant across various stages of project development, from initial design to implementation and future scaling.
-- Tags: #design, #development, #implementation, #growth
+- Tags: #ideation, #design, #development, #implementation, #startup, #growth, #scale-up, #maturity
 
 **Scope of relevance:**
 While the tool can be applied universally, it is particularly relevant to projects with potential global sustainability impacts.
