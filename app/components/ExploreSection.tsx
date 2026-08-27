@@ -494,12 +494,12 @@ export function ExploreSection({ allResources, graphData }: ExploreSectionProps)
         <div ref={contentRef} className="mt-6 lg:mt-0">
           {mode === 'select' ? (
             <div className="text-center">
-              <h2 className="text-2xl font-bold mb-4 px-4">Start exploring</h2>
-              <p className="text-sm sm:text-base text-gray-600 dark:text-gray-400 mb-6 sm:mb-8 max-w-2xl mx-auto px-4">
+              <h2 className="text-2xl font-bold mb-4">Start exploring</h2>
+              <p className="text-sm sm:text-base text-gray-600 dark:text-gray-400 mb-6 sm:mb-8 max-w-2xl mx-auto">
                 Choose how you'd like to discover tools and resources for your sustainable innovation journey.
               </p>
 
-              <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6 max-w-6xl mx-auto px-4">
+              <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
                 {/* Browse Option */}
                 <CardButton onClick={() => setMode('browse')} className="group p-4 sm:p-6 lg:p-8 min-h-[200px] sm:min-h-[240px]">
                   <div className="flex w-full flex-col h-full">

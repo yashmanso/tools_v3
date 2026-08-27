@@ -92,7 +92,7 @@ export function ToolCompatibilityChecker({ allResources }: ToolCompatibilityChec
   const sanitizeRecommendation = (rec: string) => rec.replace(/[⚠️ℹ️✓]/g, '').replace(/\s+/g, ' ').trim();
 
   return (
-    <div className="max-w-7xl mx-auto px-4 sm:px-6">
+    <div className="max-w-7xl mx-auto">
       <div className="mb-4 sm:mb-6">
         <h2 className="text-xl sm:text-2xl font-bold mb-2">Tool Compatibility Checker</h2>
         <p className="text-sm sm:text-base text-gray-600 dark:text-gray-400">

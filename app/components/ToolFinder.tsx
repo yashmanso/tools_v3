@@ -214,7 +214,7 @@ export function ToolFinder({ allResources }: ToolFinderProps) {
     const otherTools = reorderedTools.filter(item => item.score === 0);
     
     return (
-      <div className="max-w-6xl mx-auto px-4 sm:px-6">
+      <div className="max-w-6xl mx-auto">
         <div className="mb-6 sm:mb-8">
           <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between mb-4 gap-3">
             <div className="flex-1">
@@ -317,7 +317,7 @@ export function ToolFinder({ allResources }: ToolFinderProps) {
   }
 
   return (
-    <div className="max-w-3xl mx-auto px-4 sm:px-6">
+    <div className="max-w-3xl mx-auto">
       {/* Progress indicator */}
       <div className="mb-6 sm:mb-8">
         <div className="flex items-center justify-between mb-2">

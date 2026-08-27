@@ -233,7 +233,7 @@ export function CompareTools({ allResources }: CompareToolsProps) {
   }
 
   return (
-    <div className="max-w-6xl mx-auto px-4 sm:px-6">
+    <div className="max-w-6xl mx-auto">
       <div className="mb-4 sm:mb-6">
         <h2 className="text-xl sm:text-2xl font-bold mb-2">Compare tools</h2>
         <p className="text-sm sm:text-base text-gray-600 dark:text-gray-400">

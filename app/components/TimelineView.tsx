@@ -80,7 +80,7 @@ export function TimelineView({ allResources }: TimelineViewProps) {
   };
 
   return (
-    <div className="max-w-6xl mx-auto px-4 sm:px-6">
+    <div className="max-w-6xl mx-auto">
       <div className="mb-6 sm:mb-8">
         <h2 className="text-2xl font-bold mb-2 sm:mb-3 text-center px-2">Tools by innovation process stage</h2>
         <p className="text-center text-sm sm:text-base text-gray-600 dark:text-gray-400 max-w-2xl mx-auto px-2">

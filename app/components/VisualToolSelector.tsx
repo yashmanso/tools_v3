@@ -201,7 +201,7 @@ export function VisualToolSelector({ allResources }: VisualToolSelectorProps) {
       : 1;
 
   return (
-    <div className="max-w-7xl mx-auto px-4 sm:px-6">
+    <div className="max-w-7xl mx-auto">
       <div className="mb-6 sm:mb-8">
         <h2 className="text-2xl font-bold mb-2">Visual Tool Selector</h2>
         <p className="text-sm sm:text-base text-gray-600 dark:text-gray-400">
