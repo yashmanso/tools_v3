@@ -57,12 +57,6 @@ export function ExploreSection({ allResources, graphData }: ExploreSectionProps)
   // Derive expanded state: visible when not scrolling and no panels open
   const sidebarExpanded = sidebarVisible && !hasPanelsOpen;
 
-  useEffect(() => {
-    // #region agent log
-    fetch('http://127.0.0.1:7243/ingest/5bbecbae-44aa-4e2f-b557-31f64a471b94',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({runId:'pre-fix-1',hypothesisId:'H5',location:'ExploreSection.tsx:sidebarExpandedEffect',message:'sidebar render state',data:{sidebarVisible,hasPanelsOpen,sidebarExpanded},timestamp:Date.now()})}).catch(()=>{});
-    // #endregion
-  }, [sidebarVisible, hasPanelsOpen, sidebarExpanded]);
-
   // Keep a ref of sidebarLocked so the scroll handler always reads the latest value.
   const sidebarLockedRef = useRef(sidebarLocked);
   sidebarLockedRef.current = sidebarLocked;
@@ -73,9 +67,6 @@ export function ExploreSection({ allResources, graphData }: ExploreSectionProps)
   // When sidebarLocked is true the user manually toggled — skip auto-behavior.
   const syncSidebar = useCallback(
     (scrolling: boolean) => {
-      // #region agent log
-      fetch('http://127.0.0.1:7243/ingest/5bbecbae-44aa-4e2f-b557-31f64a471b94',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({runId:'pre-fix-1',hypothesisId:'H3',location:'ExploreSection.tsx:syncSidebar',message:'syncSidebar called',data:{scrolling,sidebarLocked:sidebarLockedRef.current,mode:modeRef.current,hasPanelsOpen},timestamp:Date.now()})}).catch(()=>{});
-      // #endregion
       if (sidebarLockedRef.current) return; // user has manual control
       if (scrolling) {
         setSidebarVisible(false);
@@ -90,13 +81,7 @@ export function ExploreSection({ allResources, graphData }: ExploreSectionProps)
   // Register this component so the Header knows the sidebar is available.
   useEffect(() => {
     setSidebarMounted(true);
-    // #region agent log
-    fetch('http://127.0.0.1:7243/ingest/5bbecbae-44aa-4e2f-b557-31f64a471b94',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({runId:'pre-fix-1',hypothesisId:'H4',location:'ExploreSection.tsx:mountEffect',message:'ExploreSection mounted; sidebarMounted true',data:{mode,hasPanelsOpen},timestamp:Date.now()})}).catch(()=>{});
-    // #endregion
     return () => {
-      // #region agent log
-      fetch('http://127.0.0.1:7243/ingest/5bbecbae-44aa-4e2f-b557-31f64a471b94',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({runId:'pre-fix-1',hypothesisId:'H4',location:'ExploreSection.tsx:mountEffectCleanup',message:'ExploreSection unmounted; sidebarMounted false',data:{mode:modeRef.current,hasPanelsOpen},timestamp:Date.now()})}).catch(()=>{});
-      // #endregion
       setSidebarMounted(false);
     };
   }, [setSidebarMounted]);

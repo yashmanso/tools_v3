@@ -87,12 +87,6 @@ export function Header({ allResources }: HeaderProps) {
     };
   }, [searchOpen, closeSearch]);
 
-  useEffect(() => {
-    // #region agent log
-    fetch('http://127.0.0.1:7243/ingest/5bbecbae-44aa-4e2f-b557-31f64a471b94',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({runId:'pre-fix-1',hypothesisId:'H1',location:'Header.tsx:renderGateEffect',message:'header sidebar toggle gate values',data:{pathname,isHome:pathname==='/',sidebarVisible,mounted,windowWidth:typeof window!=='undefined'?window.innerWidth:null},timestamp:Date.now()})}).catch(()=>{});
-    // #endregion
-  }, [pathname, sidebarVisible, mounted]);
-
   const isActive = (path: string) => {
     if (path === '/') return pathname === '/';
     return pathname.startsWith(path);
