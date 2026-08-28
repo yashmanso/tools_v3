@@ -2,8 +2,14 @@
 
 import { useMemo } from 'react';
 import type { ResourceMetadata } from '../lib/markdown';
-import { analyzeCompatibility, CompatibilityResult } from '../lib/compatibility';
+import { analyzeCompatibility, CompatibilityResult, CompatibilityLevel } from '../lib/compatibility';
 import { PanelLink } from './PanelLink';
+
+const LEVEL_LABELS: Record<CompatibilityLevel, string> = {
+  high: 'High',
+  medium: 'Medium',
+  low: 'Low',
+};
 
 interface ToolCompatibilityProps {
   currentTool: ResourceMetadata;
@@ -96,31 +102,10 @@ export function ToolCompatibility({ currentTool, allResources }: ToolCompatibili
                   </div>
                   <div className="flex items-center gap-2 mb-2">
                     <span className="text-xs font-medium">
-                      Compatibility: {Math.round(result.score)}%
+                      {LEVEL_LABELS[result.level]} compatibility
                     </span>
                   </div>
-                  {result.reasons.length > 0 && (
-                    <ul className="text-xs space-y-1 mb-2">
-                      {result.reasons.slice(0, 2).map((reason, idx) => (
-                        <li key={idx} className="flex items-start gap-1">
-                          <span>•</span>
-                          <span>{reason}</span>
-                        </li>
-                      ))}
-                    </ul>
-                  )}
-                  {result.sharedTags.length > 0 && (
-                    <div className="flex flex-wrap gap-1 mt-2">
-                      {result.sharedTags.slice(0, 3).map((tag) => (
-                        <span
-                          key={tag}
-                          className="text-xs px-2 py-0.5 bg-white dark:bg-gray-800 rounded-full border border-current border-opacity-30"
-                        >
-                          {tag}
-                        </span>
-                      ))}
-                    </div>
-                  )}
+                  <p className="text-xs leading-relaxed">{result.summary}</p>
                 </div>
               ))}
             </div>
@@ -155,21 +140,7 @@ export function ToolCompatibility({ currentTool, allResources }: ToolCompatibili
                       </h4>
                     </PanelLink>
                   </div>
-                  <div className="flex items-center gap-2 mb-2">
-                    <span className="text-xs font-medium">
-                      Overlap: {Math.round(result.score)}%
-                    </span>
-                  </div>
-                  {result.reasons.length > 0 && (
-                    <ul className="text-xs space-y-1">
-                      {result.reasons.slice(0, 2).map((reason, idx) => (
-                        <li key={idx} className="flex items-start gap-1">
-                          <span>•</span>
-                          <span>{reason}</span>
-                        </li>
-                      ))}
-                    </ul>
-                  )}
+                  <p className="text-xs leading-relaxed">{result.summary}</p>
                 </div>
               ))}
             </div>

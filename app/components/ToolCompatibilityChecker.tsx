@@ -2,8 +2,14 @@
 
 import { useState, useMemo } from 'react';
 import type { ResourceMetadata } from '../lib/markdown';
-import { analyzeCompatibility, CompatibilityResult } from '../lib/compatibility';
+import { analyzeCompatibility, CompatibilityResult, CompatibilityLevel } from '../lib/compatibility';
 import { Button } from '@/components/ui/button';
+
+const LEVEL_LABELS: Record<CompatibilityLevel, string> = {
+  high: 'High',
+  medium: 'Medium',
+  low: 'Low',
+};
 
 interface ToolCompatibilityCheckerProps {
   allResources: ResourceMetadata[];
@@ -240,7 +246,7 @@ export function ToolCompatibilityChecker({ allResources }: ToolCompatibilityChec
                             </h4>
                             <div className="flex items-center gap-2 mb-2">
                               <span className="text-[10px] sm:text-xs font-medium">
-                                Compatibility: {Math.round(result.score)}%
+                                {LEVEL_LABELS[result.level]} compatibility
                               </span>
                             </div>
                           </div>
@@ -251,28 +257,7 @@ export function ToolCompatibilityChecker({ allResources }: ToolCompatibilityChec
                             {selectedTools.some(t => t.slug === result.tool.slug) ? 'Remove' : 'Add'}
                           </Button>
                         </div>
-                        {result.reasons.length > 0 && (
-                          <ul className="text-xs space-y-1 mb-2">
-                            {result.reasons.map((reason, idx) => (
-                              <li key={idx} className="flex items-start gap-1">
-                                <span>•</span>
-                                <span>{reason}</span>
-                              </li>
-                            ))}
-                          </ul>
-                        )}
-                        {result.sharedTags.length > 0 && (
-                          <div className="flex flex-wrap gap-1 mt-2">
-                            {result.sharedTags.slice(0, 5).map((tag) => (
-                              <span
-                                key={tag}
-                                className="text-xs px-2 py-0.5 bg-white dark:bg-gray-800 rounded-full border border-current border-opacity-30"
-                              >
-                                {tag}
-                              </span>
-                            ))}
-                          </div>
-                        )}
+                        <p className="text-xs leading-relaxed">{result.summary}</p>
                       </div>
                     ))}
                   </div>
@@ -302,23 +287,9 @@ export function ToolCompatibilityChecker({ allResources }: ToolCompatibilityChec
                             <h4 className="font-semibold text-gray-900 dark:text-gray-100 mb-1">
                               {result.tool.title}
                             </h4>
-                            <div className="flex items-center gap-2 mb-2">
-                              <span className="text-xs font-medium">
-                                Overlap: {Math.round(result.score)}%
-                              </span>
-                            </div>
                           </div>
                         </div>
-                        {result.reasons.length > 0 && (
-                          <ul className="text-xs space-y-1">
-                            {result.reasons.map((reason, idx) => (
-                              <li key={idx} className="flex items-start gap-1">
-                                <span>•</span>
-                                <span>{reason}</span>
-                              </li>
-                            ))}
-                          </ul>
-                        )}
+                        <p className="text-xs leading-relaxed">{result.summary}</p>
                       </div>
                     ))}
                   </div>
