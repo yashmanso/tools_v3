@@ -50,8 +50,6 @@ export function ToolCompatibilityChecker({ allResources }: ToolCompatibilityChec
         return 'text-green-600 dark:text-green-400 bg-green-50 dark:bg-green-900/20 border-green-200 dark:border-green-800';
       case 'overlap':
         return 'text-yellow-600 dark:text-yellow-400 bg-yellow-50 dark:bg-yellow-900/20 border-yellow-200 dark:border-yellow-800';
-      case 'conflict':
-        return 'text-red-600 dark:text-red-400 bg-red-50 dark:bg-red-900/20 border-red-200 dark:border-red-800';
       default:
         return 'text-gray-600 dark:text-gray-400 bg-gray-50 dark:bg-gray-800 border-gray-200 dark:border-gray-700';
     }
@@ -71,21 +69,13 @@ export function ToolCompatibilityChecker({ allResources }: ToolCompatibilityChec
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
           </svg>
         );
-      case 'conflict':
-        return (
-          <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
-          </svg>
-        );
       default:
         return null;
     }
   };
 
-  const getRecommendationTone = (rec: string): 'danger' | 'warning' | 'success' => {
-    const lower = rec.toLowerCase();
-    if (lower.includes('may conflict') || lower.includes('potential conflict') || lower.includes('conflict')) return 'danger';
-    if (lower.includes('overlap')) return 'warning';
+  const getRecommendationTone = (rec: string): 'warning' | 'success' => {
+    if (rec.toLowerCase().includes('overlap')) return 'warning';
     return 'success';
   };
 
@@ -96,7 +86,7 @@ export function ToolCompatibilityChecker({ allResources }: ToolCompatibilityChec
       <div className="mb-4 sm:mb-6">
         <h2 className="text-xl sm:text-2xl font-bold mb-2">Tool Compatibility Checker</h2>
         <p className="text-sm sm:text-base text-gray-600 dark:text-gray-400">
-          Select tools to see which ones work well together, which overlap, and which might conflict
+          Select tools to see which ones work well together and which overlap enough that you may only need one
         </p>
       </div>
 
@@ -147,9 +137,7 @@ export function ToolCompatibilityChecker({ allResources }: ToolCompatibilityChec
             <div
               key={index}
               className={`p-3 sm:p-4 rounded-lg sm:rounded-xl border ${
-                tone === 'danger'
-                  ? 'bg-red-50 dark:bg-red-900/20 border-red-200 dark:border-red-800 text-red-800 dark:text-red-200'
-                  : tone === 'warning'
+                tone === 'warning'
                   ? 'bg-yellow-50 dark:bg-yellow-900/20 border-yellow-200 dark:border-yellow-800 text-yellow-800 dark:text-yellow-200'
                   : 'bg-green-50 dark:bg-green-900/20 border-green-200 dark:border-green-800 text-green-800 dark:text-green-200'
               }`}
@@ -337,54 +325,9 @@ export function ToolCompatibilityChecker({ allResources }: ToolCompatibilityChec
                 </div>
               )}
 
-              {/* Conflicting Tools */}
-              {analysis.conflictingTools.length > 0 && (
-                <div>
-                  <div className="flex items-center gap-2 mb-3 sm:mb-4">
-                    <div className="w-4 h-4 sm:w-5 sm:h-5">{getRelationshipIcon('conflict')}</div>
-                    <h3 className="text-base sm:text-lg font-semibold text-gray-900 dark:text-gray-100">
-                      Conflicting Tools ({analysis.conflictingTools.length})
-                    </h3>
-                  </div>
-                  <div className="space-y-2 sm:space-y-3">
-                    {analysis.conflictingTools.map((result) => (
-                      <div
-                        key={result.tool.slug}
-                        className={`p-3 sm:p-4 rounded-lg sm:rounded-xl border ${getRelationshipColor(result.relationship)}`}
-                      >
-                        <div className="flex items-start justify-between mb-2">
-                          <div className="flex-1 min-w-0">
-                            <h4 className="text-sm sm:text-base font-semibold text-gray-900 dark:text-gray-100 mb-1 break-words">
-                              {result.tool.title}
-                            </h4>
-                          </div>
-                        </div>
-                        {result.reasons.length > 0 && (
-                          <ul className="text-xs space-y-1">
-                            {result.reasons.map((reason, idx) => (
-                              <li key={idx} className="flex items-start gap-1">
-                                <span>•</span>
-                                <span>{reason}</span>
-                              </li>
-                            ))}
-                          </ul>
-                        )}
-                        {result.conflictingTags.length > 0 && (
-                          <div className="mt-2 text-xs">
-                            <span className="font-medium">Conflicting tags: </span>
-                            <span>{result.conflictingTags.join(', ')}</span>
-                          </div>
-                        )}
-                      </div>
-                    ))}
-                  </div>
-                </div>
-              )}
-
               {/* No Results */}
               {analysis.complementaryTools.length === 0 &&
-                analysis.overlappingTools.length === 0 &&
-                analysis.conflictingTools.length === 0 && (
+                analysis.overlappingTools.length === 0 && (
                   <div className="text-center py-12 bg-[var(--bg-secondary)] rounded-3xl border border-gray-200 dark:border-gray-700">
                     <p className="text-gray-500 dark:text-gray-400">
                       No compatibility analysis available for these tools

@@ -171,7 +171,7 @@ export function ExploreSection({ allResources, graphData }: ExploreSectionProps)
     {
       id: 'compatibility',
       label: 'Check compatibility',
-      description: 'Identify complementary tools and potential conflicts.',
+      description: 'Identify complementary tools and overlapping ones.',
     },
     {
       id: 'visual',
@@ -588,8 +588,8 @@ export function ExploreSection({ allResources, graphData }: ExploreSectionProps)
                       Check compatibility
                     </h3>
                     <p className="text-sm text-[var(--text-secondary)] leading-relaxed break-words">
-                      See which tools work well together, identify complementary tools, and get warnings
-                      about potential conflicts or overlaps in your tool selection.
+                      See which tools work well together, identify complementary tools, and spot
+                      overlaps where two tools in your selection do much the same job.
                     </p>
                     <div className="mt-auto pt-4 text-center text-blue-600 dark:text-blue-400 text-sm font-medium">
                       Check compatibility →

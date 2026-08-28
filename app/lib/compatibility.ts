@@ -3,17 +3,15 @@ import { ResourceMetadata } from './markdown';
 export interface CompatibilityResult {
   tool: ResourceMetadata;
   score: number; // 0-100, higher = more compatible
-  relationship: 'complementary' | 'overlap' | 'conflict' | 'neutral';
+  relationship: 'complementary' | 'overlap' | 'neutral';
   reasons: string[];
   sharedTags: string[];
-  conflictingTags: string[];
 }
 
 export interface CompatibilityAnalysis {
   selectedTools: ResourceMetadata[];
   complementaryTools: CompatibilityResult[];
   overlappingTools: CompatibilityResult[];
-  conflictingTools: CompatibilityResult[];
   recommendations: string[];
 }
 
@@ -37,12 +35,6 @@ const COMPLEMENTARY_PAIRS: Record<string, string[]> = {
   'circular-economy': ['environmental-sustainability', 'economic-sustainability'],
   'social-impact': ['social-sustainability'],
   'environmental-impact': ['environmental-sustainability'],
-};
-
-// Conflicting tag pairs (tools that might overlap too much)
-const CONFLICTING_PAIRS: Record<string, string[]> = {
-  'qualitative-research': ['quantitative-research'],
-  'theoretical-frameworks': ['experimental-design'],
 };
 
 /**
@@ -69,24 +61,22 @@ function calculateCompatibilityScore(
   const tool2Focus = tool2.tags.filter(tag => DIMENSION_CATEGORIES.sustainabilityFocus.includes(tag));
 
   // Check for complementary relationships
-  let relationship: 'complementary' | 'overlap' | 'conflict' | 'neutral' = 'neutral';
+  let relationship: 'complementary' | 'overlap' | 'neutral' = 'neutral';
   const reasons: string[] = [];
-  const conflictingTags: string[] = [];
 
-  // Check for conflicts (same objective, same stage, very high overlap)
-  const hasSameObjective = tool1Objectives.length > 0 && tool2Objectives.length > 0 && 
+  const hasSameObjective = tool1Objectives.length > 0 && tool2Objectives.length > 0 &&
     tool1Objectives.some(obj => tool2Objectives.includes(obj));
   const hasSameStage = tool1Stages.length > 0 && tool2Stages.length > 0 &&
     tool1Stages.some(stage => tool2Stages.includes(stage));
   const highOverlap = tagOverlap > 0.7;
 
-  if (hasSameObjective && hasSameStage && highOverlap) {
-    relationship = 'conflict';
-    reasons.push('Both tools serve the same objective at the same stage');
-    reasons.push(`High tag overlap (${Math.round(tagOverlap * 100)}%)`);
-  } else if (hasSameObjective && highOverlap) {
+  if (hasSameObjective && highOverlap) {
     relationship = 'overlap';
-    reasons.push('Both tools serve similar objectives');
+    reasons.push(
+      hasSameStage
+        ? 'Both tools serve the same objective at the same stage'
+        : 'Both tools serve similar objectives'
+    );
     reasons.push(`Significant tag overlap (${Math.round(tagOverlap * 100)}%)`);
   } else {
     // Check for complementary relationships
@@ -120,18 +110,6 @@ function calculateCompatibilityScore(
     }
   }
 
-  // Check for conflicting tags
-  tool1.tags.forEach(tag1 => {
-    if (CONFLICTING_PAIRS[tag1]?.some(conflict => tool2.tags.includes(conflict))) {
-      conflictingTags.push(tag1);
-    }
-  });
-
-  if (conflictingTags.length > 0) {
-    relationship = 'conflict';
-    reasons.push(`Conflicting methodological approaches: ${conflictingTags.join(', ')}`);
-  }
-
   // Calculate score (0-100)
   let score = tagOverlap * 50; // Base score from overlap
 
@@ -139,8 +117,6 @@ function calculateCompatibilityScore(
     score += 30; // Bonus for complementary
   } else if (relationship === 'overlap') {
     score -= 20; // Penalty for overlap
-  } else if (relationship === 'conflict') {
-    score -= 40; // Penalty for conflict
   }
 
   // Bonus for shared sustainability focus
@@ -161,7 +137,6 @@ function calculateCompatibilityScore(
     relationship,
     reasons,
     sharedTags,
-    conflictingTags,
   };
 }
 
@@ -177,7 +152,6 @@ export function analyzeCompatibility(
       selectedTools: [],
       complementaryTools: [],
       overlappingTools: [],
-      conflictingTools: [],
       recommendations: [],
     };
   }
@@ -188,7 +162,6 @@ export function analyzeCompatibility(
 
   const complementaryTools: CompatibilityResult[] = [];
   const overlappingTools: CompatibilityResult[] = [];
-  const conflictingTools: CompatibilityResult[] = [];
 
   // Analyze compatibility with each other tool
   otherTools.forEach(otherTool => {
@@ -201,13 +174,10 @@ export function analyzeCompatibility(
     const relationships = compatibilities.map(c => c.relationship);
     const allReasons = compatibilities.flatMap(c => c.reasons);
     const allSharedTags = new Set(compatibilities.flatMap(c => c.sharedTags));
-    const allConflictingTags = new Set(compatibilities.flatMap(c => c.conflictingTags));
 
     // Determine overall relationship
-    let overallRelationship: 'complementary' | 'overlap' | 'conflict' | 'neutral' = 'neutral';
-    if (relationships.some(r => r === 'conflict')) {
-      overallRelationship = 'conflict';
-    } else if (relationships.some(r => r === 'complementary')) {
+    let overallRelationship: 'complementary' | 'overlap' | 'neutral' = 'neutral';
+    if (relationships.some(r => r === 'complementary')) {
       overallRelationship = 'complementary';
     } else if (relationships.some(r => r === 'overlap')) {
       overallRelationship = 'overlap';
@@ -219,29 +189,21 @@ export function analyzeCompatibility(
       relationship: overallRelationship,
       reasons: Array.from(new Set(allReasons)),
       sharedTags: Array.from(allSharedTags),
-      conflictingTags: Array.from(allConflictingTags),
     };
 
     if (overallRelationship === 'complementary') {
       complementaryTools.push(result);
     } else if (overallRelationship === 'overlap') {
       overlappingTools.push(result);
-    } else if (overallRelationship === 'conflict') {
-      conflictingTools.push(result);
     }
   });
 
   // Sort by score
   complementaryTools.sort((a, b) => b.score - a.score);
   overlappingTools.sort((a, b) => b.score - a.score);
-  conflictingTools.sort((a, b) => a.score - b.score);
 
   // Generate recommendations
   const recommendations: string[] = [];
-
-  if (conflictingTools.length > 0) {
-    recommendations.push(`${conflictingTools.length} tool(s) may conflict with your selection`);
-  }
 
   if (overlappingTools.length > 0) {
     recommendations.push(`${overlappingTools.length} tool(s) have significant overlap`);
@@ -251,13 +213,11 @@ export function analyzeCompatibility(
     recommendations.push(`${complementaryTools.length} complementary tool(s) found`);
   }
 
-  // Check for internal conflicts within selected tools
+  // Flag redundancy between the tools the user has already picked
   for (let i = 0; i < selectedTools.length; i++) {
     for (let j = i + 1; j < selectedTools.length; j++) {
       const compat = calculateCompatibilityScore(selectedTools[i], selectedTools[j]);
-      if (compat.relationship === 'conflict') {
-        recommendations.push(`Potential conflict: "${selectedTools[i].title}" and "${selectedTools[j].title}" may overlap too much`);
-      } else if (compat.relationship === 'overlap') {
+      if (compat.relationship === 'overlap') {
         recommendations.push(`Overlap: "${selectedTools[i].title}" and "${selectedTools[j].title}" have similar functionality`);
       }
     }
@@ -267,7 +227,6 @@ export function analyzeCompatibility(
     selectedTools,
     complementaryTools: complementaryTools.slice(0, 10), // Top 10
     overlappingTools: overlappingTools.slice(0, 5), // Top 5
-    conflictingTools: conflictingTools.slice(0, 5), // Top 5
     recommendations,
   };
 }
