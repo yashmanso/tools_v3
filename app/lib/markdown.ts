@@ -31,7 +31,12 @@ export interface Resource extends ResourceMetadata {
 // Convert Obsidian wiki-links to markdown links
 function convertWikiLinks(content: string): string {
   // Handle image/file attachments: ![[file]]
-  content = content.replace(/!\[\[([^\]]+)\]\]/g, (match, filename) => {
+  content = content.replace(/!\[\[([^\]]+)\]\]/g, (match, target) => {
+    // Obsidian embeds may carry a full vault path, e.g.
+    // ![[Version 3 - Current/Files/report.pdf]]. Attachments are all flattened
+    // into /attachments, so keep only the file name - encoding the slashes
+    // produced a URL that always 404'd.
+    const filename = target.split('/').pop()?.trim() || target;
     const encodedFilename = encodeURIComponent(filename);
     const extension = filename.split('.').pop()?.toLowerCase() || '';
 
