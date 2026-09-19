@@ -19,7 +19,7 @@
   "tools/circularstart": 3,
   "tools/impact-compass": 3,
   "tools/sdg-impact-assessment": 3,
-  "tools/social-impact-wheel": 4,
+  "tools/social-impact-wheel": 5,
   "tools/sustainability-balanced-scorecard": 3,
   "tools/sustainability-swot-analysis": 3,
   "tools/ucd-impact-planning-canvas": 3,
@@ -42,10 +42,12 @@
   "tools/sustainability-assessment-of-startups": 1,
   "tools/use2use-design-tools": 1,
   "collections/danish-design-center-toolkit": 4,
-  "tools/sustainable-value-analysis-tool-svat": 5,
+  "tools/sustainable-value-analysis-tool-svat": 7,
   "articles/capturing-the-sustainable-impact-of-early-stage-business-models-introducing-essroi": 1,
   "articles/design-thinking-for-practice-based-intervention-co-producing-the-change-points-toolkit-to-unlock-unsustainable-practices": 1,
   "articles/evolution-of-design-for-sustainability-from-product-design-to-design-for-system-innovations-and-transitions": 1,
   "articles/sustainability-impact-assessment-of-new-ventures-an-emerging-field-of-research": 1,
-  "articles/the-sustainable-business-model-pattern-taxonomy-45-patterns-to-support-sustainability-oriented-business-model-innovation": 1
+  "articles/the-sustainable-business-model-pattern-taxonomy-45-patterns-to-support-sustainability-oriented-business-model-innovation": 1,
+  "articles/creating-and-capturing-value-through-sustainability-the-sustainable-value-analysis-tool": 1,
+  "articles/manufacturing-smes-doing-it-for-themselves-developing-testing-and-piloting-an-online-sustainability-and-eco-innovation-toolkit-for-smes": 1
 }
