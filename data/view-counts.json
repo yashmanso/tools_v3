@@ -19,8 +19,8 @@
   "tools/circularstart": 3,
   "tools/impact-compass": 3,
   "tools/sdg-impact-assessment": 3,
-  "tools/social-impact-wheel": 5,
-  "tools/sustainability-balanced-scorecard": 4,
+  "tools/social-impact-wheel": 6,
+  "tools/sustainability-balanced-scorecard": 5,
   "tools/sustainability-swot-analysis": 3,
   "tools/ucd-impact-planning-canvas": 3,
   "articles/a-framework-for-strategic-sustainable-development": 2,
@@ -54,5 +54,6 @@
   "articles/building-sustainable-value-propositions-for-multiple-stakeholders-a-practical-tool": 2,
   "articles/key-competencies-in-sustainability-a-reference-framework-for-academic-program-development": 1,
   "tools/sustainable-business-model-canvas": 2,
-  "tools/dHJpcGxlLW": 1
+  "tools/dHJpcGxlLW": 1,
+  "collections/circular-design-guide": 1
 }
