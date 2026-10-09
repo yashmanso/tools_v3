@@ -13,25 +13,8 @@ import { VisualToolSelector } from './VisualToolSelector';
 import { Button } from '@/components/ui/button';
 import { CardButton } from './CardButton';
 import { cn } from '@/lib/utils';
-import { Sheet, SheetContent, SheetTrigger } from '@/components/ui/sheet';
 import { usePanels } from './PanelContext';
-import { useSidebar } from './SidebarContext';
-
-/**
- * Walk up the DOM to find the nearest scrollable ancestor.
- */
-function findScrollableAncestor(el: HTMLElement | null): HTMLElement | null {
-  let node = el?.parentElement ?? null;
-  while (node && node !== document.documentElement) {
-    const style = getComputedStyle(node);
-    const oy = style.overflowY || style.overflow;
-    if (/(auto|scroll)/.test(oy)) {
-      return node;
-    }
-    node = node.parentElement;
-  }
-  return null;
-}
+import { useWorkflowMenu } from './WorkflowMenuContext';
 
 interface ExploreSectionProps {
   allResources: ResourceMetadata[];
@@ -43,90 +26,17 @@ interface ExploreSectionProps {
 
 export function ExploreSection({ allResources, graphData }: ExploreSectionProps) {
   const [mode, setMode] = useState<'select' | 'browse' | 'find' | 'compare' | 'timeline' | 'network' | 'workflows' | 'compatibility' | 'visual'>('select');
-  const [toolbarOpen, setToolbarOpen] = useState(false);
   const contentRef = useRef<HTMLDivElement | null>(null);
   const sectionRef = useRef<HTMLElement | null>(null);
-  const scrollTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
-  const isScrollingRef = useRef(false);
-  const modeRef = useRef(mode);
-  modeRef.current = mode; // keep ref in sync with state
   const { panels } = usePanels();
   const hasPanelsOpen = panels.length > 0;
-  const { sidebarVisible, setSidebarVisible, sidebarLocked, setSidebarLocked, setSidebarMounted, toggleSidebar } = useSidebar();
+  const { open: menuOpen, closeMenu, setAvailable } = useWorkflowMenu();
 
-  // Derive expanded state: visible when not scrolling and no panels open
-  const sidebarExpanded = sidebarVisible && !hasPanelsOpen;
-
-  // Keep a ref of sidebarLocked so the scroll handler always reads the latest value.
-  const sidebarLockedRef = useRef(sidebarLocked);
-  sidebarLockedRef.current = sidebarLocked;
-
-  // Stable callback that pushes the derived value into context.
-  // When a workflow is active (mode !== 'select'), the sidebar
-  // should NOT reappear after a scroll pause.
-  // When sidebarLocked is true the user manually toggled — skip auto-behavior.
-  const syncSidebar = useCallback(
-    (scrolling: boolean) => {
-      if (sidebarLockedRef.current) return; // user has manual control
-      if (scrolling) {
-        setSidebarVisible(false);
-      } else {
-        const isOverview = modeRef.current === 'select';
-        setSidebarVisible(isOverview && !hasPanelsOpen);
-      }
-    },
-    [hasPanelsOpen, setSidebarVisible],
-  );
-
-  // Register this component so the Header knows the sidebar is available.
+  // Tell the header the menu's contents exist on this page.
   useEffect(() => {
-    setSidebarMounted(true);
-    return () => {
-      setSidebarMounted(false);
-    };
-  }, [setSidebarMounted]);
-
-  // Scroll detection — attaches to the nearest scrollable ancestor.
-  // Uses a ref for the raw "scrolling" flag so intermediate ticks
-  // never cause React re-renders (only the debounced settle does).
-  useEffect(() => {
-    const section = sectionRef.current;
-    if (!section) return;
-
-    let cleanupFn: (() => void) | null = null;
-
-    const raf = requestAnimationFrame(() => {
-      const container = findScrollableAncestor(section);
-      if (!container) return;
-
-      // Show sidebar immediately on mount (page is idle)
-      syncSidebar(false);
-
-      const handleScroll = () => {
-        if (!isScrollingRef.current) {
-          isScrollingRef.current = true;
-          syncSidebar(true);
-        }
-        if (scrollTimeoutRef.current) clearTimeout(scrollTimeoutRef.current);
-        scrollTimeoutRef.current = setTimeout(() => {
-          isScrollingRef.current = false;
-          syncSidebar(false);
-        }, 1000);
-      };
-
-      container.addEventListener('scroll', handleScroll, { passive: true });
-      cleanupFn = () => container.removeEventListener('scroll', handleScroll);
-    });
-
-    return () => {
-      cancelAnimationFrame(raf);
-      cleanupFn?.();
-      if (scrollTimeoutRef.current) clearTimeout(scrollTimeoutRef.current);
-      // Reset sidebar when leaving the page that has the sidebar
-      setSidebarVisible(false);
-      setSidebarLocked(false);
-    };
-  }, [syncSidebar, setSidebarVisible, setSidebarLocked]);
+    setAvailable(true);
+    return () => setAvailable(false);
+  }, [setAvailable]);
 
   const items: {
     id: typeof mode;
@@ -180,13 +90,9 @@ export function ExploreSection({ allResources, graphData }: ExploreSectionProps)
     },
   ];
 
-  const activeItem = items.find((item) => item.id === mode);
 
   const handleSelectMode = (id: typeof mode) => {
     setMode(id);
-    // Unlock auto-behavior and set visibility based on the new mode
-    setSidebarLocked(false);
-    setSidebarVisible(id === 'select' && !hasPanelsOpen);
     // Smoothly scroll the main ExploreSection content into view
     if (contentRef.current) {
       contentRef.current.scrollIntoView({ behavior: 'smooth', block: 'start' });
@@ -347,128 +253,68 @@ export function ExploreSection({ allResources, graphData }: ExploreSectionProps)
     );
   }
 
-  /* Shared menu content rendered inside a Sheet (used by mobile trigger AND collapsed FAB) */
-  const menuSheetContent = (
-    <SheetContent side="left" className="p-0">
-      <div className="h-full overflow-auto p-4">
-        <div className="rounded-[1.75rem] border border-[var(--border)] bg-[var(--bg-secondary)] p-3">
+  /* The workflow menu, shown as a popup from the header button. */
+  const menuPopup = menuOpen ? (
+    <div
+      className="fixed inset-0 z-[150] flex items-start justify-center p-4 sm:p-6"
+      role="dialog"
+      aria-modal="true"
+      aria-label="Workflow menu"
+    >
+      <div className="absolute inset-0 bg-black/50" onClick={closeMenu} />
+      <div
+        data-tour="workflow-menu"
+        className="relative mt-[4.5rem] w-full max-w-md max-h-[55vh] overflow-auto rounded-2xl border border-[var(--border)] bg-[var(--bg-secondary)] shadow-2xl p-4"
+      >
+        <div className="flex items-center justify-between mb-3">
           <h3 className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">
             Workflow menu
           </h3>
-          <div className="mt-4 space-y-1">
-            {items.map((item) => (
-              <button
-                key={item.id}
-                type="button"
-                onClick={() => {
-                  handleSelectMode(item.id);
-                  setToolbarOpen(false);
-                }}
-                className={cn(
-                  'w-full rounded-lg px-3 py-2 text-left text-xs transition-colors',
-                  'hover:bg-muted hover:text-foreground',
-                  mode === item.id
-                    ? 'bg-primary text-primary-foreground shadow-sm'
-                    : 'text-muted-foreground'
-                )}
-              >
-                <div className="font-medium text-[0.8rem]">
-                  {item.label}
-                </div>
-                <div className="mt-0.5 text-[0.7rem] text-muted-foreground/80">
-                  {item.description}
-                </div>
-              </button>
-            ))}
-          </div>
+          <Button
+            variant="ghost"
+            size="icon"
+            onClick={closeMenu}
+            aria-label="Close menu"
+            className="h-7 w-7 text-muted-foreground hover:text-foreground"
+          >
+            <svg className="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2}>
+              <line x1="6" y1="6" x2="18" y2="18" />
+              <line x1="18" y1="6" x2="6" y2="18" />
+            </svg>
+          </Button>
+        </div>
+        <div className="space-y-1">
+          {items.map((item) => (
+            <button
+              key={item.id}
+              type="button"
+              data-tour={`menu-item-${item.id}`}
+              onClick={() => {
+                handleSelectMode(item.id);
+                closeMenu();
+              }}
+              className={cn(
+                'w-full rounded-lg px-3 py-2 text-left transition-colors',
+                'hover:bg-muted hover:text-foreground',
+                mode === item.id
+                  ? 'bg-primary text-primary-foreground shadow-sm'
+                  : 'text-muted-foreground'
+              )}
+            >
+              <div className="font-medium text-[0.85rem]">{item.label}</div>
+              <div className="mt-0.5 text-[0.72rem] text-muted-foreground/80">
+                {item.description}
+              </div>
+            </button>
+          ))}
         </div>
       </div>
-    </SheetContent>
-  );
+    </div>
+  ) : null;
 
   return (
     <section ref={sectionRef} className="pb-12 bg-[var(--bg-primary)]">
-      {/* Desktop fixed left toolbar — slides in/out based on scroll + visibility */}
-      {!hasPanelsOpen && (
-        <aside
-          className={cn(
-            'hidden lg:block fixed left-0 top-[6.25rem] z-40 h-[calc(100svh-6.25rem)] w-[20rem] px-4 pb-6 overflow-auto',
-            'transition-all duration-300 ease-in-out',
-            sidebarExpanded
-              ? 'translate-x-0 opacity-100'
-              : '-translate-x-full opacity-0 pointer-events-none'
-          )}
-        >
-          <div className="rounded-[1.75rem] border border-[var(--border)] bg-[var(--bg-secondary)] p-4 backdrop-blur-md">
-            <div className="flex items-center justify-between">
-              <h3 className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">
-                Workflow menu
-              </h3>
-              <Button
-                variant="ghost"
-                size="icon"
-                onClick={() => toggleSidebar()}
-                className="h-7 w-7 text-muted-foreground hover:text-foreground"
-                aria-label="Hide sidebar"
-                title="Hide sidebar"
-              >
-                <svg className="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.8}>
-                  <rect x="3" y="3" width="18" height="18" rx="3" />
-                  <line x1="9" y1="3" x2="9" y2="21" />
-                  <line x1="5" y1="8" x2="7.5" y2="8" strokeLinecap="round" />
-                  <line x1="5" y1="11" x2="7.5" y2="11" strokeLinecap="round" />
-                  <line x1="5" y1="14" x2="7.5" y2="14" strokeLinecap="round" />
-                </svg>
-              </Button>
-            </div>
-            <div className="mt-4 space-y-1">
-              {items.map((item) => (
-                <button
-                  key={item.id}
-                  type="button"
-                  onClick={() => handleSelectMode(item.id)}
-                  className={cn(
-                    'w-full rounded-lg px-3 py-2 text-left text-xs transition-colors',
-                    'hover:bg-muted hover:text-foreground',
-                    mode === item.id
-                      ? 'bg-primary text-primary-foreground shadow-sm'
-                      : 'text-muted-foreground'
-                  )}
-                >
-                  <div className="font-medium text-[0.8rem]">{item.label}</div>
-                  <div className="mt-0.5 text-[0.7rem] text-muted-foreground/80">
-                    {item.description}
-                  </div>
-                </button>
-              ))}
-            </div>
-          </div>
-        </aside>
-      )}
-
-      {/* Mobile toolbar trigger (non-sticky, scrolls with content) */}
-      {!hasPanelsOpen && (
-        <div className="lg:hidden border-b border-border/60 bg-background/80 backdrop-blur-md">
-          <div className="mx-auto max-w-6xl px-4 sm:px-6 py-3 flex items-center justify-between gap-3">
-          <div className="min-w-0">
-            <div className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">
-              Workflow menu
-            </div>
-            <div className="truncate text-sm font-medium">
-              {activeItem?.label ?? 'Overview'}
-            </div>
-          </div>
-          <Sheet open={toolbarOpen} onOpenChange={setToolbarOpen}>
-            <SheetTrigger asChild>
-              <Button variant="outline" size="sm">
-                Open
-              </Button>
-            </SheetTrigger>
-            {menuSheetContent}
-          </Sheet>
-        </div>
-        </div>
-      )}
+      {menuPopup}
 
       <div
         className={cn(

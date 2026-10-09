@@ -4,7 +4,7 @@ import { Analytics } from '@vercel/analytics/next';
 import { ThemeProvider } from './components/ThemeProvider';
 import { HeaderWrapper } from './components/HeaderWrapper';
 import { PanelProvider } from './components/PanelContext';
-import { SidebarProvider } from './components/SidebarContext';
+import { WorkflowMenuProvider } from './components/WorkflowMenuContext';
 import { TagModalProvider } from './components/TagModalContext';
 import { SlidingPanels } from './components/SlidingPanels';
 import { ContactForm } from './components/ContactForm';
@@ -40,7 +40,7 @@ export default function RootLayout({
       <body className="antialiased">
         <ThemeProvider>
           <PanelProvider>
-            <SidebarProvider>
+            <WorkflowMenuProvider>
             <TagModalProvider>
               <div className="bg-[var(--bg-primary)]" style={{ height: '100vh', overflow: 'hidden' }}>
                 <HeaderWrapper />
@@ -55,7 +55,7 @@ export default function RootLayout({
               <Analytics />
               <GoogleAnalytics />
             </TagModalProvider>
-            </SidebarProvider>
+            </WorkflowMenuProvider>
           </PanelProvider>
         </ThemeProvider>
       </body>

@@ -35,6 +35,8 @@ interface TourStep {
   clickFirst?: string;
   /** Go to the first tool page found on screen before showing this step. */
   gotoTool?: boolean;
+  /** Switch the explore section to this mode via the workflow menu. */
+  runMode?: string;
   /** Wait for this selector to exist before showing (after an action). */
   waitFor?: string;
   /**
@@ -94,13 +96,73 @@ const STEPS: TourStep[] = [
     placement: 'bottom',
   },
 
+  // ---------- The workflow menu, one step per entry ----------
+  {
+    chapter: 'The nine workflows',
+    clickFirst: '[data-tour="menu-button"]',
+    waitFor: '[data-tour="workflow-menu"]',
+    target: '[data-tour="workflow-menu"]',
+    title: 'Every workflow lives here',
+    body: 'The menu beside the wordmark opens from any page and lists all nine workflows. Each is a different way through the same collection, and Overview at the top returns you here. Here is what the other eight do.',
+    placement: 'bottom',
+  },
+  {
+    chapter: 'The nine workflows',
+    runMode: 'browse',
+    title: '1. Browse & explore',
+    body: 'The whole collection with filters on top — category, tag and keyword. Use it when you want to see the shape of what exists before committing to anything.',
+    placement: 'center',
+  },
+  {
+    chapter: 'The nine workflows',
+    runMode: 'find',
+    title: '2. Find your tool',
+    body: 'Answer a short sequence of questions about your situation and get a shortlist back. The fastest route when you cannot guess which tag your problem lives under.',
+    placement: 'center',
+  },
+  {
+    chapter: 'The nine workflows',
+    runMode: 'compare',
+    title: '3. Compare tools',
+    body: 'Put up to three tools side by side across the dimensions that decide things. Differences invisible when reading pages one at a time become obvious in a row.',
+    placement: 'center',
+  },
+  {
+    chapter: 'The nine workflows',
+    runMode: 'timeline',
+    title: '4. View by stage',
+    body: 'Eight stages from ideation to maturity. The markers are buttons: click one to filter to that stage. Tools appear in every stage they genuinely support, not just the first.',
+    placement: 'center',
+  },
+  {
+    chapter: 'The nine workflows',
+    runMode: 'network',
+    title: '5. Network graph',
+    body: 'Tools as nodes, shared tags and themes as edges. Good for spotting clusters, and for the thing a list cannot show: which tools sit at the centre of a topic and which stand alone.',
+    placement: 'center',
+  },
+  {
+    chapter: 'The nine workflows',
+    runMode: 'compatibility',
+    title: '6. Check compatibility',
+    body: 'Pick the tools you are considering and the Atlas sorts the rest into complementary and overlapping, each with a plain-language reason. Overlap is the useful warning: two tools doing the same job is wasted effort.',
+    placement: 'center',
+  },
+  {
+    chapter: 'The nine workflows',
+    runMode: 'visual',
+    title: '7. Visual tool selector',
+    body: 'The same narrowing as the questionnaire, but as a decision tree — for when you would rather see the branches than answer questions.',
+    placement: 'center',
+  },
+
   // ---------- Chapter 2: workflows ----------
   {
     chapter: 'Workflows',
-    clickFirst: '[data-tour="mode-workflows"]',
+    runMode: 'workflows',
     waitFor: '[data-tour="wf-create"]',
     target: '[data-tour="wf-create"]',
-    title: 'Workflows put tools in order',
+    title: '8. Build workflows',
     body: 'One tool rarely does the whole job. A workflow is a sequence of them — map first, then assess, then align — saved so you can run it again or hand it to someone else. Let us build one.',
     placement: 'bottom',
   },
@@ -293,6 +355,18 @@ export function ProductTour() {
 
       if (step.clickFirst) {
         resolve(step.clickFirst)?.click();
+      }
+
+      if (step.runMode) {
+        // Drive the real menu rather than reaching into the section's state.
+        if (!resolve('[data-tour="workflow-menu"]')) {
+          resolve('[data-tour="menu-button"]')?.click();
+          await waitForSelector('[data-tour="workflow-menu"]', 2000);
+        }
+        if (cancelled) return;
+        resolve(`[data-tour="menu-item-${step.runMode}"]`)?.click();
+        await new Promise(r => setTimeout(r, 450));
+        if (cancelled) return;
       }
 
       if (step.gotoTool) {

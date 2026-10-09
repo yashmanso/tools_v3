@@ -3,9 +3,9 @@
 import { useState, useEffect, useMemo, useRef, useCallback } from 'react';
 import Link from 'next/link';
 import { useTheme } from './ThemeProvider';
-import { usePathname } from 'next/navigation';
+import { usePathname, useRouter } from 'next/navigation';
 import { usePanels } from './PanelContext';
-import { useSidebar } from './SidebarContext';
+import { useWorkflowMenu } from './WorkflowMenuContext';
 import { ChatBotIcon } from './ChatBotIcon';
 import { FavoritesIcon } from './FavoritesIcon';
 import { RecentViewsSidebar } from './RecentViewsSidebar';
@@ -27,9 +27,22 @@ export function Header({ allResources }: HeaderProps) {
   const [searchQuery, setSearchQuery] = useState('');
   const pathname = usePathname();
   const { clearPanels } = usePanels();
-  const { sidebarVisible, toggleSidebar } = useSidebar();
+  const { open: menuOpen, openMenu, toggleMenu, available: menuAvailable } = useWorkflowMenu();
   const searchPanelRef = useRef<HTMLDivElement | null>(null);
   const searchButtonRef = useRef<HTMLButtonElement | null>(null);
+
+  const router = useRouter();
+
+  // The menu drives the explore modes, which only exist on the home page, so
+  // from anywhere else go home first and open it on arrival.
+  const handleOpenWorkflowMenu = useCallback(() => {
+    if (menuAvailable) {
+      toggleMenu();
+    } else {
+      openMenu();
+      router.push('/');
+    }
+  }, [menuAvailable, toggleMenu, openMenu, router]);
 
   const closeSearch = useCallback(() => {
     setSearchOpen(false);
@@ -116,22 +129,24 @@ export function Header({ allResources }: HeaderProps) {
     <header className="fixed top-0 left-0 right-0 z-50 backdrop-blur-md bg-[var(--bg-primary)]/90 border-b border-[var(--border)]">
       <div className="container mx-auto px-3 sm:px-6 py-3 sm:py-5 flex items-center justify-between max-w-5xl">
         <div className="flex items-center gap-2 mr-4">
-          {/* Show sidebar toggle in header only when sidebar is hidden (so user can bring it back) */}
-          {pathname === '/' && !sidebarVisible && (
-            <Button
-              variant="ghost"
-              size="icon"
-              onClick={toggleSidebar}
-              className="hidden md:inline-flex h-8 w-8 text-[var(--text-secondary)] hover:text-[var(--text-primary)]"
-              aria-label="Show sidebar"
-              title="Show sidebar"
-            >
-              <svg className="w-[18px] h-[18px]" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.8}>
-                <rect x="3" y="3" width="18" height="18" rx="3" />
-                <line x1="9" y1="3" x2="9" y2="21" />
-              </svg>
-            </Button>
-          )}
+          {/* Opens the workflow menu. On other pages it returns home first,
+              since that is where the menu's destinations live. */}
+          <Button
+            variant="ghost"
+            size="icon"
+            data-tour="menu-button"
+            onClick={handleOpenWorkflowMenu}
+            className="h-8 w-8 shrink-0 text-[var(--text-secondary)] hover:text-[var(--text-primary)]"
+            aria-label="Workflow menu"
+            aria-expanded={menuOpen}
+            title="Workflow menu"
+          >
+            <svg className="w-[18px] h-[18px]" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.8}>
+              <line x1="4" y1="7" x2="20" y2="7" strokeLinecap="round" />
+              <line x1="4" y1="12" x2="20" y2="12" strokeLinecap="round" />
+              <line x1="4" y1="17" x2="20" y2="17" strokeLinecap="round" />
+            </svg>
+          </Button>
           <Link
             href="/"
             onClick={clearPanels}
