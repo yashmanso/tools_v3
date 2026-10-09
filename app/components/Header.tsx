@@ -142,7 +142,7 @@ export function Header({ allResources }: HeaderProps) {
         </div>
 
         {/* Desktop Navigation */}
-        <nav className="hidden md:flex items-center gap-2 px-3 py-2 rounded-full bg-[var(--bg-secondary)] border border-[var(--border)] flex-nowrap whitespace-nowrap">
+        <nav data-tour="nav" className="hidden md:flex items-center gap-2 px-3 py-2 rounded-full bg-[var(--bg-secondary)] border border-[var(--border)] flex-nowrap whitespace-nowrap">
           <Link
             href="/"
             onClick={clearPanels}

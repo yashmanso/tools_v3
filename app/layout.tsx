@@ -10,6 +10,7 @@ import { SlidingPanels } from './components/SlidingPanels';
 import { ContactForm } from './components/ContactForm';
 import { TagModal } from './components/TagModal';
 import { WelcomePopup } from './components/WelcomePopup';
+import { ProductTour } from './components/ProductTour';
 import { ExitIntentPopup } from './components/ExitIntentPopup';
 import { GoogleAnalytics } from './components/GoogleAnalytics';
 import { getAllResources } from './lib/markdown';
@@ -48,6 +49,7 @@ export default function RootLayout({
                 </SlidingPanels>
                 <TagModal resources={allResources} />
                 <WelcomePopup allResources={allResources} />
+                <ProductTour />
                 <ExitIntentPopup />
               </div>
               <Analytics />

@@ -484,7 +484,7 @@ export function ExploreSection({ allResources, graphData }: ExploreSectionProps)
                 Choose how you'd like to discover tools and resources for your sustainable innovation journey.
               </p>
 
-              <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
+              <div data-tour="explore-hub" className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
                 {/* Browse Option */}
                 <CardButton onClick={() => setMode('browse')} className="group p-4 sm:p-6 lg:p-8 min-h-[200px] sm:min-h-[240px]">
                   <div className="flex w-full flex-col h-full">

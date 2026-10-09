@@ -129,6 +129,7 @@ export function WelcomePopup({ allResources }: WelcomePopupProps) {
         }));
         
         setIsOpen(false);
+        window.dispatchEvent(new CustomEvent('welcome:closed'));
         setTimeout(() => {
           router.push('/');
         }, 300);
@@ -140,6 +141,8 @@ export function WelcomePopup({ allResources }: WelcomePopupProps) {
   const handleSkip = () => {
     localStorage.setItem('welcome-completed', 'true');
     setIsOpen(false);
+    // Let the guided tour know it can start now.
+    window.dispatchEvent(new CustomEvent('welcome:closed'));
   };
 
   // Close on ESC key or click outside
