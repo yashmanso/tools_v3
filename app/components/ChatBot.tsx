@@ -1,10 +1,12 @@
 'use client';
 
-import { useState, useRef, useEffect } from 'react';
+import { useState, useRef, useEffect, useMemo, useCallback } from 'react';
 import { createPortal } from 'react-dom';
 import type { ResourceMetadata } from '../lib/markdown';
 import { PanelLink } from './PanelLink';
-import { convertMarkdownLinksToHTML } from '../lib/markdownLinks';
+import { formatCardOverview } from '../lib/markdownLinks';
+import { DIMENSION_LABELS, detectFacets, freeTokens, type Facet } from '../lib/chatFacets';
+import { rank, type Match } from '../lib/chatSearch';
 import { Button } from '@/components/ui/button';
 
 interface ChatBotProps {
@@ -14,347 +16,396 @@ interface ChatBotProps {
 }
 
 interface Message {
+  id: number;
   type: 'user' | 'bot';
   content: string;
-  suggestions?: ResourceMetadata[];
+  matches?: Match[];
+  /** A pointer to one of the site's workflows, when that answers it better. */
+  route?: { href: string; label: string };
 }
 
-// Intent detection patterns
-const intentPatterns = {
-  assess: ['assess', 'evaluate', 'measure', 'analyze', 'review', 'check', 'examine'],
-  map: ['map', 'visualize', 'understand', 'explore', 'identify', 'discover'],
-  report: ['report', 'document', 'communicate', 'share', 'present'],
-  align: ['align', 'strategize', 'plan', 'strategy', 'goal', 'objective'],
-  startup: ['startup', 'start-up', 'early stage', 'new venture', 'new business'],
-  sustainability: ['sustainability', 'sustainable', 'environment', 'social', 'circular', 'eco'],
-  business: ['business model', 'business', 'venture', 'company', 'organization'],
-  product: ['product', 'design', 'innovation'],
-  process: ['process', 'workflow', 'method'],
-};
+/** Questions about the site itself, answered with the workflow that does the job. */
+const HOW_TO: { test: RegExp; answer: string; route?: { href: string; label: string } }[] = [
+  {
+    test: /\b(compare|side by side|difference between|versus|vs)\b/,
+    answer: 'Compare tools puts up to three side by side, with the dimensions as rows so differences line up.',
+    route: { href: '/', label: 'Open Compare tools' },
+  },
+  {
+    test: /\b(work together|combine|sequence|order|alongside|compatib)\b/,
+    answer: 'Check compatibility ranks the collection against the tools you have already picked, and warns you when two of them overlap.',
+    route: { href: '/', label: 'Open Check compatibility' },
+  },
+  {
+    test: /\b(workflow|step by step|process to follow)\b/,
+    answer: 'Build workflows chains tools into a numbered sequence you can save and reuse.',
+    route: { href: '/', label: 'Open Build workflows' },
+  },
+  {
+    test: /\b(stage|journey|phase)\b/,
+    answer: 'View by stage lays the collection across the eight stages from ideation to maturity, and each tool appears in every stage it supports.',
+    route: { href: '/', label: 'Open View by stage' },
+  },
+  {
+    test: /\b(submit|add a tool|contribute)\b/,
+    answer: 'You can submit a tool from the Submit a tool page, or let the assisted route draft the entry from your source material for review.',
+    route: { href: '/submit-tool', label: 'Submit a tool' },
+  },
+];
 
-// Extract keywords from user input
-function extractKeywords(input: string): string[] {
-  const lowerInput = input.toLowerCase();
-  const keywords: string[] = [];
-  
-  // Check for intent keywords
-  Object.entries(intentPatterns).forEach(([intent, patterns]) => {
-    if (patterns.some(pattern => lowerInput.includes(pattern))) {
-      keywords.push(intent);
-    }
-  });
-  
-  // Extract tag-like keywords
-  const tagKeywords = [
-    'entrepreneur', 'researcher', 'student', 'educator', 'startup', 'SME', 'corporation',
-    'ideation', 'design', 'development', 'implementation', 'growth',
-    'environmental', 'social', 'economic', 'circular economy',
-    'product innovation', 'process innovation', 'business model innovation',
-  ];
-  
-  tagKeywords.forEach(tag => {
-    if (lowerInput.includes(tag)) {
-      keywords.push(tag.replace(/\s+/g, '-'));
-    }
-  });
-  
-  return keywords;
-}
-
-// Find matching tools based on keywords
-function findMatchingTools(
-  keywords: string[],
-  allResources: ResourceMetadata[]
-): ResourceMetadata[] {
-  const tools = allResources.filter(r => r.category === 'tools');
-  
-  if (keywords.length === 0) {
-    return tools.slice(0, 5);
-  }
-  
-  // Score tools based on keyword matches
-  const scoredTools = tools.map(tool => {
-    let score = 0;
-    
-    keywords.forEach(keyword => {
-      // Check tags
-      if (tool.tags.some(tag => tag.toLowerCase().includes(keyword.toLowerCase()))) {
-        score += 2;
-      }
-      // Check title
-      if (tool.title.toLowerCase().includes(keyword.toLowerCase())) {
-        score += 3;
-      }
-      // Check overview
-      if (tool.overview?.toLowerCase().includes(keyword.toLowerCase())) {
-        score += 1;
-      }
-    });
-    
-    return { tool, score };
-  });
-  
-  return scoredTools
-    .filter(item => item.score > 0)
-    .sort((a, b) => b.score - a.score)
-    .slice(0, 5)
-    .map(item => item.tool);
-}
-
-// Generate bot response
-function generateResponse(
-  userInput: string,
-  allResources: ResourceMetadata[]
-): { message: string; suggestions?: ResourceMetadata[] } {
-  const lowerInput = userInput.toLowerCase();
-  
-  // Greeting responses
-  if (lowerInput.match(/^(hi|hello|hey|greetings)/)) {
-    return {
-      message: "Hello! I'm here to help you find the right sustainability tools. What are you trying to accomplish? For example, you could say 'I need to assess my startup's sustainability' or 'I want to map out my business model'.",
-    };
-  }
-  
-  // Help responses
-  if (lowerInput.includes('help') || lowerInput.includes('what can you do')) {
-    return {
-      message: "I can help you find tools based on what you need. Try describing your goal, like:\n• 'I need to assess sustainability'\n• 'I want to map my business model'\n• 'I'm looking for tools for startups'\n• 'I need help with circular economy'",
-    };
-  }
-  
-  // Extract keywords and find tools
-  const keywords = extractKeywords(userInput);
-  const matchingTools = findMatchingTools(keywords, allResources);
-  
-  if (matchingTools.length > 0) {
-    const toolNames = matchingTools.map(t => t.title).join(', ');
-    return {
-      message: `Based on what you're looking for, here are some tools that might help:`,
-      suggestions: matchingTools,
-    };
-  }
-  
-  // Default response with follow-up questions
-  const followUps = [
-    "What stage are you at? (ideation, design, development, etc.)",
-    "What's your main goal? (assess, map, report, align)",
-    "What type of organization are you? (startup, SME, corporation, etc.)",
-  ];
-  
-  return {
-    message: `I'd like to help you find the right tool. Could you tell me more about:\n${followUps.map((q, i) => `${i + 1}. ${q}`).join('\n')}`,
-  };
-}
+const STARTERS = [
+  'Assess my startup for sustainability',
+  'Map a circular business model',
+  'Tools I can run in a workshop',
+  'Measure environmental impact',
+];
 
 export function ChatBot({ allResources, isOpen: externalIsOpen, onClose }: ChatBotProps) {
   const [internalIsOpen, setInternalIsOpen] = useState(false);
   const [mounted, setMounted] = useState(false);
+  const [input, setInput] = useState('');
+  const [thinking, setThinking] = useState(false);
+  /** Facets carried between turns, so each message narrows the previous answer. */
+  const [facets, setFacets] = useState<Facet[]>([]);
   const [messages, setMessages] = useState<Message[]>([
     {
+      id: 0,
       type: 'bot',
-      content: "Hi! I'm here to help you find the right sustainability tools. What are you trying to accomplish?",
+      content:
+        'Tell me what you are trying to do and I will find tools for it. I read your question against the same tags the rest of the site uses, so you can keep adding detail to narrow things down.',
     },
   ]);
-  const [input, setInput] = useState('');
+
+  const nextId = useRef(1);
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
+  const panelRef = useRef<HTMLDivElement>(null);
 
   const isOpen = externalIsOpen !== undefined ? externalIsOpen : internalIsOpen;
-  const handleClose = onClose ? () => onClose() : () => setInternalIsOpen(false);
+  const handleClose = useCallback(
+    () => (onClose ? onClose() : setInternalIsOpen(false)),
+    [onClose]
+  );
+
+  const tools = useMemo(
+    () => allResources.filter(r => r.category === 'tools'),
+    [allResources]
+  );
+
+  useEffect(() => setMounted(true), []);
 
   useEffect(() => {
-    setMounted(true);
-  }, []);
-
-  useEffect(() => {
-    if (isOpen && inputRef.current) {
-      inputRef.current.focus();
-    }
+    if (isOpen) inputRef.current?.focus();
   }, [isOpen]);
 
-  // Close on ESC key or click outside
+  useEffect(() => {
+    messagesEndRef.current?.scrollIntoView({ behavior: 'smooth', block: 'end' });
+  }, [messages, thinking]);
+
+  // Escape closes; a click outside the panel closes.
   useEffect(() => {
     if (!isOpen) return;
-
-    const handleEscape = (e: KeyboardEvent) => {
-      if (e.key === 'Escape') {
-        handleClose();
-      }
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') handleClose();
     };
-
-    const handleClickOutside = (e: MouseEvent) => {
-      const target = e.target as HTMLElement;
-      const chatBotElement = target.closest('[data-chatbot]');
-      
-      // Close if clicking outside the chatbot
-      if (!chatBotElement) {
-        handleClose();
-      }
+    const onDown = (e: MouseEvent) => {
+      if (!panelRef.current?.contains(e.target as Node)) handleClose();
     };
-
-    document.addEventListener('keydown', handleEscape);
-    document.addEventListener('mousedown', handleClickOutside);
-
+    document.addEventListener('keydown', onKey);
+    document.addEventListener('mousedown', onDown);
     return () => {
-      document.removeEventListener('keydown', handleEscape);
-      document.removeEventListener('mousedown', handleClickOutside);
+      document.removeEventListener('keydown', onKey);
+      document.removeEventListener('mousedown', onDown);
     };
   }, [isOpen, handleClose]);
 
-  useEffect(() => {
-    messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
-  }, [messages]);
+  const respond = useCallback(
+    (text: string, carried: Facet[]) => {
+      const found = detectFacets(text);
+      // Later turns add to earlier ones rather than replacing them.
+      const merged = [...carried];
+      for (const f of found) if (!merged.some(m => m.tag === f.tag)) merged.push(f);
 
-  const handleSend = () => {
-    if (!input.trim()) return;
+      const words = freeTokens(text).filter(
+        w => !merged.some(f => f.tag.toLowerCase().includes(w) || f.synonyms.includes(w))
+      );
 
-    const userMessage: Message = {
-      type: 'user',
-      content: input.trim(),
-    };
+      const howTo = HOW_TO.find(h => h.test.test(text.toLowerCase()));
+      const matches = rank(tools, merged, words);
 
-    setMessages(prev => [...prev, userMessage]);
-    setInput('');
+      let content: string;
+      if (merged.length === 0 && words.length === 0) {
+        content = 'Tell me a bit more — what are you trying to do, who is it for, or what stage are you at?';
+      } else if (matches.length === 0) {
+        content = `Nothing matched that. Try removing a filter above, or describe it differently — the collection has ${tools.length} tools covering goals like mapping, assessment and reporting.`;
+      } else {
+        const reading = merged.length
+          ? merged.map(f => f.label).join(', ')
+          : words.join(', ');
+        content = `Reading that as: ${reading}. Here is what fits best:`;
+      }
 
-    // Generate bot response
-    setTimeout(() => {
-      const response = generateResponse(userMessage.content, allResources);
-      const botMessage: Message = {
+      return { facets: merged, message: { content, matches: matches.length ? matches : undefined, route: howTo?.route }, howTo };
+    },
+    [tools]
+  );
+
+  const send = useCallback(
+    (raw: string) => {
+      const text = raw.trim();
+      if (!text) return;
+
+      setMessages(prev => [...prev, { id: nextId.current++, type: 'user', content: text }]);
+      setInput('');
+      setThinking(true);
+
+      window.setTimeout(() => {
+        const { facets: merged, message, howTo } = respond(text, facets);
+        setFacets(merged);
+        setThinking(false);
+        setMessages(prev => [
+          ...prev,
+          ...(howTo
+            ? [{ id: nextId.current++, type: 'bot' as const, content: howTo.answer, route: howTo.route }]
+            : []),
+          { id: nextId.current++, type: 'bot' as const, ...message },
+        ]);
+      }, 350);
+    },
+    [facets, respond]
+  );
+
+  const removeFacet = (tag: string) => {
+    const next = facets.filter(f => f.tag !== tag);
+    setFacets(next);
+    const matches = rank(tools, next, []);
+    setMessages(prev => [
+      ...prev,
+      {
+        id: nextId.current++,
         type: 'bot',
-        content: response.message,
-        suggestions: response.suggestions,
-      };
-      setMessages(prev => [...prev, botMessage]);
-    }, 500);
+        content: next.length
+          ? `Dropped that. Now showing: ${next.map(f => f.label).join(', ')}.`
+          : 'Filters cleared. What are you looking for?',
+        matches: next.length && matches.length ? matches : undefined,
+      },
+    ]);
   };
 
-  const handleKeyPress = (e: React.KeyboardEvent) => {
-    if (e.key === 'Enter' && !e.shiftKey) {
-      e.preventDefault();
-      handleSend();
-    }
+  const reset = () => {
+    setFacets([]);
+    nextId.current = 1;
+    setMessages([
+      {
+        id: 0,
+        type: 'bot',
+        content: 'Starting over. What are you trying to do?',
+      },
+    ]);
+    inputRef.current?.focus();
   };
 
   if (!isOpen || !mounted) return null;
 
   return createPortal(
     <>
-      {/* Overlay */}
-      <div 
-        className="fixed inset-0 bg-black bg-opacity-50 z-[150]"
-        onClick={handleClose}
-      />
-      {/* Sidebar */}
-      <div 
-        data-chatbot
-        className="fixed right-0 top-0 bottom-0 w-80 bg-[var(--bg-secondary)] border-l border-[var(--border)] z-[200] overflow-y-auto shadow-xl flex flex-col"
-        onClick={(e) => e.stopPropagation()}
-        onMouseDown={(e) => e.stopPropagation()}
+      <div className="fixed inset-0 bg-black/50 z-[150]" aria-hidden="true" />
+      <div
+        ref={panelRef}
+        role="dialog"
+        aria-modal="true"
+        aria-label="Tool assistant"
+        className="fixed z-[200] bg-[var(--bg-secondary)] shadow-2xl flex flex-col
+                   inset-x-0 bottom-0 h-[85vh] rounded-t-2xl border-t border-[var(--border)]
+                   sm:inset-y-0 sm:right-0 sm:left-auto sm:h-auto sm:w-[26rem]
+                   sm:rounded-none sm:border-t-0 sm:border-l"
       >
         {/* Header */}
-        <div className="p-4 border-b border-[var(--border)] sticky top-0 bg-[var(--bg-secondary)] flex-shrink-0">
-          <div className="flex items-center justify-between mb-2">
-            <div>
-              <h2 className="text-lg font-semibold text-gray-900 dark:text-gray-100">
-                Tool finder
-              </h2>
-              <p className="text-xs text-gray-500 dark:text-gray-400 mt-0.5">
-                Ask me anything about tools
-              </p>
-            </div>
-            <Button variant="ghost"
+        <div className="flex items-start justify-between gap-3 p-4 border-b border-[var(--border)]">
+          <div className="min-w-0">
+            <h2 className="text-base font-semibold text-[var(--text-primary)]">Find a tool</h2>
+            <p className="text-xs text-[var(--text-secondary)] mt-0.5">
+              Describe the job, not the tool name
+            </p>
+          </div>
+          <div className="flex items-center gap-1 shrink-0">
+            {(facets.length > 0 || messages.length > 1) && (
+              <Button
+                variant="ghost"
+                onClick={reset}
+                className="px-2 py-1 text-xs rounded-full text-[var(--text-secondary)] hover:text-[var(--text-primary)] hover:bg-[var(--border-subtle)]"
+              >
+                Reset
+              </Button>
+            )}
+            <Button
+              variant="ghost"
               onClick={handleClose}
-              className="p-1 rounded-full hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors"
-              aria-label="Close chat"
+              aria-label="Close assistant"
+              className="p-1.5 rounded-full text-[var(--text-secondary)] hover:text-[var(--text-primary)] hover:bg-[var(--border-subtle)]"
             >
-              <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth={2}
-                  d="M6 18L18 6M6 6l12 12"
-                />
+              <svg className="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2}>
+                <line x1="6" y1="6" x2="18" y2="18" />
+                <line x1="18" y1="6" x2="6" y2="18" />
               </svg>
             </Button>
           </div>
         </div>
 
-        {/* Messages */}
-        <div className="flex-1 overflow-y-auto p-4 space-y-4">
-            {messages.map((msg, idx) => (
-              <div
-                key={idx}
-                className={`flex ${msg.type === 'user' ? 'justify-end' : 'justify-start'}`}
+        {/* Active filters - what the assistant is currently narrowing on */}
+        {facets.length > 0 && (
+          <div className="px-4 py-2.5 border-b border-[var(--border)] flex flex-wrap gap-1.5">
+            {facets.map(f => (
+              <button
+                key={f.tag}
+                type="button"
+                onClick={() => removeFacet(f.tag)}
+                title={`Remove ${f.label}`}
+                className="group inline-flex items-center gap-1 rounded-full border border-[var(--border)] bg-[var(--bg-primary)] pl-2 pr-1.5 py-0.5 text-[11px] text-[var(--text-primary)] hover:border-red-400"
               >
+                <span className="text-[var(--text-secondary)]">{DIMENSION_LABELS[f.dimension]}:</span>
+                {f.label}
+                <svg className="w-3 h-3 text-[var(--text-secondary)] group-hover:text-red-500" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2.5}>
+                  <line x1="6" y1="6" x2="18" y2="18" />
+                  <line x1="18" y1="6" x2="6" y2="18" />
+                </svg>
+              </button>
+            ))}
+          </div>
+        )}
+
+        {/* Conversation */}
+        <div className="flex-1 overflow-y-auto p-4 space-y-3">
+          {messages.map(msg => (
+            <div key={msg.id}>
+              <div className={`flex ${msg.type === 'user' ? 'justify-end' : 'justify-start'}`}>
                 <div
-                  className={`max-w-[80%] rounded-2xl p-3 ${
+                  className={`max-w-[85%] rounded-2xl px-3 py-2 text-sm leading-relaxed ${
                     msg.type === 'user'
                       ? 'bg-blue-600 text-white'
-                      : 'bg-gray-100 dark:bg-gray-700 text-gray-900 dark:text-gray-100'
+                      : 'bg-[var(--bg-primary)] border border-[var(--border)] text-[var(--text-primary)]'
                   }`}
                 >
-                  <p className="text-sm whitespace-pre-line">{msg.content}</p>
-                  {msg.suggestions && msg.suggestions.length > 0 && (
-                    <div className="mt-3 space-y-2">
-                      {msg.suggestions.map((tool) => (
-                        <PanelLink
-                          key={tool.slug}
-                          href={`/${tool.category}/${tool.slug}`}
-                          className="block p-2 bg-white dark:bg-gray-800 rounded-lg text-sm hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors"
-                        >
-                          <div className="font-medium text-gray-900 dark:text-gray-100">
-                            {tool.title}
-                          </div>
-                          {tool.overview && (
-                            <div 
-                              className="text-xs text-gray-600 dark:text-gray-400 mt-1 line-clamp-2"
-                              dangerouslySetInnerHTML={{ __html: convertMarkdownLinksToHTML(tool.overview.substring(0, 100) + '...') }}
-                            />
-                          )}
-                        </PanelLink>
-                      ))}
-                    </div>
-                  )}
+                  {msg.content}
                 </div>
               </div>
-            ))}
-            <div ref={messagesEndRef} />
-          </div>
 
-        {/* Input */}
-        <div className="p-4 border-t border-[var(--border)] flex-shrink-0">
-            <div className="flex gap-2">
-              <input
-                ref={inputRef}
-                type="text"
-                value={input}
-                onChange={(e) => setInput(e.target.value)}
-                onKeyPress={handleKeyPress}
-                placeholder="Type your question..."
-                className="flex-1 px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-full bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 focus:outline-none focus:ring-2 focus:ring-blue-500"
-              />
-              <Button variant="ghost"
-                onClick={handleSend}
-                disabled={!input.trim()}
-                className="px-4 py-2 bg-blue-600 text-white rounded-full hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
-              >
-                <svg
-                  className="w-5 h-5"
-                  fill="none"
-                  stroke="currentColor"
-                  viewBox="0 0 24 24"
+              {msg.route && (
+                <PanelLink
+                  href={msg.route.href}
+                  className="mt-2 inline-block text-xs font-medium text-blue-600 dark:text-blue-400 hover:underline"
                 >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth={2}
-                    d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8"
-                  />
-                </svg>
-              </Button>
+                  {msg.route.label} →
+                </PanelLink>
+              )}
+
+              {msg.matches && (
+                <ul className="mt-2 space-y-2">
+                  {msg.matches.map(m => (
+                    <li key={m.resource.slug}>
+                      <PanelLink
+                        href={`/${m.resource.category}/${m.resource.slug}`}
+                        className="block rounded-xl border border-[var(--border)] bg-[var(--bg-primary)] p-3 hover:border-blue-400 transition-colors hover:no-underline"
+                      >
+                        <span className="block text-sm font-semibold text-[var(--text-primary)]">
+                          {m.resource.title}
+                        </span>
+                        {m.resource.overview && (
+                          <span className="mt-1 text-xs text-[var(--text-secondary)] line-clamp-2">
+                            {formatCardOverview(m.resource.overview)}
+                          </span>
+                        )}
+                        {m.hits.length > 0 && (
+                          <span className="mt-1.5 flex flex-wrap gap-1">
+                            {m.hits.map(h => (
+                              <span
+                                key={h}
+                                className="rounded-full bg-green-50 dark:bg-green-900/25 px-1.5 py-0.5 text-[10px] text-green-700 dark:text-green-300"
+                              >
+                                {h}
+                              </span>
+                            ))}
+                          </span>
+                        )}
+                      </PanelLink>
+                    </li>
+                  ))}
+                </ul>
+              )}
             </div>
-          </div>
+          ))}
+
+          {thinking && (
+            <div className="flex justify-start" aria-live="polite">
+              <div className="rounded-2xl border border-[var(--border)] bg-[var(--bg-primary)] px-3 py-2.5">
+                <span className="flex gap-1">
+                  {[0, 1, 2].map(i => (
+                    <span
+                      key={i}
+                      className="w-1.5 h-1.5 rounded-full bg-[var(--text-secondary)] animate-bounce"
+                      style={{ animationDelay: `${i * 120}ms` }}
+                    />
+                  ))}
+                </span>
+              </div>
+            </div>
+          )}
+
+          {/* Starter prompts, while the conversation is still empty */}
+          {messages.length === 1 && !thinking && (
+            <div className="pt-1 space-y-1.5">
+              <p className="text-[11px] uppercase tracking-wide text-[var(--text-secondary)]">
+                Try one of these
+              </p>
+              {STARTERS.map(s => (
+                <button
+                  key={s}
+                  type="button"
+                  onClick={() => send(s)}
+                  className="block w-full text-left rounded-xl border border-[var(--border)] bg-[var(--bg-primary)] px-3 py-2 text-xs text-[var(--text-primary)] hover:border-blue-400 transition-colors"
+                >
+                  {s}
+                </button>
+              ))}
+            </div>
+          )}
+
+          <div ref={messagesEndRef} />
+        </div>
+
+        {/* Composer */}
+        <div className="p-3 border-t border-[var(--border)]">
+          <form
+            onSubmit={e => {
+              e.preventDefault();
+              send(input);
+            }}
+            className="flex items-center gap-2"
+          >
+            <input
+              ref={inputRef}
+              type="text"
+              value={input}
+              onChange={e => setInput(e.target.value)}
+              placeholder="e.g. assess a circular product idea"
+              aria-label="Describe what you need"
+              className="flex-1 min-w-0 rounded-full border border-[var(--border)] bg-[var(--bg-primary)] px-3.5 py-2 text-sm text-[var(--text-primary)] placeholder:text-[var(--text-secondary)] focus:outline-none focus:ring-2 focus:ring-blue-500"
+            />
+            <button
+              type="submit"
+              disabled={!input.trim()}
+              aria-label="Send"
+              className="shrink-0 rounded-full bg-blue-600 p-2 text-white hover:bg-blue-700 disabled:opacity-40 transition-colors"
+            >
+              <svg className="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2}>
+                <line x1="5" y1="12" x2="19" y2="12" />
+                <polyline points="13 6 19 12 13 18" />
+              </svg>
+            </button>
+          </form>
+        </div>
       </div>
-    </>
-  , document.body);
+    </>,
+    document.body
+  );
 }

@@ -24,7 +24,8 @@ export function ChatBotIcon({ allResources = [] }: ChatBotIconProps) {
       <Button variant="ghost"
         onClick={() => setIsOpen(!isOpen)}
         className="p-1.5 rounded-full text-[var(--text-secondary)] hover:text-[var(--text-primary)] hover:bg-[var(--border-subtle)] transition-colors"
-        aria-label="Open chat"
+        aria-label="Find a tool"
+        title="Find a tool"
       >
         {mounted ? (
           <svg
