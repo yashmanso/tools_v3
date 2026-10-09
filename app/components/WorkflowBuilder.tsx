@@ -329,6 +329,7 @@ export function WorkflowBuilder({ allResources }: WorkflowBuilderProps) {
                     return (
                       <div
                         key={tool.slug}
+                        data-tour="wf-tool"
                         className={`p-3 sm:p-4 rounded-lg sm:rounded-xl border transition-all min-h-[44px] ${
                           isAdded
                             ? 'border-green-300 dark:border-green-700 bg-green-50 dark:bg-green-900/20'

@@ -303,7 +303,7 @@ export function CompareTools({ allResources }: CompareToolsProps) {
         </div>
 
         {/* Results grid */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
+        <div data-tour="compare-list" className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
           {tools
             .filter((tool) => {
               const matchesSearch =

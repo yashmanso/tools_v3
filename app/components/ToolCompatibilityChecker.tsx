@@ -174,6 +174,7 @@ export function ToolCompatibilityChecker({ allResources }: ToolCompatibilityChec
                 const isSelected = selectedTools.some(t => t.slug === tool.slug);
                 return (
                   <div
+                    data-tour="compat-item"
                     key={tool.slug}
                     onClick={() => handleToggleTool(tool)}
                     className={`p-2.5 sm:p-3 rounded-lg sm:rounded-xl border cursor-pointer transition-all min-h-[44px] flex items-center ${

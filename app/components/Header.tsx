@@ -384,6 +384,18 @@ export function Header({ allResources }: HeaderProps) {
                 </svg>
               </Button>
               <Button variant="ghost"
+                data-tour="replay-tour"
+                onClick={handleReplayTour}
+                className="p-2 rounded-full text-[var(--text-secondary)] hover:text-[var(--text-primary)] hover:bg-[var(--border-subtle)] transition-colors"
+                aria-label="Replay tour"
+                title="Replay tour"
+              >
+                <svg className="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2}>
+                  <circle cx="12" cy="12" r="9" />
+                  <path d="M10 8.5l5 3.5-5 3.5z" fill="currentColor" stroke="none" />
+                </svg>
+              </Button>
+              <Button variant="ghost"
                 onClick={toggleTheme}
                 className="p-2 rounded-full text-[var(--text-secondary)] hover:text-[var(--text-primary)] hover:bg-[var(--border-subtle)] transition-colors"
                 aria-label="Toggle theme"

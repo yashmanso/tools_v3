@@ -233,6 +233,7 @@ export function VisualToolSelector({ allResources }: VisualToolSelectorProps) {
               <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-2 2xl:grid-cols-4 gap-3 sm:gap-4 ml-0 sm:ml-11 items-stretch">
                 {GOALS.map((goal) => (
                   <Button variant="ghost"
+                    data-tour="visual-goal"
                     key={goal.id}
                     onClick={() => handleGoalSelect(goal.id)}
                     className={`p-4 rounded-2xl border-2 transition-all text-left whitespace-normal h-full items-start justify-start min-h-[64px] ${
