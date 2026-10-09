@@ -33,6 +33,18 @@ export function Header({ allResources }: HeaderProps) {
 
   const router = useRouter();
 
+  // Replay the guided tour. Clearing the flag is what lets a returning
+  // visitor see it again without wiping their browser data.
+  const handleReplayTour = useCallback(() => {
+    try {
+      localStorage.removeItem('atlas-tour-completed');
+    } catch {
+      /* storage blocked - the tour still starts for this visit */
+    }
+    if (pathname !== '/') router.push('/');
+    window.dispatchEvent(new CustomEvent('tour:restart'));
+  }, [pathname, router]);
+
   // The menu drives the explore modes, which only exist on the home page, so
   // from anywhere else go home first and open it on arrival.
   const handleOpenWorkflowMenu = useCallback(() => {
@@ -291,6 +303,18 @@ export function Header({ allResources }: HeaderProps) {
                 </svg>
               </Button>
             )}
+            <Button variant="ghost"
+                data-tour="replay-tour"
+                onClick={handleReplayTour}
+                className="p-1.5 rounded-full text-[var(--text-secondary)] hover:text-[var(--text-primary)] hover:bg-[var(--border-subtle)] transition-colors"
+                aria-label="Replay tour"
+                title="Replay tour"
+              >
+                <svg className="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2}>
+                  <circle cx="12" cy="12" r="9" />
+                  <path d="M10 8.5l5 3.5-5 3.5z" fill="currentColor" stroke="none" />
+                </svg>
+            </Button>
             {mounted && (
               <Button variant="ghost"
                 onClick={toggleTheme}

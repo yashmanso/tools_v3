@@ -159,7 +159,7 @@ export function ToolCompatibilityChecker({ allResources }: ToolCompatibilityChec
         {/* Left: Tool Selection */}
         <div className="lg:col-span-1">
           <div className="bg-[var(--bg-secondary)] rounded-2xl sm:rounded-3xl border border-gray-200 dark:border-gray-700 p-4 sm:p-6 lg:sticky lg:top-4">
-            <h3 className="text-base sm:text-lg font-semibold mb-3 sm:mb-4 text-gray-900 dark:text-gray-100">
+            <h3 data-tour="compat-select" className="text-base sm:text-lg font-semibold mb-3 sm:mb-4 text-gray-900 dark:text-gray-100">
               Select Tools
             </h3>
             <input
@@ -211,7 +211,7 @@ export function ToolCompatibilityChecker({ allResources }: ToolCompatibilityChec
         </div>
 
         {/* Right: Compatibility Results */}
-        <div className="lg:col-span-2 space-y-4 sm:space-y-6">
+        <div data-tour="compat-results" className="lg:col-span-2 space-y-4 sm:space-y-6">
           {selectedTools.length === 0 ? (
             <div className="text-center py-8 sm:py-12 bg-[var(--bg-secondary)] rounded-2xl sm:rounded-3xl border border-gray-200 dark:border-gray-700 border-dashed">
               <p className="text-sm sm:text-base text-gray-500 dark:text-gray-400 mb-2 sm:mb-4">Select tools to check compatibility</p>

@@ -2,6 +2,7 @@
 
 import { useState, useEffect, useCallback, useRef } from 'react';
 import { usePathname, useRouter } from 'next/navigation';
+import { useWorkflowMenu } from './WorkflowMenuContext';
 
 /**
  * First-visit guided tour.
@@ -107,67 +108,87 @@ const STEPS: TourStep[] = [
     placement: 'bottom',
   },
   {
-    chapter: 'The nine workflows',
+    chapter: '1. Browse & explore',
     runMode: 'browse',
-    title: '1. Browse & explore',
-    body: 'The whole collection with filters on top — category, tag and keyword. Use it when you want to see the shape of what exists before committing to anything.',
-    placement: 'center',
+    waitFor: '[data-tour="browse-links"]',
+    target: '[data-tour="browse-links"]',
+    title: 'Browse the whole collection',
+    body: 'Three libraries: tools are individual methods and canvases, collections are multi-tool kits, articles are the research behind them. Each library page adds filters for category, tag and keyword on top.',
+    placement: 'top',
   },
   {
-    chapter: 'The nine workflows',
+    chapter: '2. Find your tool',
     runMode: 'find',
-    title: '2. Find your tool',
-    body: 'Answer a short sequence of questions about your situation and get a shortlist back. The fastest route when you cannot guess which tag your problem lives under.',
-    placement: 'center',
+    waitFor: '[data-tour="finder-question"]',
+    target: '[data-tour="finder-question"]',
+    title: 'Answer a few questions',
+    body: 'Rather than guessing which tag your problem lives under, describe your situation. The questionnaire asks about your goal, your context and your stage.',
+    placement: 'bottom',
   },
   {
-    chapter: 'The nine workflows',
+    chapter: '2. Find your tool',
+    target: '[data-tour="finder-options"]',
+    title: 'Each answer narrows the field',
+    body: 'Pick the option that fits and the next question follows from it. At the end you get a shortlist matched to what you said, not a filtered dump of the whole collection.',
+    placement: 'top',
+  },
+  {
+    chapter: '3. Compare tools',
     runMode: 'compare',
-    title: '3. Compare tools',
-    body: 'Put up to three tools side by side across the dimensions that decide things. Differences invisible when reading pages one at a time become obvious in a row.',
+    waitFor: '[data-tour="compare-search"]',
+    target: '[data-tour="compare-search"]',
+    title: 'Pick up to three tools',
+    body: 'Search for the candidates you are weighing up and add them. Three is the limit, which is about as many as a table stays readable with.',
+    placement: 'bottom',
+  },
+  {
+    chapter: '3. Compare tools',
+    title: 'Read them across, not down',
+    body: 'The chosen tools become columns and the dimensions become rows, so objective, audience, stage and methodology line up against each other. Differences that are invisible when reading pages one at a time become obvious in a row.',
     placement: 'center',
   },
   {
-    chapter: 'The nine workflows',
+    chapter: '4. View by stage',
     runMode: 'timeline',
-    title: '4. View by stage',
-    body: 'Eight stages from ideation to maturity. The markers are buttons: click one to filter to that stage. Tools appear in every stage they genuinely support, not just the first.',
-    placement: 'center',
+    waitFor: '[data-tour="timeline-stages"]',
+    target: '[data-tour="timeline-stages"]',
+    title: 'Eight stages, with counts',
+    body: 'From ideation through to maturity. The number under each stage is how many tools support it. The markers are buttons, not decoration: click one to filter the page to that stage.',
+    placement: 'bottom',
   },
   {
-    chapter: 'The nine workflows',
+    chapter: '4. View by stage',
+    target: '[data-tour="timeline-section"]',
+    title: 'Tools in every stage they fit',
+    body: 'Each stage lists its own tools, and a tool appears in every stage it genuinely supports rather than only the earliest one. Click the selected marker again to clear the filter.',
+    placement: 'top',
+  },
+  {
+    chapter: '5. Network graph',
     runMode: 'network',
-    title: '5. Network graph',
-    body: 'Tools as nodes, shared tags and themes as edges. Good for spotting clusters, and for the thing a list cannot show: which tools sit at the centre of a topic and which stand alone.',
+    waitFor: '[data-tour="network-controls"]',
+    target: '[data-tour="network-controls"]',
+    title: 'The collection as connections',
+    body: 'Tools are nodes and shared tags are the edges between them. Search to find a tool in the graph, then follow its links outward.',
+    placement: 'bottom',
+  },
+  {
+    chapter: '5. Network graph',
+    title: 'What a list cannot show',
+    body: 'Clusters are visible here in a way no index conveys: which tools sit at the centre of a topic, which bridge two areas, and which stand on their own. Drag a node to pull its neighbours into view.',
     placement: 'center',
   },
   {
-    chapter: 'The nine workflows',
-    runMode: 'compatibility',
-    title: '6. Check compatibility',
-    body: 'Pick the tools you are considering and the Atlas sorts the rest into complementary and overlapping, each with a plain-language reason. Overlap is the useful warning: two tools doing the same job is wasted effort.',
-    placement: 'center',
-  },
-  {
-    chapter: 'The nine workflows',
-    runMode: 'visual',
-    title: '7. Visual tool selector',
-    body: 'The same narrowing as the questionnaire, but as a decision tree — for when you would rather see the branches than answer questions.',
-    placement: 'center',
-  },
-
-  // ---------- Chapter 2: workflows ----------
-  {
-    chapter: 'Workflows',
+    chapter: '6. Build workflows',
     runMode: 'workflows',
     waitFor: '[data-tour="wf-create"]',
     target: '[data-tour="wf-create"]',
-    title: '8. Build workflows',
+    title: 'Workflows put tools in order',
     body: 'One tool rarely does the whole job. A workflow is a sequence of them — map first, then assess, then align — saved so you can run it again or hand it to someone else. Let us build one.',
     placement: 'bottom',
   },
   {
-    chapter: 'Workflows',
+    chapter: '6. Build workflows',
     clickFirst: '[data-tour="wf-create"]',
     waitFor: '[data-tour="wf-title"]',
     target: '[data-tour="wf-title"]',
@@ -176,17 +197,49 @@ const STEPS: TourStep[] = [
     placement: 'bottom',
   },
   {
-    chapter: 'Workflows',
+    chapter: '6. Build workflows',
     target: '[data-tour="wf-add"]',
     title: 'Add tools from here',
     body: 'Search the whole collection and add tools one at a time. Each one you add becomes a numbered step in the workflow on the left.',
     placement: 'top',
   },
   {
-    chapter: 'Workflows',
+    chapter: '6. Build workflows',
     target: '[data-tour="wf-steps"]',
     title: 'Order is the point',
     body: 'Steps are numbered and can be moved up or down, or removed. Sequence carries real meaning here: a mapping tool before an assessment tool gives you something to assess. Save when you are done, and the workflow is waiting next time.',
+    placement: 'top',
+  },
+  {
+    chapter: '7. Check compatibility',
+    runMode: 'compatibility',
+    waitFor: '[data-tour="compat-select"]',
+    target: '[data-tour="compat-select"]',
+    title: 'Start from what you have chosen',
+    body: 'Add the tools you are already planning to use — up to five. Everything else in the collection is then ranked against that selection.',
+    placement: 'bottom',
+  },
+  {
+    chapter: '7. Check compatibility',
+    target: '[data-tour="compat-results"]',
+    title: 'Complementary, and overlapping',
+    body: 'Complementary tools come with a plain-language reason and a high, medium or low rating. Overlapping ones are the useful warning: two tools doing the same job is wasted effort, so it tells you when you only need one.',
+    placement: 'top',
+  },
+  {
+    chapter: '8. Visual tool selector',
+    runMode: 'visual',
+    waitFor: '[data-tour="visual-tree"]',
+    target: '[data-tour="visual-tree"]',
+    title: 'Narrow by branches',
+    body: 'The same narrowing as the questionnaire, laid out as a decision tree. Choose a goal, then a context, and watch the field reduce — for when you would rather see the branches than answer questions.',
+    placement: 'bottom',
+  },
+  {
+    chapter: '8. Visual tool selector',
+    target: '[data-tour="visual-results"]',
+    title: 'Matches update as you choose',
+    body: 'The panel beside the tree holds whatever still fits your choices, updating with every branch you take. Back out of a branch and the list widens again.',
     placement: 'top',
   },
 
@@ -287,9 +340,11 @@ export function ProductTour() {
   const [index, setIndex] = useState(0);
   const [rect, setRect] = useState<Rect | null>(null);
   const [busy, setBusy] = useState(false);
+  const [restartWanted, setRestartWanted] = useState(false);
   const cardRef = useRef<HTMLDivElement | null>(null);
   const router = useRouter();
   const pathname = usePathname();
+  const { requestOverview, closeMenu } = useWorkflowMenu();
 
   const finish = useCallback(() => {
     setSteps(null);
@@ -298,7 +353,12 @@ export function ProductTour() {
     } catch {
       /* private mode - the tour simply runs again next time */
     }
-  }, []);
+    // Put the site back how it was found: menu shut, section on Overview,
+    // and back on the home page if the tour wandered off it.
+    closeMenu();
+    requestOverview();
+    if (window.location.pathname !== '/') router.push('/');
+  }, [closeMenu, requestOverview, router]);
 
   const start = useCallback(() => {
     // Only breakpoint-dependent steps are judged now. Everything else is kept:
@@ -338,6 +398,23 @@ export function ProductTour() {
     // Intentionally only on mount: the tour should not restart on navigation.
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
+
+  // Replayed from the toolbar. The header sends us home first when needed, so
+  // wait for the home page before starting.
+  useEffect(() => {
+    const onRestart = () => setRestartWanted(true);
+    window.addEventListener('tour:restart', onRestart);
+    return () => window.removeEventListener('tour:restart', onRestart);
+  }, []);
+
+  useEffect(() => {
+    if (!restartWanted || pathname !== '/') return;
+    const t = setTimeout(() => {
+      setRestartWanted(false);
+      start();
+    }, 600);
+    return () => clearTimeout(t);
+  }, [restartWanted, pathname, start]);
 
   // Run the current step: perform its action, wait for its target, then track it.
   useEffect(() => {
@@ -432,13 +509,24 @@ export function ProductTour() {
   useEffect(() => {
     if (!steps) return;
     const onKey = (e: KeyboardEvent) => {
-      if (e.key === 'Escape') finish();
-      else if (e.key === 'ArrowRight') setIndex(i => Math.min(i + 1, steps.length - 1));
-      else if (e.key === 'ArrowLeft') setIndex(i => Math.max(i - 1, 0));
+      const el = document.activeElement as HTMLElement | null;
+      const typing =
+        !!el && (el.tagName === 'INPUT' || el.tagName === 'TEXTAREA' || el.isContentEditable);
+
+      if (e.key === 'Escape') {
+        finish();
+      } else if (e.key === 'ArrowRight' || (!typing && (e.key === ' ' || e.code === 'Space'))) {
+        // Space would otherwise scroll the page behind the tour.
+        e.preventDefault();
+        if (index >= steps.length - 1) finish();
+        else setIndex(i => Math.min(i + 1, steps.length - 1));
+      } else if (e.key === 'ArrowLeft') {
+        setIndex(i => Math.max(i - 1, 0));
+      }
     };
     document.addEventListener('keydown', onKey);
     return () => document.removeEventListener('keydown', onKey);
-  }, [steps, finish]);
+  }, [steps, index, finish]);
 
   useEffect(() => {
     if (steps) cardRef.current?.focus();

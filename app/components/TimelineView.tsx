@@ -94,7 +94,7 @@ export function TimelineView({ allResources }: TimelineViewProps) {
         <div className="hidden lg:block absolute left-0 right-0 top-8 h-1 bg-gradient-to-r from-blue-500 via-purple-500 via-green-500 via-orange-500 to-indigo-500 rounded-full"></div>
 
         {/* Stage markers - horizontally scrollable on small screens */}
-        <div className="overflow-x-auto pb-4 -mx-4 px-4 sm:mx-0 sm:px-0">
+        <div data-tour="timeline-stages" className="overflow-x-auto pb-4 -mx-4 px-4 sm:mx-0 sm:px-0">
           <div className="relative flex justify-between items-start gap-2 min-w-[640px] lg:min-w-0">
             {INNOVATION_STAGES.map((stage, index) => {
               const toolCount = toolsByStage[stage.id]?.length || 0;
@@ -183,6 +183,7 @@ export function TimelineView({ allResources }: TimelineViewProps) {
             <div
               key={stage.id}
               ref={el => { sectionRefs.current[stage.id] = el; }}
+              data-tour="timeline-section"
               className="relative scroll-mt-24"
             >
               {/* Stage header */}

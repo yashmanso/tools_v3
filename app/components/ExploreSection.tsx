@@ -30,13 +30,18 @@ export function ExploreSection({ allResources, graphData }: ExploreSectionProps)
   const sectionRef = useRef<HTMLElement | null>(null);
   const { panels } = usePanels();
   const hasPanelsOpen = panels.length > 0;
-  const { open: menuOpen, closeMenu, setAvailable } = useWorkflowMenu();
+  const { open: menuOpen, closeMenu, setAvailable, overviewRequest } = useWorkflowMenu();
 
   // Tell the header the menu's contents exist on this page.
   useEffect(() => {
     setAvailable(true);
     return () => setAvailable(false);
   }, [setAvailable]);
+
+  // The tour returns the section here when it ends.
+  useEffect(() => {
+    if (overviewRequest > 0) setMode('select');
+  }, [overviewRequest]);
 
   const items: {
     id: typeof mode;
@@ -118,7 +123,7 @@ export function ExploreSection({ allResources, graphData }: ExploreSectionProps)
             Filter by category, search by keywords, or browse by tags to discover what interests you.
           </p>
         </div>
-        <div className="flex flex-wrap gap-4 justify-center">
+        <div data-tour="browse-links" className="flex flex-wrap gap-4 justify-center">
           <Link
             href="/tools"
             className="px-6 py-3 bg-blue-600 text-white rounded-full hover:bg-blue-700 transition-colors hover:no-underline"

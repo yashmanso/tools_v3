@@ -343,10 +343,10 @@ export function ToolFinder({ allResources }: ToolFinderProps) {
 
       {/* Question */}
       <div className="mb-6 sm:mb-8">
-        <h2 className="text-2xl font-bold mb-2 px-2 sm:px-0">{currentQuestion.question}</h2>
+        <h2 data-tour="finder-question" className="text-2xl font-bold mb-2 px-2 sm:px-0">{currentQuestion.question}</h2>
         <p className="text-sm sm:text-base text-gray-600 dark:text-gray-400 mb-4 sm:mb-6 px-2 sm:px-0">{currentQuestion.description}</p>
 
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+        <div data-tour="finder-options" className="grid grid-cols-1 sm:grid-cols-2 gap-3">
           {currentQuestion.options.map((option) => (
             <Button variant="ghost"
               key={option.value}

@@ -22,6 +22,9 @@ interface WorkflowMenuContextType {
   /** True while the section that owns the menu's contents is mounted. */
   available: boolean;
   setAvailable: (value: boolean) => void;
+  /** Bumped to ask the explore section to return to its Overview mode. */
+  overviewRequest: number;
+  requestOverview: () => void;
 }
 
 const WorkflowMenuContext = createContext<WorkflowMenuContextType>({
@@ -31,19 +34,27 @@ const WorkflowMenuContext = createContext<WorkflowMenuContextType>({
   toggleMenu: () => {},
   available: false,
   setAvailable: () => {},
+  overviewRequest: 0,
+  requestOverview: () => {},
 });
 
 export function WorkflowMenuProvider({ children }: { children: ReactNode }) {
   const [open, setOpen] = useState(false);
   const [available, setAvailable] = useState(false);
+  const [overviewRequest, setOverviewRequest] = useState(0);
 
   const openMenu = useCallback(() => setOpen(true), []);
   const closeMenu = useCallback(() => setOpen(false), []);
   const toggleMenu = useCallback(() => setOpen(prev => !prev), []);
+  const requestOverview = useCallback(() => setOverviewRequest(n => n + 1), []);
 
   return (
     <WorkflowMenuContext.Provider
-      value={{ open, openMenu, closeMenu, toggleMenu, available, setAvailable }}
+      value={{
+        open, openMenu, closeMenu, toggleMenu,
+        available, setAvailable,
+        overviewRequest, requestOverview,
+      }}
     >
       {children}
     </WorkflowMenuContext.Provider>

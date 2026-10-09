@@ -214,7 +214,7 @@ export function VisualToolSelector({ allResources }: VisualToolSelectorProps) {
         <div className="lg:col-span-2 space-y-4 sm:space-y-6">
           {/* Decision Tree Flow */}
           <div className="bg-[var(--bg-secondary)] rounded-2xl sm:rounded-3xl border border-gray-200 dark:border-gray-700 p-4 sm:p-6">
-            <h3 className="text-lg sm:text-xl font-semibold mb-4 sm:mb-6 text-gray-900 dark:text-gray-100">
+            <h3 data-tour="visual-tree" className="text-lg sm:text-xl font-semibold mb-4 sm:mb-6 text-gray-900 dark:text-gray-100">
               Decision Tree
             </h3>
 
@@ -427,7 +427,7 @@ export function VisualToolSelector({ allResources }: VisualToolSelectorProps) {
         </div>
 
         {/* Right: Visual Filters */}
-        <div className="lg:col-span-1">
+        <div data-tour="visual-results" className="lg:col-span-1">
           <div className="lg:sticky lg:top-4 space-y-4 sm:space-y-6">
             {/* Sustainability Focus */}
             <div className="bg-[var(--bg-secondary)] rounded-2xl sm:rounded-3xl border border-gray-200 dark:border-gray-700 p-4 sm:p-6">
