@@ -209,7 +209,7 @@ export function WorkflowBuilder({ allResources }: WorkflowBuilderProps) {
             <div className="bg-[var(--bg-secondary)] rounded-2xl sm:rounded-3xl border border-gray-200 dark:border-gray-700 p-4 sm:p-6">
               <input
                 type="text"
-                placeholder="Workflow title..."
+                data-tour="wf-title" placeholder="Workflow title..."
                 value={workflowTitle}
                 onChange={(e) => setWorkflowTitle(e.target.value)}
                 className="w-full text-xl sm:text-2xl font-bold mb-2 sm:mb-3 bg-transparent border-none outline-none text-gray-900 dark:text-gray-100 placeholder-gray-400"
@@ -224,7 +224,7 @@ export function WorkflowBuilder({ allResources }: WorkflowBuilderProps) {
             </div>
 
             {/* Workflow Steps */}
-            <div className="space-y-3 sm:space-y-4">
+            <div data-tour="wf-steps" className="space-y-3 sm:space-y-4">
               <h3 className="text-base sm:text-lg font-semibold text-gray-900 dark:text-gray-100">
                 Workflow Steps ({currentWorkflow.steps.length})
               </h3>
@@ -312,7 +312,7 @@ export function WorkflowBuilder({ allResources }: WorkflowBuilderProps) {
           {/* Right: Tool Search */}
           <div className="lg:col-span-1">
             <div className="lg:sticky lg:top-4">
-              <div className="bg-[var(--bg-secondary)] rounded-2xl sm:rounded-3xl border border-gray-200 dark:border-gray-700 p-4 sm:p-6">
+              <div data-tour="wf-add" className="bg-[var(--bg-secondary)] rounded-2xl sm:rounded-3xl border border-gray-200 dark:border-gray-700 p-4 sm:p-6">
                 <h3 className="text-base sm:text-lg font-semibold mb-3 sm:mb-4 text-gray-900 dark:text-gray-100">
                   Add tools to workflow
                 </h3>
@@ -419,6 +419,7 @@ export function WorkflowBuilder({ allResources }: WorkflowBuilderProps) {
           </p>
         </div>
         <Button variant="ghost"
+          data-tour="wf-create"
           onClick={handleCreateNew}
           className="px-6 py-3 bg-blue-600 text-white rounded-full hover:bg-blue-700 transition-colors"
         >

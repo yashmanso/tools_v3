@@ -207,7 +207,7 @@ export function Header({ allResources }: HeaderProps) {
             Auto create
           </Link>
 
-          <div className="ml-2 pl-2 border-l border-[var(--border)] flex items-center gap-2 relative">
+          <div data-tour="toolbar" className="ml-2 pl-2 border-l border-[var(--border)] flex items-center gap-2 relative">
             <Button
               ref={searchButtonRef}
               variant="ghost"

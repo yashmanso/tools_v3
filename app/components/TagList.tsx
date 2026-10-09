@@ -41,7 +41,7 @@ export function TagList({ tags, allResources, resourceTitle }: TagListProps) {
 
   return (
     <div ref={containerRef} className="mb-6">
-      <div className="flex flex-wrap gap-2 items-center">
+      <div data-tour="tool-tags" className="flex flex-wrap gap-2 items-center">
         {/* Visible tags */}
         {visibleTags.map((tag, index) => (
           <Button variant="ghost"

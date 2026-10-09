@@ -1,20 +1,22 @@
 'use client';
 
 import { useState, useEffect, useCallback, useRef } from 'react';
+import { usePathname, useRouter } from 'next/navigation';
 
 /**
  * First-visit guided tour.
  *
- * Walks a new visitor through the sections of the platform with a spotlight on
- * the real element being described, scrolling each one into view as it goes.
+ * Runs in three chapters. The first stays on the home page; the second drives
+ * the real workflow builder; the third walks a real tool page. Rather than
+ * describing the interface from the outside, the tour operates it: it opens
+ * the workflow builder, creates a draft workflow, and navigates to a tool so
+ * every step points at the genuine thing.
  *
  * Steps whose target does not exist at the current breakpoint are dropped
- * before the tour starts rather than skipped during it, so the step numbering
- * stays continuous instead of jumping. That also lets a step be deliberately
- * mobile-only or desktop-only: it simply appears where its target does.
+ * before a chapter starts rather than skipped during it, so numbering stays
+ * continuous and a step can be deliberately desktop- or mobile-only.
  *
- * Runs once per browser, and waits for the welcome questions to finish so the
- * two never overlap.
+ * Runs once per browser and waits for the welcome questions to finish.
  */
 
 const TOUR_KEY = 'atlas-tour-completed';
@@ -23,66 +25,145 @@ const WELCOME_KEY = 'welcome-completed';
 type Placement = 'center' | 'bottom' | 'top';
 
 interface TourStep {
-  /** CSS selector for the element to spotlight. Omit for a centered card. */
-  target?: string;
+  chapter: string;
   title: string;
   body: string;
+  /** CSS selector, or `heading:Text` to find a heading by its text. */
+  target?: string;
   placement?: Placement;
+  /** Click this selector when the step is entered (used to drive the UI). */
+  clickFirst?: string;
+  /** Go to the first tool page found on screen before showing this step. */
+  gotoTool?: boolean;
+  /** Wait for this selector to exist before showing (after an action). */
+  waitFor?: string;
+  /**
+   * Check this step's target against the live page when the tour starts, and
+   * drop the step if it is absent. Only for steps whose presence depends on the
+   * breakpoint (the desktop nav vs the mobile menu button). Steps in later
+   * chapters must not set this: their targets do not exist yet on the home
+   * page, and evaluating them early would silently delete them.
+   */
+  evaluateNow?: boolean;
 }
 
 const STEPS: TourStep[] = [
+  // ---------- Chapter 1: getting oriented ----------
   {
+    chapter: 'Welcome',
     title: 'Welcome to the Sustainability Atlas',
-    body: "A collection of tools, kits and research for sustainable innovation. Here's a quick tour of how to find your way around — it takes about a minute.",
+    body: "Tools, kits and research for sustainable innovation. This tour walks through how the collection is organised and how to work with it. It takes a couple of minutes, and you can leave at any point.",
     placement: 'center',
   },
   {
+    chapter: 'Finding your way',
     target: '[data-tour="explore-hub"]',
     title: 'Nine ways to explore',
     body: 'People arrive knowing different things. Pick the route that matches what you already know: browse everything, answer a few questions, compare tools side by side, or jump straight to your stage of the innovation journey.',
     placement: 'top',
   },
   {
+    chapter: 'Finding your way',
     target: '[data-tour="most-viewed"]',
     title: 'Start with what others use',
     body: 'The most viewed tools in the collection, counted from real traffic. A good first stop if you are not sure what you are looking for.',
     placement: 'top',
   },
   {
-    // Desktop only - the nav collapses into the menu button below md.
+    chapter: 'Finding your way',
     target: '[data-tour="nav"]',
+    evaluateNow: true,
     title: 'The library',
     body: 'Tools are individual methods and canvases. Collections are multi-tool kits. Articles are the peer-reviewed research behind them. You can also submit a tool of your own.',
     placement: 'bottom',
   },
   {
-    // Mobile only - this button is hidden from md upwards.
+    chapter: 'Finding your way',
     target: '[aria-label="Menu"]',
+    evaluateNow: true,
     title: 'The library',
     body: 'Tools, collections and articles live in here, along with the form for submitting a tool of your own.',
     placement: 'bottom',
   },
   {
-    target: '[aria-label="Search tools"]',
-    title: 'Search',
-    body: 'Already know the name? Search runs across titles, descriptions and tags from any page on the site.',
+    chapter: 'Finding your way',
+    target: '[data-tour="toolbar"]',
+    evaluateNow: true,
+    title: 'Your toolbar',
+    body: 'Search runs across titles, descriptions and tags from any page. Beside it: the pages you viewed recently, your bookmarks, a chat assistant for questions about the collection, and the light/dark switch.',
+    placement: 'bottom',
+  },
+
+  // ---------- Chapter 2: workflows ----------
+  {
+    chapter: 'Workflows',
+    clickFirst: '[data-tour="mode-workflows"]',
+    waitFor: '[data-tour="wf-create"]',
+    target: '[data-tour="wf-create"]',
+    title: 'Workflows put tools in order',
+    body: 'One tool rarely does the whole job. A workflow is a sequence of them — map first, then assess, then align — saved so you can run it again or hand it to someone else. Let us build one.',
     placement: 'bottom',
   },
   {
-    target: '[aria-label="Recent views"]',
-    title: 'Pick up where you left off',
-    body: 'Pages you have opened recently stay one click away, so you can return to a tool without searching for it again.',
+    chapter: 'Workflows',
+    clickFirst: '[data-tour="wf-create"]',
+    waitFor: '[data-tour="wf-title"]',
+    target: '[data-tour="wf-title"]',
+    title: 'Name the job, not the tools',
+    body: 'Give the workflow a title and a short description of what it helps accomplish — "Assess a product idea for circularity" rather than a list of tool names. That is what makes it reusable later.',
     placement: 'bottom',
   },
   {
-    target: '[aria-label="Toggle theme"]',
-    title: 'Light and dark',
-    body: 'Switch themes whenever you like. Your choice is remembered on this device.',
+    chapter: 'Workflows',
+    target: '[data-tour="wf-add"]',
+    title: 'Add tools from here',
+    body: 'Search the whole collection and add tools one at a time. Each one you add becomes a numbered step in the workflow on the left.',
+    placement: 'top',
+  },
+  {
+    chapter: 'Workflows',
+    target: '[data-tour="wf-steps"]',
+    title: 'Order is the point',
+    body: 'Steps are numbered and can be moved up or down, or removed. Sequence carries real meaning here: a mapping tool before an assessment tool gives you something to assess. Save when you are done, and the workflow is waiting next time.',
+    placement: 'top',
+  },
+
+  // ---------- Chapter 3: a tool page ----------
+  {
+    chapter: 'Tool pages',
+    gotoTool: true,
+    waitFor: '[data-tour="tool-tags"]',
+    target: '[data-tour="tool-tags"]',
+    title: 'Tags are the index',
+    body: 'Every tool carries tags, and each one is a link, not a label. Click any tag to see everything else in the collection that shares it — the fastest way to find the neighbours of a tool you already like.',
     placement: 'bottom',
   },
   {
-    title: 'One last thing',
-    body: 'Opening a related tool slides it in beside what you are reading instead of replacing it, so you can compare two tools side by side. Tags are clickable too — they show everything else sharing them.',
+    chapter: 'Tool pages',
+    target: 'heading:Dimensions',
+    title: 'Twelve dimensions, every tool',
+    body: 'Each tool is described along the same twelve dimensions — objective, target audience, entrepreneurship stage, methodological approach, collaboration level and more — and each dimension carries its own tags. That consistency is what lets the Atlas compare tools at all.',
+    // Above the heading, so the dimensions themselves stay readable below it.
+    placement: 'top',
+  },
+  {
+    chapter: 'Tool pages',
+    target: '[data-tour="tool-prereq"]',
+    title: 'What a tool asks of you',
+    body: 'Prerequisites and a difficulty level, stated before you commit. This is what decides whether a tool survives contact with a real workshop: one you can hand out cold is a different proposition from one needing three things in place first.',
+    placement: 'top',
+  },
+  {
+    chapter: 'Tool pages',
+    target: 'heading:Tool Compatibility',
+    title: 'What works alongside it',
+    body: 'Every tool page ranks the rest of the collection against it — complementary tools with a plain-language reason, and overlapping ones you probably do not need as well. Overlap is the useful warning: two tools doing the same job is wasted time.',
+    placement: 'top',
+  },
+  {
+    chapter: 'Tool pages',
+    title: 'Two pages at once',
+    body: 'Opening a related tool slides it in beside what you are reading instead of replacing it, so you can compare two tools without losing your place. Panels stack, expand to full width, and close back to where you were. That is the tour — have a look around.',
     placement: 'center',
   },
 ];
@@ -94,14 +175,25 @@ interface Rect {
   height: number;
 }
 
-/** The element, if it is actually rendered at this breakpoint. */
-function renderedTarget(selector?: string): HTMLElement | null {
+/** Resolve a step target, supporting `heading:Text` as well as CSS selectors. */
+function resolve(selector?: string): HTMLElement | null {
   if (!selector) return null;
-  const el = document.querySelector<HTMLElement>(selector);
+  let el: HTMLElement | null = null;
+
+  if (selector.startsWith('heading:')) {
+    const wanted = selector.slice(8).trim().toLowerCase();
+    const headings = Array.from(
+      document.querySelectorAll<HTMLElement>('h1, h2, h3')
+    );
+    el = headings.find(h => (h.textContent || '').trim().toLowerCase() === wanted) || null;
+  } else {
+    el = document.querySelector<HTMLElement>(selector);
+  }
   if (!el) return null;
+
   const r = el.getBoundingClientRect();
-  // Zero-sized means hidden (display:none, or a collapsed responsive branch).
-  // Being scrolled out of view is fine - the tour scrolls to it.
+  // Zero-sized means hidden at this breakpoint. Being scrolled out of view is
+  // fine - the tour scrolls to it.
   if (r.width < 4 || r.height < 4) return null;
   return el;
 }
@@ -111,11 +203,31 @@ function rectOf(el: HTMLElement): Rect {
   return { top: r.top, left: r.left, width: r.width, height: r.height };
 }
 
+/** Wait for a selector to appear, giving up after `timeout` ms. */
+function waitForSelector(selector: string, timeout = 2500): Promise<boolean> {
+  return new Promise(resolve_ => {
+    if (resolve(selector)) return resolve_(true);
+    const started = Date.now();
+    const id = window.setInterval(() => {
+      if (resolve(selector)) {
+        window.clearInterval(id);
+        resolve_(true);
+      } else if (Date.now() - started > timeout) {
+        window.clearInterval(id);
+        resolve_(false);
+      }
+    }, 100);
+  });
+}
+
 export function ProductTour() {
   const [steps, setSteps] = useState<TourStep[] | null>(null);
   const [index, setIndex] = useState(0);
   const [rect, setRect] = useState<Rect | null>(null);
+  const [busy, setBusy] = useState(false);
   const cardRef = useRef<HTMLDivElement | null>(null);
+  const router = useRouter();
+  const pathname = usePathname();
 
   const finish = useCallback(() => {
     setSteps(null);
@@ -127,14 +239,16 @@ export function ProductTour() {
   }, []);
 
   const start = useCallback(() => {
-    // Keep only steps that have something to point at here.
-    const usable = STEPS.filter(s => !s.target || renderedTarget(s.target));
-    if (usable.length < 2) return; // nothing worth showing
+    // Only breakpoint-dependent steps are judged now. Everything else is kept:
+    // a later chapter's target does not exist on the home page yet, and testing
+    // for it here would quietly delete the deepest parts of the tour.
+    const usable = STEPS.filter(s => !s.evaluateNow || resolve(s.target));
+    if (usable.length < 2) return;
     setIndex(0);
     setSteps(usable);
   }, []);
 
-  // Decide whether to run at all. Waits for the welcome questions to be done.
+  // Decide whether to run at all. Only ever begins on the home page.
   useEffect(() => {
     let done = false;
     try {
@@ -142,7 +256,7 @@ export function ProductTour() {
     } catch {
       return; // storage blocked - do not nag on every page load
     }
-    if (done) return;
+    if (done || pathname !== '/') return;
 
     let welcomeDone = true;
     try {
@@ -156,44 +270,89 @@ export function ProductTour() {
       return () => clearTimeout(t);
     }
 
-    // Welcome is still open - start once it closes.
     const onClosed = () => setTimeout(start, 400);
     window.addEventListener('welcome:closed', onClosed);
     return () => window.removeEventListener('welcome:closed', onClosed);
-  }, [start]);
+    // Intentionally only on mount: the tour should not restart on navigation.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
-  // Scroll the current target into view and keep the spotlight on it.
+  // Run the current step: perform its action, wait for its target, then track it.
   useEffect(() => {
     if (!steps) return;
     const step = steps[index];
     if (!step) return;
 
-    const el = renderedTarget(step.target);
-    if (!el) {
-      setRect(null);
-      return;
-    }
-
-    el.scrollIntoView({ block: 'center', behavior: 'smooth' });
-
-    // Follow the element while the smooth scroll settles.
+    let cancelled = false;
     let raf = 0;
-    const until = Date.now() + 900;
-    const track = () => {
-      setRect(rectOf(el));
-      if (Date.now() < until) raf = requestAnimationFrame(track);
-    };
-    track();
+    let cleanupScroll: (() => void) | undefined;
 
-    const update = () => setRect(rectOf(el));
-    window.addEventListener('resize', update);
-    window.addEventListener('scroll', update, true);
-    return () => {
-      cancelAnimationFrame(raf);
-      window.removeEventListener('resize', update);
-      window.removeEventListener('scroll', update, true);
+    const run = async () => {
+      setBusy(true);
+      setRect(null);
+
+      if (step.clickFirst) {
+        resolve(step.clickFirst)?.click();
+      }
+
+      if (step.gotoTool) {
+        // Navigate to a real tool page. Prefer one already linked on screen so
+        // the tour never depends on a hard-coded slug.
+        const link = document.querySelector<HTMLAnchorElement>('a[href^="/tools/"]');
+        const href = link?.getAttribute('href');
+        const target = href && href !== '/tools' ? href : null;
+        if (target) router.push(target);
+        else {
+          // Nothing to navigate to - skip the rest of this chapter.
+          setBusy(false);
+          finish();
+          return;
+        }
+      }
+
+      if (step.waitFor) {
+        const appeared = await waitForSelector(step.waitFor, 4000);
+        if (cancelled) return;
+        if (!appeared) {
+          // The UI did not reach the expected state; move on rather than stall.
+          setBusy(false);
+          if (index < steps.length - 1) setIndex(i => i + 1);
+          else finish();
+          return;
+        }
+      }
+
+      if (cancelled) return;
+      setBusy(false);
+
+      const el = resolve(step.target);
+      if (!el) return; // centered card
+
+      el.scrollIntoView({ block: 'center', behavior: 'smooth' });
+
+      const until = Date.now() + 900;
+      const track = () => {
+        setRect(rectOf(el));
+        if (Date.now() < until) raf = requestAnimationFrame(track);
+      };
+      track();
+
+      const update = () => setRect(rectOf(el));
+      window.addEventListener('resize', update);
+      window.addEventListener('scroll', update, true);
+      cleanupScroll = () => {
+        window.removeEventListener('resize', update);
+        window.removeEventListener('scroll', update, true);
+      };
     };
-  }, [steps, index]);
+
+    run();
+    return () => {
+      cancelled = true;
+      cancelAnimationFrame(raf);
+      cleanupScroll?.();
+    };
+  }, [steps, index, router, finish]);
 
   // Keyboard: arrows to move, Escape to leave.
   useEffect(() => {
@@ -216,12 +375,17 @@ export function ProductTour() {
   if (!step) return null;
 
   const isLast = index === steps.length - 1;
-  const spotlit = rect && step.placement !== 'center';
+  const spotlit = !!rect && step.placement !== 'center';
   const pad = 8;
 
-  // Place the card near the highlighted element. Everything here is clamped:
-  // a card that lands off-screen is unreachable, so bounds win over placement.
-  const CARD_H = 250; // generous estimate, used only for clamping
+  // Back is offered only within a chapter: stepping backwards across a chapter
+  // boundary would mean undoing an action (closing the workflow editor, leaving
+  // the tool page), and a half-undone jump is worse than no Back at all.
+  const canGoBack = index > 0 && steps[index - 1].chapter === step.chapter;
+
+  // Everything here is clamped: a card that lands off-screen is unreachable,
+  // so staying in bounds wins over the requested placement.
+  const CARD_H = 260;
   let cardStyle: React.CSSProperties;
 
   if (spotlit && rect) {
@@ -256,10 +420,10 @@ export function ProductTour() {
     };
   }
 
+  const progress = ((index + 1) / steps.length) * 100;
+
   return (
     <div className="fixed inset-0 z-[300]" role="dialog" aria-modal="true" aria-label="Platform tour">
-      {/* When a target is spotlit, the ring's huge outer shadow is the dimmer,
-          so the element itself stays fully legible. Otherwise dim everything. */}
       {spotlit ? (
         <div className="absolute inset-0" onClick={finish} />
       ) : (
@@ -282,74 +446,75 @@ export function ProductTour() {
       <div
         ref={cardRef}
         tabIndex={-1}
-        className="absolute rounded-2xl border border-[var(--border)] bg-[var(--bg-secondary)] shadow-2xl p-5 focus:outline-none"
+        className="absolute rounded-2xl border border-[var(--border)] bg-[var(--bg-secondary)] shadow-2xl overflow-hidden focus:outline-none"
         style={cardStyle}
       >
-        <div className="flex items-start justify-between gap-3 mb-2">
-          <h2 className="text-base sm:text-lg font-semibold text-[var(--text-primary)]">
-            {step.title}
-          </h2>
-          <button
-            type="button"
-            onClick={finish}
-            aria-label="Close tour"
-            className="shrink-0 p-1 rounded-full text-[var(--text-secondary)] hover:text-[var(--text-primary)] hover:bg-[var(--border-subtle)] transition-colors"
-          >
-            <svg className="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2}>
-              <line x1="6" y1="6" x2="18" y2="18" />
-              <line x1="18" y1="6" x2="6" y2="18" />
-            </svg>
-          </button>
+        {/* Chapter progress */}
+        <div className="h-0.5 w-full bg-[var(--border-subtle)]">
+          <div
+            className="h-full bg-blue-600 dark:bg-blue-400 transition-all duration-300"
+            style={{ width: `${progress}%` }}
+          />
         </div>
 
-        <p className="text-sm text-[var(--text-secondary)] leading-relaxed">{step.body}</p>
-
-        <div className="mt-5 flex items-center justify-between gap-3">
-          <div className="flex items-center gap-1.5" aria-hidden="true">
-            {steps.map((_, i) => (
-              <span
-                key={i}
-                className={`rounded-full transition-all ${
-                  i === index
-                    ? 'w-5 h-1.5 bg-blue-600 dark:bg-blue-400'
-                    : 'w-1.5 h-1.5 bg-[var(--border)]'
-                }`}
-              />
-            ))}
-          </div>
-
-          <div className="flex items-center gap-2">
-            {index > 0 && (
-              <button
-                type="button"
-                onClick={() => setIndex(i => Math.max(i - 1, 0))}
-                className="px-3 py-1.5 text-xs font-medium rounded-full text-[var(--text-secondary)] hover:text-[var(--text-primary)] hover:bg-[var(--border-subtle)] transition-colors"
-              >
-                Back
-              </button>
-            )}
-            {!isLast && (
-              <button
-                type="button"
-                onClick={finish}
-                className="px-3 py-1.5 text-xs font-medium rounded-full text-[var(--text-secondary)] hover:text-[var(--text-primary)] transition-colors"
-              >
-                Skip
-              </button>
-            )}
+        <div className="p-5">
+          <div className="flex items-start justify-between gap-3 mb-1">
+            <p className="text-[10px] font-semibold uppercase tracking-wider text-blue-600 dark:text-blue-400">
+              {step.chapter}
+            </p>
             <button
               type="button"
-              onClick={() => (isLast ? finish() : setIndex(i => i + 1))}
-              className="px-4 py-1.5 text-xs font-semibold rounded-full bg-blue-600 text-white hover:bg-blue-700 transition-colors"
+              onClick={finish}
+              aria-label="Close tour"
+              className="shrink-0 -mt-1 p-1 rounded-full text-[var(--text-secondary)] hover:text-[var(--text-primary)] hover:bg-[var(--border-subtle)] transition-colors"
             >
-              {isLast ? 'Start exploring' : 'Next'}
+              <svg className="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2}>
+                <line x1="6" y1="6" x2="18" y2="18" />
+                <line x1="18" y1="6" x2="6" y2="18" />
+              </svg>
             </button>
           </div>
-        </div>
 
-        <p className="mt-3 text-[10px] text-[var(--text-secondary)] text-center">
-          Step {index + 1} of {steps.length}
-        </p>
+          <h2 className="text-base sm:text-lg font-semibold text-[var(--text-primary)] mb-2">
+            {step.title}
+          </h2>
+          <p className="text-sm text-[var(--text-secondary)] leading-relaxed">{step.body}</p>
+
+          <div className="mt-5 flex items-center justify-between gap-3">
+            <span className="text-[11px] text-[var(--text-secondary)] tabular-nums">
+              {index + 1} / {steps.length}
+            </span>
+
+            <div className="flex items-center gap-2">
+              {canGoBack && (
+                <button
+                  type="button"
+                  onClick={() => setIndex(i => Math.max(i - 1, 0))}
+                  className="px-3 py-1.5 text-xs font-medium rounded-full text-[var(--text-secondary)] hover:text-[var(--text-primary)] hover:bg-[var(--border-subtle)] transition-colors"
+                >
+                  Back
+                </button>
+              )}
+              {!isLast && (
+                <button
+                  type="button"
+                  onClick={finish}
+                  className="px-3 py-1.5 text-xs font-medium rounded-full text-[var(--text-secondary)] hover:text-[var(--text-primary)] transition-colors"
+                >
+                  Skip
+                </button>
+              )}
+              <button
+                type="button"
+                disabled={busy}
+                onClick={() => (isLast ? finish() : setIndex(i => i + 1))}
+                className="px-4 py-1.5 text-xs font-semibold rounded-full bg-blue-600 text-white hover:bg-blue-700 disabled:opacity-60 transition-colors"
+              >
+                {isLast ? 'Start exploring' : 'Next'}
+              </button>
+            </div>
+          </div>
+        </div>
       </div>
     </div>
   );

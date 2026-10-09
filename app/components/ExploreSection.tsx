@@ -566,7 +566,7 @@ export function ExploreSection({ allResources, graphData }: ExploreSectionProps)
                 </CardButton>
 
                 {/* Workflow Builder Option */}
-                <CardButton onClick={() => setMode('workflows')} className="group p-4 sm:p-6 lg:p-8 min-h-[200px] sm:min-h-[240px]">
+                <CardButton data-tour="mode-workflows" onClick={() => setMode('workflows')} className="group p-4 sm:p-6 lg:p-8 min-h-[200px] sm:min-h-[240px]">
                   <div className="flex w-full flex-col h-full">
                     <h3 className="text-xl font-semibold mb-3 text-[var(--text-primary)]">
                       Build workflows

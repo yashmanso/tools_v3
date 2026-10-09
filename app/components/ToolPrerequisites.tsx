@@ -51,7 +51,7 @@ export function ToolPrerequisites({ tool, allResources }: ToolPrerequisitesProps
   };
 
   return (
-    <div className="mt-8 pt-8 border-t border-gray-200 dark:border-gray-700 relative z-10">
+    <div data-tour="tool-prereq" className="mt-8 pt-8 border-t border-gray-200 dark:border-gray-700 relative z-10">
       <details className="group">
         <Button
           asChild

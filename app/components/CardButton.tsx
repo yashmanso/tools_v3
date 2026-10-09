@@ -4,13 +4,12 @@ import { Button } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
 import { cardBaseClass } from './cardStyles';
 
-interface CardButtonProps {
+interface CardButtonProps extends React.ComponentPropsWithoutRef<'button'> {
   children: React.ReactNode;
   className?: string;
-  onClick?: () => void;
 }
 
-export function CardButton({ children, className, onClick }: CardButtonProps) {
+export function CardButton({ children, className, onClick, ...rest }: CardButtonProps) {
   return (
     <Button
       variant="ghost"
@@ -20,6 +19,7 @@ export function CardButton({ children, className, onClick }: CardButtonProps) {
         cardBaseClass,
         className
       )}
+      {...rest}
     >
       {children}
     </Button>
