@@ -408,7 +408,7 @@ export function ExploreSection({ allResources, graphData }: ExploreSectionProps)
                     </h3>
                     <p className="text-sm text-[var(--text-secondary)] leading-relaxed break-words">
                       Tools are nodes, shared tags are the links between them. Shows which tools sit at the
-                      centre of a topic, which bridge two areas, and which stand alone.
+                      center of a topic, which bridge two areas, and which stand alone.
                     </p>
                     <div className="mt-auto pt-4 text-center text-blue-600 dark:text-blue-400 text-sm font-medium">
                       View network →

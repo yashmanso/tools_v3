@@ -115,12 +115,6 @@ export default function HomePage() {
               </p>
             </ScrollAnimation>
 
-            <ScrollAnimation direction="fade" delay={600}>
-              <p className="text-sm text-gray-600 dark:text-gray-400 italic border-l-4 border-gray-300 dark:border-gray-600 pl-4">
-                A living collection that keeps growing. Everything is tagged across twelve dimensions, so
-                you can narrow it down to what fits your context.
-              </p>
-            </ScrollAnimation>
           </div>
           </div>
         </ScrollAnimation>

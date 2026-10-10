@@ -93,7 +93,7 @@ export const TOUR_STEPS: TourStep[] = [
     id: 'network',
     chapter: '5. Network graph',
     title: 'The collection as connections',
-    body: 'Tools are nodes, shared tags are the edges. Search to find one and follow its links outward, or drag a node to pull its neighbours into view. Clusters are visible here in a way no index conveys: which tools sit at the centre of a topic, which bridge two areas, and which stand alone.',
+    body: 'Tools are nodes, shared tags are the edges. Search to find one and follow its links outward, or drag a node to pull its neighbors into view. Clusters are visible here in a way no index conveys: which tools sit at the center of a topic, which bridge two areas, and which stand alone.',
     target: '[data-tour="network-canvas"]',
   },
   {
@@ -123,7 +123,7 @@ export const TOUR_STEPS: TourStep[] = [
     id: 'tool-tags',
     chapter: 'Tool pages',
     title: 'Tags are the index',
-    body: 'Every tool carries tags, and each is a link rather than a label. Clicking one opens everything else in the collection sharing it — the fastest way to find the neighbours of a tool you already like.',
+    body: 'Every tool carries tags, and each is a link rather than a label. Clicking one opens everything else in the collection sharing it — the fastest way to find the neighbors of a tool you already like.',
     target: '[data-tour="tag-modal"]',
   },
   {
@@ -160,7 +160,7 @@ export const TOUR_STEPS: TourStep[] = [
     id: 'assistant',
     chapter: 'Asking and adding',
     title: 'Describe the job, or add your own',
-    body: 'The assistant reads your question against the same tags the site is organised by, narrowing with each message and showing which parts it matched. And if something is missing, Submit a tool adds it — or let Auto create draft the entry from your source material for review.',
+    body: 'The assistant reads your question against the same tags the site is organized by, narrowing with each message and showing which parts it matched. And if something is missing, Submit a tool adds it — or let Auto create draft the entry from your source material for review.',
     target: '[aria-label="Tool assistant"]',
   },
 ];
