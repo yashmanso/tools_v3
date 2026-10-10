@@ -414,9 +414,9 @@ export function WorkflowBuilder({ allResources }: WorkflowBuilderProps) {
     <div className="max-w-7xl mx-auto">
       <div className="mb-6 flex items-center justify-between">
         <div>
-          <h2 className="text-2xl font-bold mb-2">Tool Workflows</h2>
+          <h2 className="text-2xl font-bold mb-2">Build workflows</h2>
           <p className="text-gray-600 dark:text-gray-400">
-            Create step-by-step workflows combining multiple tools for your sustainability projects
+            Chain several tools into a numbered sequence you can save and run again
           </p>
         </div>
         <Button variant="ghost"

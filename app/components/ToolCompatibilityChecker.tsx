@@ -90,9 +90,9 @@ export function ToolCompatibilityChecker({ allResources }: ToolCompatibilityChec
   return (
     <div className="max-w-7xl mx-auto">
       <div className="mb-4 sm:mb-6">
-        <h2 className="text-xl sm:text-2xl font-bold mb-2">Tool Compatibility Checker</h2>
+        <h2 className="text-xl sm:text-2xl font-bold mb-2">Check compatibility</h2>
         <p className="text-sm sm:text-base text-gray-600 dark:text-gray-400">
-          Select tools to see which ones work well together and which overlap enough that you may only need one
+          Pick the tools you are considering, and the rest of the collection is ranked against them
         </p>
       </div>
 

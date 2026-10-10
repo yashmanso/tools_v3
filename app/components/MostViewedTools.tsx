@@ -60,7 +60,7 @@ export function MostViewedTools({ allResources }: MostViewedToolsProps) {
             Most viewed tools
           </h2>
           <p className="text-sm text-gray-600 dark:text-gray-400 text-center">
-            Discover the tools our community is exploring most
+            The tools people open most often
           </p>
         </div>
 

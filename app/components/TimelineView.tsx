@@ -82,9 +82,9 @@ export function TimelineView({ allResources }: TimelineViewProps) {
   return (
     <div className="max-w-6xl mx-auto">
       <div className="mb-6 sm:mb-8">
-        <h2 className="text-2xl font-bold mb-2 sm:mb-3 text-center px-2">Tools by innovation process stage</h2>
+        <h2 className="text-2xl font-bold mb-2 sm:mb-3 text-center px-2">Tools by stage</h2>
         <p className="text-center text-sm sm:text-base text-gray-600 dark:text-gray-400 max-w-2xl mx-auto px-2">
-          Explore tools organized by where they fit in the innovation journey, from initial ideation to mature implementation.
+          Eight stages, ideation to maturity. Click a stage to see only its tools; click it again to clear.
         </p>
       </div>
 

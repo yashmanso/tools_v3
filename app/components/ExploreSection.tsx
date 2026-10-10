@@ -51,47 +51,47 @@ export function ExploreSection({ allResources, graphData }: ExploreSectionProps)
     {
       id: 'select',
       label: 'Overview',
-      description: 'See all the different ways you can start exploring.',
+      description: 'Start here. All nine ways to explore.',
     },
     {
       id: 'browse',
       label: 'Browse & explore',
-      description: 'Explore the full collection by category, tags, and keywords.',
+      description: 'The whole collection, filtered by category, tag or keyword.',
     },
     {
       id: 'find',
       label: 'Find your tool',
-      description: 'Answer questions to get tailored tool recommendations.',
+      description: 'Answer a few questions and get a shortlist.',
     },
     {
       id: 'compare',
       label: 'Compare tools',
-      description: 'Look at tools side by side across key dimensions.',
+      description: 'Put up to three tools side by side.',
     },
     {
       id: 'timeline',
       label: 'View by stage',
-      description: 'See which tools support each stage of your journey.',
+      description: 'Tools laid across the eight stages, ideation to maturity.',
     },
     {
       id: 'network',
       label: 'Network graph',
-      description: 'Visualize connections and related tools.',
+      description: 'See which tools are connected, and how.',
     },
     {
       id: 'workflows',
       label: 'Build workflows',
-      description: 'Combine tools into reusable step‑by‑step workflows.',
+      description: 'Chain tools into a sequence you can save and reuse.',
     },
     {
       id: 'compatibility',
       label: 'Check compatibility',
-      description: 'Identify complementary tools and overlapping ones.',
+      description: 'See what pairs with your picks, and what overlaps.',
     },
     {
       id: 'visual',
       label: 'Visual tool selector',
-      description: 'Use a visual decision tree to narrow down options.',
+      description: 'Narrow the collection down with a decision tree.',
     },
   ];
 
@@ -119,8 +119,8 @@ export function ExploreSection({ allResources, graphData }: ExploreSectionProps)
           </Button>
           <h2 className="text-2xl font-bold mb-4 text-[var(--text-primary)]">Browse our collection</h2>
           <p className="text-gray-600 dark:text-gray-400 mb-6 max-w-2xl mx-auto">
-            Explore our comprehensive collection of tools, methods, frameworks, and resources.
-            Filter by category, search by keywords, or browse by tags to discover what interests you.
+            Three libraries: single tools, multi-tool kits, and the research behind them.
+            Each one adds filters for category, tag and keyword.
           </p>
         </div>
         <div data-tour="browse-links" className="flex flex-wrap gap-4 justify-center">
@@ -343,8 +343,8 @@ export function ExploreSection({ allResources, graphData }: ExploreSectionProps)
                       Browse & explore
                     </h3>
                     <p className="text-xs sm:text-sm text-[var(--text-secondary)] leading-relaxed break-words">
-                      Explore our full collection at your own pace. Browse by category, search by keywords,
-                      or filter by tags. Perfect for discovering what's available and getting inspired.
+                      The whole collection, filtered by category, tag or keyword. Use it when you want to
+                      see what exists before committing to anything.
                     </p>
                     <div className="mt-auto pt-4 text-center text-blue-600 dark:text-blue-400 text-sm font-medium">
                       Start browsing →
@@ -359,8 +359,8 @@ export function ExploreSection({ allResources, graphData }: ExploreSectionProps)
                       Find your tool
                     </h3>
                     <p className="text-sm text-[var(--text-secondary)] leading-relaxed break-words">
-                      Answer a few quick questions about your needs, context, and goals.
-                      We'll recommend the most relevant tools tailored to your specific situation.
+                      Describe your situation instead of guessing which tag it lives under. A few questions
+                      about your goal, context and stage give you a ranked shortlist.
                     </p>
                     <div className="mt-auto pt-4 text-center text-blue-600 dark:text-blue-400 text-sm font-medium">
                       Start questionnaire →
@@ -375,8 +375,8 @@ export function ExploreSection({ allResources, graphData }: ExploreSectionProps)
                       Compare tools
                     </h3>
                     <p className="text-sm text-[var(--text-secondary)] leading-relaxed break-words">
-                      Select up to 3 tools and see how they differ across dimensions, features, and use cases.
-                      Perfect for choosing the right tool for your needs.
+                      Up to three tools become columns and the dimensions become rows. Differences that are
+                      invisible when you read pages one at a time become obvious in a row.
                     </p>
                     <div className="mt-auto pt-4 text-center text-blue-600 dark:text-blue-400 text-sm font-medium">
                       Start comparing →
@@ -391,8 +391,8 @@ export function ExploreSection({ allResources, graphData }: ExploreSectionProps)
                       View by stage
                     </h3>
                     <p className="text-sm text-[var(--text-secondary)] leading-relaxed break-words">
-                      Explore tools organized by innovation process stages, from ideation through implementation.
-                      See where each tool fits in your innovation journey.
+                      Tools laid across the eight stages, ideation to maturity, with a count for each. Click a
+                      stage to see only its tools.
                     </p>
                     <div className="mt-auto pt-4 text-center text-blue-600 dark:text-blue-400 text-sm font-medium">
                       View timeline →
@@ -407,8 +407,8 @@ export function ExploreSection({ allResources, graphData }: ExploreSectionProps)
                       Network graph
                     </h3>
                     <p className="text-sm text-[var(--text-secondary)] leading-relaxed break-words">
-                      Visualize how tools are connected through shared tags and relationships.
-                      Explore the network of interconnected resources and discover unexpected connections.
+                      Tools are nodes, shared tags are the links between them. Shows which tools sit at the
+                      centre of a topic, which bridge two areas, and which stand alone.
                     </p>
                     <div className="mt-auto pt-4 text-center text-blue-600 dark:text-blue-400 text-sm font-medium">
                       View network →
@@ -423,8 +423,8 @@ export function ExploreSection({ allResources, graphData }: ExploreSectionProps)
                       Build workflows
                     </h3>
                     <p className="text-sm text-[var(--text-secondary)] leading-relaxed break-words">
-                      Create step-by-step workflows combining multiple tools. Design custom processes
-                      for your sustainability projects and save them for future use.
+                      One tool rarely does the whole job. Chain several into a numbered sequence — map first,
+                      then assess, then align — and save it to run again.
                     </p>
                     <div className="mt-auto pt-4 text-center text-blue-600 dark:text-blue-400 text-sm font-medium">
                       Create workflow →
@@ -439,8 +439,8 @@ export function ExploreSection({ allResources, graphData }: ExploreSectionProps)
                       Check compatibility
                     </h3>
                     <p className="text-sm text-[var(--text-secondary)] leading-relaxed break-words">
-                      See which tools work well together, identify complementary tools, and spot
-                      overlaps where two tools in your selection do much the same job.
+                      Pick the tools you are considering and the rest of the collection is ranked against them:
+                      what complements your choice, and what overlaps enough that one of the two will do.
                     </p>
                     <div className="mt-auto pt-4 text-center text-blue-600 dark:text-blue-400 text-sm font-medium">
                       Check compatibility →
@@ -455,8 +455,8 @@ export function ExploreSection({ allResources, graphData }: ExploreSectionProps)
                       Visual tool selector
                     </h3>
                     <p className="text-sm text-[var(--text-secondary)] leading-relaxed break-words">
-                      Interactive decision tree with visual filters. Answer questions about your goal,
-                      audience, and timeline, then refine with sliders and toggles.
+                      The same narrowing as the questionnaire, drawn as a decision tree. Pick a goal, then a
+                      context, and watch the matches beside it shrink with every branch.
                     </p>
                     <div className="mt-auto pt-4 text-center text-blue-600 dark:text-blue-400 text-sm font-medium">
                       Start selecting →

@@ -43,7 +43,7 @@ export const TOUR_STEPS: TourStep[] = [
     id: 'welcome',
     chapter: 'Welcome',
     title: 'Welcome to the Sustainability Atlas',
-    body: 'Tools, kits and research for sustainable innovation — 28 tools, 20 collections and 16 articles, all classified the same way. This is a quick look at what is here. Space or the arrow keys move; Esc leaves.',
+    body: '28 tools, 20 collections and 16 articles for sustainable innovation work, all described the same way so they can be compared. This is a quick look at what is here. Space or the arrow keys move; Esc leaves.',
   },
   {
     id: 'hub',

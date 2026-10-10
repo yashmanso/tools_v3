@@ -10,6 +10,8 @@ import { Button } from '@/components/ui/button';
 
 export default function HomePage() {
   const allResources = getAllResources();
+  const count = (category: string) =>
+    allResources.filter((r) => r.category === category).length;
   
   // Build graph on server side
   const graph = buildPageGraph();
@@ -32,8 +34,9 @@ export default function HomePage() {
             Tools and methods for sustainable entrepreneurship and innovation
           </p>
           <p className="text-lg md:text-xl leading-relaxed max-w-3xl mx-auto text-left text-gray-700 dark:text-gray-300">
-            An evolving collection of resources designed to help entrepreneurs, researchers,
-            educators, and practitioners integrate sustainability into their work.
+            {count('tools')} tools, {count('collections')} collections and {count('articles')} articles for
+            building sustainability into entrepreneurial and innovation work — gathered from academic
+            research, practitioner guides and established frameworks.
           </p>
         </section>
 
@@ -48,7 +51,7 @@ export default function HomePage() {
                 Tools & methods
               </h2>
               <p className="text-sm text-[var(--text-secondary)] text-center leading-relaxed">
-                Individual tools, methods, frameworks, and guides for sustainable innovation
+                Single tools you can pick up and use — canvases, frameworks, methods and guides
               </p>
             </Link>
           </div>
@@ -64,7 +67,7 @@ export default function HomePage() {
                 Collections & kits
               </h2>
               <p className="text-sm text-[var(--text-secondary)] text-center leading-relaxed">
-                Curated collections, compendia, and toolkits for comprehensive learning
+                Multi-tool kits that cover a whole process rather than one task
               </p>
             </Link>
           </div>
@@ -80,7 +83,7 @@ export default function HomePage() {
                 Academic articles
               </h2>
               <p className="text-sm text-[var(--text-secondary)] text-center leading-relaxed">
-                Peer-reviewed research on sustainable entrepreneurship and innovation
+                The peer-reviewed research behind the tools, for when you need the evidence
               </p>
             </Link>
           </div>
@@ -97,37 +100,25 @@ export default function HomePage() {
           <div className="space-y-6 text-gray-700 dark:text-gray-300 leading-relaxed">
             <ScrollAnimation direction="fade" delay={200}>
               <p>
-                This collection brings together practical tools, methods, and frameworks for integrating 
-                sustainability into entrepreneurial and innovation work. The resources here have been gathered 
-                from various sources, academic research, practitioner guides, and established frameworks, to 
-                provide a starting point for those working on sustainable innovation challenges.
+                Every tool here is described the same way: what it is for, who it suits, which stage of
+                the journey it fits, and what it asks of you before you start. That shared description is
+                what lets you compare tools properly, see which ones work together, and find the ones
+                that match your situation rather than the ones that happen to share a keyword.
               </p>
             </ScrollAnimation>
 
             <ScrollAnimation direction="fade" delay={400}>
               <p>
-                Whether you're mapping out a new concept, assessing impact, developing a strategy, or 
-                looking for ways to align your work with sustainability goals, you'll find resources that 
-                can support different stages of your process. The collection includes individual tools 
-                for specific tasks, comprehensive toolkits that cover broader processes, and academic 
-                articles that provide deeper context and validation.
+                They range from simple canvases you can hand out in a workshop to frameworks that need
+                facilitation and a few sessions. Use them when you are shaping a concept, assessing
+                impact, planning a strategy, or teaching the subject to someone else.
               </p>
             </ScrollAnimation>
 
             <ScrollAnimation direction="fade" delay={600}>
-              <p>
-                These resources may be useful if you're working on product or service design, developing 
-                business models, planning organizational change, conducting research, or teaching others 
-                about sustainable innovation. They span different levels of complexity that include simple canvases 
-                and checklists or be more involved frameworks requiring facilitation or deeper engagement.
-              </p>
-            </ScrollAnimation>
-
-            <ScrollAnimation direction="fade" delay={800}>
               <p className="text-sm text-gray-600 dark:text-gray-400 italic border-l-4 border-gray-300 dark:border-gray-600 pl-4">
-                This is a living collection that continues to evolve. Resources are organized by type 
-                and tagged across multiple dimensions to help you find what's relevant to your context 
-                and needs.
+                A living collection that keeps growing. Everything is tagged across twelve dimensions, so
+                you can narrow it down to what fits your context.
               </p>
             </ScrollAnimation>
           </div>

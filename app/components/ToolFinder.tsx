@@ -218,7 +218,7 @@ export function ToolFinder({ allResources }: ToolFinderProps) {
         <div className="mb-6 sm:mb-8">
           <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between mb-4 gap-3">
             <div className="flex-1">
-              <h2 className="text-2xl font-bold mb-2">Tools for You</h2>
+              <h2 className="text-2xl font-bold mb-2">Your shortlist</h2>
               <p className="text-sm sm:text-base text-gray-600 dark:text-gray-400">
                 {topMatches.length > 0 
                   ? `We've reordered ${reorderedTools.length} tools based on your answers. The most relevant are shown first.`

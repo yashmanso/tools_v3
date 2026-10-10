@@ -203,9 +203,9 @@ export function VisualToolSelector({ allResources }: VisualToolSelectorProps) {
   return (
     <div className="max-w-7xl mx-auto">
       <div className="mb-6 sm:mb-8">
-        <h2 className="text-2xl font-bold mb-2">Visual Tool Selector</h2>
+        <h2 className="text-2xl font-bold mb-2">Visual tool selector</h2>
         <p className="text-sm sm:text-base text-gray-600 dark:text-gray-400">
-          Answer a few questions and use visual filters to find the perfect tools for your needs
+          Pick a goal, then a context. The matches beside the tree update with every branch
         </p>
       </div>
 
