@@ -35,8 +35,8 @@ export default function HomePage() {
           </p>
           <p className="text-lg md:text-xl leading-relaxed max-w-3xl mx-auto text-left text-gray-700 dark:text-gray-300">
             {count('tools')} tools, {count('collections')} collections and {count('articles')} articles for
-            building sustainability into entrepreneurial and innovation work — gathered from academic
-            research, practitioner guides and established frameworks.
+            building sustainability into entrepreneurial and innovation work, gathered from academic
+            research, practitioner guides, and established frameworks.
           </p>
         </section>
 
@@ -51,7 +51,7 @@ export default function HomePage() {
                 Tools & methods
               </h2>
               <p className="text-sm text-[var(--text-secondary)] text-center leading-relaxed">
-                Single tools you can pick up and use — canvases, frameworks, methods and guides
+                Single tools you can pick up and use: canvases, frameworks, methods, and guides
               </p>
             </Link>
           </div>

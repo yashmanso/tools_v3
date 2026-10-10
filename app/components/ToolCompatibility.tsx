@@ -122,7 +122,7 @@ export function ToolCompatibility({ currentTool, allResources }: ToolCompatibili
               </h3>
             </div>
             <p className="text-sm text-gray-600 dark:text-gray-400 mb-4">
-              These tools have significant overlap with <strong>{currentTool.title}</strong> - consider if you need both
+              These tools cover much the same ground as <strong>{currentTool.title}</strong>. You probably only need one.
             </p>
             <div className="grid md:grid-cols-2 gap-4">
               {analysis.overlappingTools.slice(0, 4).map((result) => (

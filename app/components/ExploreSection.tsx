@@ -120,7 +120,7 @@ export function ExploreSection({ allResources, graphData }: ExploreSectionProps)
           <h2 className="text-2xl font-bold mb-4 text-[var(--text-primary)]">Browse our collection</h2>
           <p className="text-gray-600 dark:text-gray-400 mb-6 max-w-2xl mx-auto">
             Three libraries: single tools, multi-tool kits, and the research behind them.
-            Each one adds filters for category, tag and keyword.
+            Each one adds filters for category, tag, and keyword.
           </p>
         </div>
         <div data-tour="browse-links" className="flex flex-wrap gap-4 justify-center">
@@ -360,7 +360,7 @@ export function ExploreSection({ allResources, graphData }: ExploreSectionProps)
                     </h3>
                     <p className="text-sm text-[var(--text-secondary)] leading-relaxed break-words">
                       Describe your situation instead of guessing which tag it lives under. A few questions
-                      about your goal, context and stage give you a ranked shortlist.
+                      about your goal, context, and stage give you a ranked shortlist.
                     </p>
                     <div className="mt-auto pt-4 text-center text-blue-600 dark:text-blue-400 text-sm font-medium">
                       Start questionnaire →
@@ -423,8 +423,8 @@ export function ExploreSection({ allResources, graphData }: ExploreSectionProps)
                       Build workflows
                     </h3>
                     <p className="text-sm text-[var(--text-secondary)] leading-relaxed break-words">
-                      One tool rarely does the whole job. Chain several into a numbered sequence — map first,
-                      then assess, then align — and save it to run again.
+                      One tool rarely does the whole job. Chain several into a numbered sequence: map first,
+                      then assess, then align. Save it and you can run it again.
                     </p>
                     <div className="mt-auto pt-4 text-center text-blue-600 dark:text-blue-400 text-sm font-medium">
                       Create workflow →

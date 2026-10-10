@@ -275,7 +275,7 @@ export function ToolCompatibilityChecker({ allResources }: ToolCompatibilityChec
                     </h3>
                   </div>
                   <p className="text-xs sm:text-sm text-gray-600 dark:text-gray-400 mb-3 sm:mb-4">
-                    These tools have significant overlap with your selection - consider if you need both
+                    These tools cover much the same ground as your selection. You probably only need one.
                   </p>
                   <div className="space-y-3">
                     {analysis.overlappingTools.map((result) => (

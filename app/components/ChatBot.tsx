@@ -135,9 +135,9 @@ export function ChatBot({ allResources, isOpen: externalIsOpen, onClose }: ChatB
 
       let content: string;
       if (merged.length === 0 && words.length === 0) {
-        content = 'Tell me a bit more — what are you trying to do, who is it for, or what stage are you at?';
+        content = 'Tell me a bit more. What are you trying to do, who is it for, or what stage are you at?';
       } else if (matches.length === 0) {
-        content = `Nothing matched that. Try removing a filter above, or describe it differently — the collection has ${tools.length} tools covering goals like mapping, assessment and reporting.`;
+        content = `Nothing matched that. Try removing a filter above, or describe it differently. The collection has ${tools.length} tools covering goals like mapping, assessment, and reporting.`;
       } else {
         const reading = merged.length
           ? merged.map(f => f.label).join(', ')

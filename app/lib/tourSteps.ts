@@ -65,7 +65,7 @@ export const TOUR_STEPS: TourStep[] = [
     id: 'browse',
     chapter: '1. Browse & explore',
     title: 'The three libraries',
-    body: 'Tools are individual methods and canvases, collections are multi-tool kits, articles are the peer-reviewed research behind them. Each library page adds filters for category, tag and keyword, and switches between grid and list.',
+    body: 'Tools are individual methods and canvases, collections are multi-tool kits, articles are the peer-reviewed research behind them. Each library page adds filters for category, tag, and keyword, and switches between grid and list.',
     target: '[data-tour="browse-links"]',
   },
   {
@@ -79,7 +79,7 @@ export const TOUR_STEPS: TourStep[] = [
     id: 'compare',
     chapter: '3. Compare tools',
     title: 'Up to three, side by side',
-    body: 'Search for the candidates you are weighing up, add up to three, then press Compare. They become columns and the dimensions become rows, so objective, audience, stage and methodology line up against each other. Differences invisible when reading pages one at a time become obvious in a row.',
+    body: 'Search for the candidates you are weighing up, add up to three, then press Compare. They become columns and the dimensions become rows, so objective, audience, stage, and methodology line up against each other. Differences invisible when reading pages one at a time become obvious in a row.',
     target: '[data-tour="compare-table"] tr',
   },
   {
@@ -100,7 +100,7 @@ export const TOUR_STEPS: TourStep[] = [
     id: 'workflows',
     chapter: '6. Build workflows',
     title: 'Tools in a running order',
-    body: 'One tool rarely does the whole job. Name the workflow after what it accomplishes, add tools from the panel on the right, and each becomes a numbered step you can reorder or remove. Sequence carries meaning — a mapping tool before an assessment tool gives you something to assess. Save it and it is waiting next time.',
+    body: 'One tool rarely does the whole job. Name the workflow after what it accomplishes, add tools from the panel on the right, and each becomes a numbered step you can reorder or remove. Sequence carries meaning: a mapping tool before an assessment tool gives you something to assess. Save it and it is waiting next time.',
     target: '[data-tour="wf-steps"]',
   },
   {
@@ -123,14 +123,14 @@ export const TOUR_STEPS: TourStep[] = [
     id: 'tool-tags',
     chapter: 'Tool pages',
     title: 'Tags are the index',
-    body: 'Every tool carries tags, and each is a link rather than a label. Clicking one opens everything else in the collection sharing it — the fastest way to find the neighbors of a tool you already like.',
+    body: 'Every tool carries tags, and each one is a link. Click it to open everything else in the collection that shares it. This is the fastest way to find the neighbors of a tool you already like.',
     target: '[data-tour="tag-modal"]',
   },
   {
     id: 'tool-dimensions',
     chapter: 'Tool pages',
     title: 'Twelve dimensions, every tool',
-    body: 'Each tool is described along the same twelve dimensions — objective, target audience, entrepreneurship stage, methodological approach, collaboration level and more — each carrying its own tags. That consistency is what makes the stage view, comparison and compatibility possible at all.',
+    body: 'Each tool is described along the same twelve dimensions, among them objective, target audience, entrepreneurship stage, methodological approach and collaboration level. Each dimension carries its own tags. That consistency is what makes the stage view, comparison, and compatibility possible at all.',
     target: 'h1:has-text("Dimensions")',
   },
   {
@@ -152,15 +152,15 @@ export const TOUR_STEPS: TourStep[] = [
   {
     id: 'toolbar',
     chapter: 'Keeping track',
-    title: 'Search, bookmarks and history',
-    body: 'Search runs across titles, descriptions and tags from any page. Beside it: the pages you viewed recently, the ones you bookmarked, and the light/dark switch. The play button replays this tour whenever you want it.',
+    title: 'Search, bookmarks, and history',
+    body: 'Search runs across titles, descriptions, and tags from any page. Beside it: the pages you viewed recently, the ones you bookmarked, and the light/dark switch. The play button replays this tour whenever you want it.',
     target: '[data-tour="toolbar"]',
   },
   {
     id: 'assistant',
     chapter: 'Asking and adding',
     title: 'Describe the job, or add your own',
-    body: 'The assistant reads your question against the same tags the site is organized by, narrowing with each message and showing which parts it matched. And if something is missing, Submit a tool adds it — or let Auto create draft the entry from your source material for review.',
+    body: 'The assistant reads your question against the same tags the site is organized by, narrowing with each message and showing which parts it matched. And if something is missing, Submit a tool adds it, or Auto create drafts the entry from your source material for you to review.',
     target: '[aria-label="Tool assistant"]',
   },
 ];

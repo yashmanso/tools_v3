@@ -225,7 +225,7 @@ export function TimelineView({ allResources }: TimelineViewProps) {
             </div>
             
             <p className="text-xs sm:text-sm text-gray-600 dark:text-gray-400 mb-3 sm:mb-4 ml-0 sm:ml-2">
-              Tools that don't have a specific innovation stage tag
+              Tools without a specific innovation stage tag
             </p>
 
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-4">

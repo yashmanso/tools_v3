@@ -9,7 +9,8 @@
     "start": "next start",
     "lint": "next lint",
     "type-check": "tsc --noEmit",
-    "tour:shots": "node scripts/capture-tour.mjs"
+    "tour:shots": "node scripts/capture-tour.mjs",
+    "audit:copy": "node scripts/audit-copy.mjs"
   },
   "keywords": [],
   "author": "",
