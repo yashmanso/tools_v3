@@ -5,12 +5,17 @@
  *   npm run build && npm start      # in one terminal
  *   npm run tour:shots              # in another
  *
- * Each recipe drives the real site to the screen a tour step describes, then
- * writes public/tour/<id>.jpg. The ids must match app/lib/tourSteps.ts exactly;
- * the script refuses to run otherwise, so a step added on one side cannot
- * quietly ship without the other.
+ * For each step in app/lib/tourSteps.ts this drives the real site to the screen
+ * the step describes, records where the step's target sits, and writes
+ * public/tour/<id>.jpg plus app/lib/tourHotspots.json.
  *
- * Re-run this after changing any screen the tour shows. Captures do not update
+ * Two guards, because a wrong screen is worse than a missing one:
+ *   - the step ids and the recipe names must match exactly;
+ *   - a step with a target whose element is missing, off-screen, or only partly
+ *     in frame fails the run rather than producing a screen that does not show
+ *     what its caption claims.
+ *
+ * Re-run after changing any screen the tour shows. Captures do not update
  * themselves.
  */
 
@@ -20,17 +25,39 @@ import { fileURLToPath } from 'node:url';
 
 const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 const OUT = path.join(ROOT, 'public', 'tour');
+const HOTSPOTS = path.join(ROOT, 'app', 'lib', 'tourHotspots.json');
 const BASE = process.env.TOUR_BASE_URL || 'http://127.0.0.1:3000';
 const VIEWPORT = { width: 1280, height: 800 };
 const QUALITY = 82;
+const TOOL = '/tools/triple-layered-business-model-canvas';
 
-/** Read the step ids straight from the source of truth. */
-function stepIdsFromSource() {
+/** Read the steps straight from the source of truth. */
+function stepsFromSource() {
   const src = fs.readFileSync(path.join(ROOT, 'app/lib/tourSteps.ts'), 'utf8');
-  return [...src.matchAll(/^\s*id:\s*'([^']+)'/gm)].map(m => m[1]);
+  const steps = [];
+  const re = /^\s*id: '([^']+)',[\s\S]*?(?=^\s*\{|\n\];)/gm;
+  for (const block of src.split(/^\s*\{\n/m)) {
+    const id = block.match(/^\s*id: '([^']+)'/m)?.[1];
+    if (!id) continue;
+    const target = block.match(/^\s*target: '([^']+)'/m)?.[1];
+    steps.push({ id, target });
+  }
+  return steps;
 }
 
 const sleep = ms => new Promise(r => setTimeout(r, ms));
+
+/**
+ * Centre an element in the viewport.
+ *
+ * Not scrollIntoViewIfNeeded: that does nothing when the element is already
+ * partly visible, which silently produced two identical screens.
+ */
+async function centre(page, selector) {
+  const el = page.locator(selector).first();
+  await el.evaluate(node => node.scrollIntoView({ block: 'center', behavior: 'instant' }));
+  await sleep(500);
+}
 
 /** Open the workflow menu and pick a mode by its id. */
 async function gotoMode(page, mode) {
@@ -43,13 +70,7 @@ async function gotoMode(page, mode) {
   await sleep(1200);
 }
 
-/** Scroll an element to the middle of the viewport. */
-async function focusOn(page, selector) {
-  await page.locator(selector).first().scrollIntoViewIfNeeded();
-  await sleep(600);
-}
-
-/** Click the first N entries of a list, for screens that need to be populated. */
+/** Click the first N entries of a list, for screens that need populating. */
 async function clickSome(page, selector, count) {
   const items = page.locator(selector);
   const available = await items.count();
@@ -60,7 +81,6 @@ async function clickSome(page, selector, count) {
 }
 
 const recipes = {
-  // ---------- orientation ----------
   async welcome(page) {
     await page.goto(`${BASE}/`, { waitUntil: 'networkidle' });
     await sleep(900);
@@ -68,16 +88,7 @@ const recipes = {
   async hub(page) {
     await page.goto(`${BASE}/`, { waitUntil: 'networkidle' });
     await sleep(700);
-    await focusOn(page, '[data-tour="explore-hub"]');
-  },
-  async 'most-viewed'(page) {
-    await page.goto(`${BASE}/`, { waitUntil: 'networkidle' });
-    await sleep(700);
-    await focusOn(page, '[data-tour="most-viewed"]');
-  },
-  async toolbar(page) {
-    await page.goto(`${BASE}/`, { waitUntil: 'networkidle' });
-    await sleep(900);
+    await centre(page, '[data-tour="explore-hub"]');
   },
   async menu(page) {
     await page.goto(`${BASE}/`, { waitUntil: 'networkidle' });
@@ -87,124 +98,86 @@ const recipes = {
     await sleep(500);
   },
 
-  // ---------- workflows ----------
+  // ---------- one screen per workflow ----------
   async browse(page) {
     await gotoMode(page, 'browse');
+    await centre(page, '[data-tour="browse-links"]');
   },
-  async 'find-question'(page) {
+  async find(page) {
     await gotoMode(page, 'find');
+    await centre(page, '[data-tour="finder-options"]');
   },
-  async 'find-results'(page) {
-    await gotoMode(page, 'find');
-    // Answer through the questionnaire to reach the shortlist.
-    for (let i = 0; i < 6; i++) {
-      const opts = page.locator('[data-tour="finder-options"] button');
-      if (!(await opts.count())) break;
-      await opts.first().click({ timeout: 5000 }).catch(() => {});
-      await sleep(700);
-    }
-    await sleep(600);
-  },
-  async 'compare-pick'(page) {
+  async compare(page) {
     await gotoMode(page, 'compare');
-  },
-  async 'compare-table'(page) {
-    await gotoMode(page, 'compare');
-    // Populate the table: an empty comparison shows nothing worth describing.
-    // Use the add control, not the card: the card is a link to the tool.
-    // Clicking nth(0) repeatedly because selecting re-renders the list.
+    // The add control, not the card: the card is a link to the tool.
+    // nth(0) each time because selecting re-renders the list.
     const add = page.locator('[title="Add to comparison"]');
     for (let i = 0; i < 3; i++) {
       await add.nth(0).click({ timeout: 5000 }).catch(() => {});
       await sleep(450);
     }
-    // The comparison only renders once it is asked for.
     await page.click('text=Compare selected tools', { timeout: 5000 }).catch(() => {});
     await sleep(1200);
-    await focusOn(page, 'text=Start over');
+    // The table is taller than the screen; frame its head, where the tool
+    // columns the caption describes actually are.
+    await centre(page, '[data-tour="compare-table"] tr');
   },
-  async 'timeline-stages'(page) {
+  async timeline(page) {
     await gotoMode(page, 'timeline');
-    await focusOn(page, '[data-tour="timeline-stages"]');
-  },
-  async 'timeline-filtered'(page) {
-    await gotoMode(page, 'timeline');
-    const markers = page.locator('[data-tour="timeline-stages"] button:not([disabled])');
-    if (await markers.count()) {
-      await markers.nth(4).click({ timeout: 5000 }).catch(() => {});
-      await sleep(1100);
-    }
+    await centre(page, '[data-tour="timeline-stages"]');
   },
   async network(page) {
     await gotoMode(page, 'network');
-    await sleep(2200); // let the force layout settle
+    await sleep(2400); // let the force layout settle
+    await centre(page, '[data-tour="network-canvas"]');
   },
-  async 'wf-start'(page) {
-    await gotoMode(page, 'workflows');
-  },
-  async 'wf-add'(page) {
+  async workflows(page) {
     await gotoMode(page, 'workflows');
     await page.click('[data-tour="wf-create"]');
     await page.waitForSelector('[data-tour="wf-title"]');
     await page.fill('[data-tour="wf-title"]', 'Assess a product idea for circularity');
-    await sleep(500);
-  },
-  async 'wf-steps'(page) {
-    await gotoMode(page, 'workflows');
-    await page.click('[data-tour="wf-create"]');
-    await page.waitForSelector('[data-tour="wf-title"]');
-    await page.fill('[data-tour="wf-title"]', 'Assess a product idea for circularity');
-    // Add a few tools so the step list is not empty.
     await clickSome(page, '[data-tour="wf-tool"]', 3);
     await sleep(700);
-    await focusOn(page, '[data-tour="wf-steps"]');
+    await centre(page, '[data-tour="wf-steps"]');
   },
-  async 'compat-select'(page) {
-    await gotoMode(page, 'compatibility');
-  },
-  async 'compat-results'(page) {
+  async compatibility(page) {
     await gotoMode(page, 'compatibility');
     await clickSome(page, '[data-tour="compat-item"]', 2);
     await sleep(1200);
-    await focusOn(page, '[data-tour="compat-results"]');
+    await centre(page, '[data-tour="compat-results"]');
   },
   async visual(page) {
     await gotoMode(page, 'visual');
     await clickSome(page, '[data-tour="visual-goal"]', 1);
     await sleep(900);
+    await centre(page, '[data-tour="visual-tree"]');
   },
 
   // ---------- tool pages ----------
   async 'tool-tags'(page) {
-    await page.goto(`${BASE}/tools/triple-layered-business-model-canvas`, { waitUntil: 'networkidle' });
+    await page.goto(`${BASE}${TOOL}`, { waitUntil: 'networkidle' });
     await sleep(900);
+    // Open the tag modal, so the screen shows the behaviour the caption claims.
+    await page.locator('[data-tour="tool-tags"] button').first().click({ timeout: 6000 });
+    await page.waitForSelector('[data-tour="tag-modal"]', { timeout: 6000 });
+    await sleep(700);
   },
   async 'tool-dimensions'(page) {
-    await page.goto(`${BASE}/tools/triple-layered-business-model-canvas`, { waitUntil: 'networkidle' });
+    await page.goto(`${BASE}${TOOL}`, { waitUntil: 'networkidle' });
     await sleep(700);
-    const h = page.locator('h1', { hasText: 'Dimensions' }).first();
-    if (await h.count()) await h.scrollIntoViewIfNeeded();
-    await sleep(600);
+    await centre(page, 'h1:has-text("Dimensions")');
   },
   async 'tool-prereq'(page) {
-    await page.goto(`${BASE}/tools/triple-layered-business-model-canvas`, { waitUntil: 'networkidle' });
+    await page.goto(`${BASE}${TOOL}`, { waitUntil: 'networkidle' });
     await sleep(700);
-    const pre = page.locator('[data-tour="tool-prereq"]').first();
-    if (await pre.count()) {
-      await pre.scrollIntoViewIfNeeded();
-      await pre.locator('button').first().click({ timeout: 4000 }).catch(() => {});
-      await sleep(800);
-    }
-  },
-  async 'tool-compat'(page) {
-    await page.goto(`${BASE}/tools/triple-layered-business-model-canvas`, { waitUntil: 'networkidle' });
-    await sleep(700);
-    const h = page.locator('h2', { hasText: 'Tool Compatibility' }).first();
-    if (await h.count()) await h.scrollIntoViewIfNeeded();
+    await centre(page, '[data-tour="tool-prereq"]');
+    // It is a native <details>; clicking the wrapper button does not open it.
+    await page.locator('[data-tour="tool-prereq"] details').evaluate(d => (d.open = true));
     await sleep(600);
+    await centre(page, '[data-tour="tool-prereq"]');
   },
   async panels(page) {
-    await page.goto(`${BASE}/tools/triple-layered-business-model-canvas`, { waitUntil: 'networkidle' });
+    await page.goto(`${BASE}${TOOL}`, { waitUntil: 'networkidle' });
     await sleep(900);
     const links = page.locator('a[href^="/tools/"]:visible');
     const n = await links.count();
@@ -216,10 +189,15 @@ const recipes = {
         break;
       }
     }
-    await sleep(1800);
+    await page.waitForSelector('[data-panel-id]', { timeout: 8000 });
+    await sleep(1600);
   },
 
-  // ---------- assistant ----------
+  // ---------- the rest ----------
+  async toolbar(page) {
+    await page.goto(`${BASE}/`, { waitUntil: 'networkidle' });
+    await sleep(900);
+  },
   async assistant(page) {
     await page.goto(`${BASE}/`, { waitUntil: 'networkidle' });
     await sleep(700);
@@ -231,14 +209,13 @@ const recipes = {
     await sleep(1400);
     await input.fill('for educators running a workshop');
     await input.press('Enter');
-    await sleep(1600);
+    await sleep(1700);
   },
 };
 
 async function main() {
   // Playwright is intentionally not a dependency of this project: installing it
-  // would pull ~300MB of browsers into every deploy. Install it locally when
-  // you need to recapture.
+  // would pull ~300MB of browsers into every deploy. Install it when recapturing.
   let chromium;
   try {
     ({ chromium } = await import('playwright'));
@@ -247,7 +224,8 @@ async function main() {
     process.exit(1);
   }
 
-  const ids = stepIdsFromSource();
+  const steps = stepsFromSource();
+  const ids = steps.map(s => s.id);
   const recipeNames = Object.keys(recipes);
 
   const missingRecipe = ids.filter(id => !recipeNames.includes(id));
@@ -258,7 +236,6 @@ async function main() {
     process.exit(1);
   }
 
-  // Fail early rather than writing a folder of blank pages.
   const probe = await fetch(BASE).catch(() => null);
   if (!probe || !probe.ok) {
     console.error(`No site at ${BASE}. Run "npm run build && npm start" first.`);
@@ -280,30 +257,85 @@ async function main() {
   });
   const page = await ctx.newPage();
 
-  let failed = 0;
-  for (const id of ids) {
+  const hotspots = {};
+  const failures = [];
+
+  for (const { id, target } of steps) {
     try {
       await recipes[id](page);
-      await page.screenshot({
-        path: path.join(OUT, `${id}.jpg`),
-        type: 'jpeg',
-        quality: QUALITY,
-      });
+
+      // Record where the caption's subject actually is, and refuse the screen
+      // if it is not fully in frame.
+      if (target) {
+        const el = page.locator(target).first();
+        if (!(await el.count())) throw new Error(`target not found: ${target}`);
+        const box = await el.boundingBox();
+        if (!box) throw new Error(`target has no box (hidden?): ${target}`);
+        const { width: vw, height: vh } = VIEWPORT;
+        const fullyInFrame =
+          box.x >= -2 && box.y >= -2 && box.x + box.width <= vw + 2 && box.y + box.height <= vh + 2;
+        if (!fullyInFrame) {
+          // Clamp rather than fail when the subject is simply larger than the
+          // screen - a full-height panel is legitimately taller than the frame.
+          const clamped = {
+            x: Math.max(0, box.x),
+            y: Math.max(0, box.y),
+            w: Math.min(vw, box.x + box.width) - Math.max(0, box.x),
+            h: Math.min(vh, box.y + box.height) - Math.max(0, box.y),
+          };
+          if (clamped.w < 40 || clamped.h < 20) {
+            throw new Error(`target out of frame: ${target}`);
+          }
+          hotspots[id] = {
+            x: +(clamped.x / vw).toFixed(4),
+            y: +(clamped.y / vh).toFixed(4),
+            w: +(clamped.w / vw).toFixed(4),
+            h: +(clamped.h / vh).toFixed(4),
+          };
+        } else {
+          hotspots[id] = {
+            x: +(box.x / vw).toFixed(4),
+            y: +(box.y / vh).toFixed(4),
+            w: +(box.width / vw).toFixed(4),
+            h: +(box.height / vh).toFixed(4),
+          };
+        }
+      }
+
+      await page.screenshot({ path: path.join(OUT, `${id}.jpg`), type: 'jpeg', quality: QUALITY });
       const kb = (fs.statSync(path.join(OUT, `${id}.jpg`)).size / 1024).toFixed(0);
-      console.log(`  ok    ${id.padEnd(18)} ${kb}KB`);
+      console.log(`  ok    ${id.padEnd(18)} ${kb}KB${target ? '  + hotspot' : ''}`);
     } catch (err) {
-      failed++;
-      console.error(`  FAIL  ${id.padEnd(18)} ${String(err.message).split('\n')[0].slice(0, 80)}`);
+      failures.push(id);
+      console.error(`  FAIL  ${id.padEnd(18)} ${String(err.message).split('\n')[0].slice(0, 90)}`);
     }
   }
 
   await browser.close();
+
+  // Two screens showing the same pixels means a recipe did not go where it said.
+  const seen = new Map();
+  for (const { id } of steps) {
+    const f = path.join(OUT, `${id}.jpg`);
+    if (!fs.existsSync(f)) continue;
+    const key = fs.statSync(f).size + ':' + fs.readFileSync(f).subarray(0, 2048).toString('base64');
+    if (seen.has(key)) {
+      console.error(`  DUPLICATE  ${id} is identical to ${seen.get(key)}`);
+      failures.push(id);
+    } else seen.set(key, id);
+  }
+
+  fs.writeFileSync(HOTSPOTS, JSON.stringify(hotspots, null, 2) + '\n');
+
   const total = fs
     .readdirSync(OUT)
     .filter(f => f.endsWith('.jpg'))
     .reduce((sum, f) => sum + fs.statSync(path.join(OUT, f)).size, 0);
-  console.log(`\n${ids.length - failed}/${ids.length} captured, ${(total / 1e6).toFixed(1)}MB total -> public/tour`);
-  process.exit(failed ? 1 : 0);
+  console.log(
+    `\n${steps.length - failures.length}/${steps.length} captured, ` +
+      `${Object.keys(hotspots).length} hotspots, ${(total / 1e6).toFixed(1)}MB -> public/tour`
+  );
+  process.exit(failures.length ? 1 : 0);
 }
 
 main();

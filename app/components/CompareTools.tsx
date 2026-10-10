@@ -101,7 +101,7 @@ export function CompareTools({ allResources }: CompareToolsProps) {
         </div>
 
         {/* Comparison table */}
-        <div className="w-full">
+        <div data-tour="compare-table" className="w-full">
             <table className="w-full border-collapse table-fixed">
               <colgroup>
                 <col style={{ width: `${Math.floor(100 / (selectedTools.length + 1))}%` }} />

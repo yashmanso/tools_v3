@@ -1,203 +1,173 @@
 /**
  * The guided tour, as a sequence of captured screens.
  *
- * Each step names an image in /public/tour. The screens are captured by
- * `npm run tour:shots`, which drives a real browser over the built site using
- * the recipes in scripts/capture-tour.mjs — the ids below are the contract
- * between the two, and the script fails if either side gains a step the other
- * does not have.
+ * One screen per feature — a workflow gets a single screen with its steps
+ * described in the caption, rather than a screen per step. A tour is
+ * orientation, not a manual.
  *
- * Showing captures rather than driving the live site means the tour has no side
- * effects (it used to leave a draft workflow behind and navigate the reader
- * away), every step appears instantly, and it can show populated screens — a
- * filled comparison table, real compatibility results — where driving the live
- * UI could only honestly show an empty one.
+ * `target` is the element the caption is about. The capture script resolves it,
+ * records its position, and refuses to capture if it is not in frame; the tour
+ * draws a ring at that position. So every caption points at something specific,
+ * and a step whose screen does not actually contain its subject fails the
+ * capture instead of shipping.
  *
- * The cost is that captures do not update themselves: re-run the script after
- * changing any screen it shows.
+ * Screens are captured by `npm run tour:shots`. They do not update themselves —
+ * re-run it after changing any screen shown here.
  */
 
+import hotspots from './tourHotspots.json';
+
 export interface TourStep {
-  /** Matches the capture recipe and the image filename. */
+  /** Matches the capture recipe, the image filename and the hotspot key. */
   id: string;
   chapter: string;
   title: string;
   body: string;
+  /**
+   * Playwright selector for the element the caption describes. Omitted for
+   * screens about the page as a whole.
+   */
+  target?: string;
+}
+
+/** Normalised 0-1 box of a step's target within its screen. */
+export interface Hotspot {
+  x: number;
+  y: number;
+  w: number;
+  h: number;
 }
 
 export const TOUR_STEPS: TourStep[] = [
-  // ---------- Getting oriented ----------
   {
     id: 'welcome',
     chapter: 'Welcome',
     title: 'Welcome to the Sustainability Atlas',
-    body: 'Tools, kits and research for sustainable innovation. This tour walks through how the collection is organised and how to work with it. Use the arrow keys or space to move, and leave whenever you like.',
+    body: 'Tools, kits and research for sustainable innovation — 28 tools, 20 collections and 16 articles, all classified the same way. This is a quick look at what is here. Space or the arrow keys move; Esc leaves.',
   },
   {
     id: 'hub',
-    chapter: 'Finding your way',
+    chapter: 'Getting around',
     title: 'Nine ways to explore',
-    body: 'People arrive knowing different things. Pick the route that matches what you already know: browse everything, answer a few questions, compare tools side by side, or jump straight to your stage of the innovation journey.',
-  },
-  {
-    id: 'most-viewed',
-    chapter: 'Finding your way',
-    title: 'Start with what others use',
-    body: 'The most viewed tools in the collection, counted from real traffic rather than hand-picked. A good first stop if you are not sure what you are looking for.',
-  },
-  {
-    id: 'toolbar',
-    chapter: 'Finding your way',
-    title: 'The library and your toolbar',
-    body: 'Tools are individual methods and canvases, collections are multi-tool kits, articles are the research behind them. The icons hold search, the pages you viewed recently, your bookmarks, the assistant and the light/dark switch.',
+    body: 'People arrive knowing different things, so there is no single front door. Browse if you want the shape of the collection, answer questions if you know your situation but not the vocabulary, or go straight to your stage of the innovation journey.',
+    target: '[data-tour="explore-hub"]',
   },
   {
     id: 'menu',
-    chapter: 'Finding your way',
-    title: 'Every workflow lives here',
-    body: 'The menu beside the wordmark opens from any page and lists all nine workflows. Each is a different way through the same collection, and Overview returns you to the start. Here is what the other eight do.',
+    chapter: 'Getting around',
+    title: 'Every workflow, from anywhere',
+    body: 'The menu beside the wordmark opens on any page and lists all nine. Overview returns you to the start. The eight that follow are what the others do.',
+    target: '[data-tour="workflow-menu"]',
   },
 
-  // ---------- 1. Browse ----------
+  // ---------- one screen per workflow ----------
   {
     id: 'browse',
     chapter: '1. Browse & explore',
-    title: 'Browse the whole collection',
-    body: 'Three libraries, each with filters for category, tag and keyword on top. Use this when you want the shape of what exists before committing to anything.',
+    title: 'The three libraries',
+    body: 'Tools are individual methods and canvases, collections are multi-tool kits, articles are the peer-reviewed research behind them. Each library page adds filters for category, tag and keyword, and switches between grid and list.',
+    target: '[data-tour="browse-links"]',
   },
-
-  // ---------- 2. Find your tool ----------
   {
-    id: 'find-question',
+    id: 'find',
     chapter: '2. Find your tool',
     title: 'Answer a few questions',
-    body: 'Rather than guessing which tag your problem lives under, describe your situation. The questionnaire asks about your goal, your context and your stage.',
+    body: 'Describe your situation instead of guessing which tag your problem lives under. You are asked about your goal, your context and your stage; each answer narrows the field, and the result is a ranked shortlist rather than a filtered dump.',
+    target: '[data-tour="finder-options"]',
   },
   {
-    id: 'find-results',
-    chapter: '2. Find your tool',
-    title: 'A shortlist, not a filtered dump',
-    body: 'Each answer narrows the field, and the result is a ranked shortlist matched to what you said — with the reasoning visible so you can tell whether it understood you.',
-  },
-
-  // ---------- 3. Compare ----------
-  {
-    id: 'compare-pick',
+    id: 'compare',
     chapter: '3. Compare tools',
-    title: 'Pick up to three tools',
-    body: 'Search for the candidates you are weighing up and add them. Three is the limit, which is about as many as a table stays readable with.',
+    title: 'Up to three, side by side',
+    body: 'Search for the candidates you are weighing up, add up to three, then press Compare. They become columns and the dimensions become rows, so objective, audience, stage and methodology line up against each other. Differences invisible when reading pages one at a time become obvious in a row.',
+    target: '[data-tour="compare-table"] tr',
   },
   {
-    id: 'compare-table',
-    chapter: '3. Compare tools',
-    title: 'Read them across, not down',
-    body: 'The chosen tools become columns and the dimensions become rows, so objective, audience, stage and methodology line up against each other. Differences invisible when reading pages one at a time become obvious in a row.',
-  },
-
-  // ---------- 4. Stage ----------
-  {
-    id: 'timeline-stages',
+    id: 'timeline',
     chapter: '4. View by stage',
     title: 'Eight stages, with counts',
-    body: 'From ideation through to maturity. The number under each stage is how many tools support it. The markers are buttons, not decoration: click one to filter the page to that stage.',
+    body: 'From ideation through to maturity, with the number of tools supporting each. The markers are buttons: click one to filter the page to that stage, click it again to clear. A tool appears in every stage it genuinely supports, not only the earliest.',
+    target: '[data-tour="timeline-stages"]',
   },
-  {
-    id: 'timeline-filtered',
-    chapter: '4. View by stage',
-    title: 'Tools in every stage they fit',
-    body: 'Selecting a stage filters the page to it. A tool appears in every stage it genuinely supports rather than only the earliest one, so a tool useful from startup through maturity shows up in all four.',
-  },
-
-  // ---------- 5. Network ----------
   {
     id: 'network',
     chapter: '5. Network graph',
     title: 'The collection as connections',
-    body: 'Tools are nodes and shared tags are the edges between them. Clusters are visible here in a way no index conveys: which tools sit at the centre of a topic, which bridge two areas, and which stand on their own.',
+    body: 'Tools are nodes, shared tags are the edges. Search to find one and follow its links outward, or drag a node to pull its neighbours into view. Clusters are visible here in a way no index conveys: which tools sit at the centre of a topic, which bridge two areas, and which stand alone.',
+    target: '[data-tour="network-canvas"]',
   },
-
-  // ---------- 6. Workflows ----------
   {
-    id: 'wf-start',
+    id: 'workflows',
     chapter: '6. Build workflows',
-    title: 'Workflows put tools in order',
-    body: 'One tool rarely does the whole job. A workflow is a sequence of them — map first, then assess, then align — saved so you can run it again or hand it to someone else.',
+    title: 'Tools in a running order',
+    body: 'One tool rarely does the whole job. Name the workflow after what it accomplishes, add tools from the panel on the right, and each becomes a numbered step you can reorder or remove. Sequence carries meaning — a mapping tool before an assessment tool gives you something to assess. Save it and it is waiting next time.',
+    target: '[data-tour="wf-steps"]',
   },
   {
-    id: 'wf-add',
-    chapter: '6. Build workflows',
-    title: 'Name the job, then add tools',
-    body: 'Title it after what it accomplishes rather than the tools it contains — "Assess a product idea for circularity" — then search the collection and add tools from the panel on the right.',
-  },
-  {
-    id: 'wf-steps',
-    chapter: '6. Build workflows',
-    title: 'Order is the point',
-    body: 'Each tool becomes a numbered step that can be moved or removed. Sequence carries real meaning: a mapping tool before an assessment tool gives you something to assess. Save, and it is waiting next time.',
-  },
-
-  // ---------- 7. Compatibility ----------
-  {
-    id: 'compat-select',
+    id: 'compatibility',
     chapter: '7. Check compatibility',
-    title: 'Start from what you have chosen',
-    body: 'Add the tools you are already planning to use — up to five. Everything else in the collection is then ranked against that selection.',
+    title: 'What fits with what you picked',
+    body: 'Add the tools you are already planning to use, up to five, and the rest of the collection is ranked against them. Complementary tools come with a plain-language reason and a high, medium or low rating. Overlapping ones are the useful warning: two tools doing the same job is wasted effort.',
+    target: '[data-tour="compat-results"]',
   },
-  {
-    id: 'compat-results',
-    chapter: '7. Check compatibility',
-    title: 'Complementary, and overlapping',
-    body: 'Complementary tools come with a plain-language reason and a high, medium or low rating. Overlapping ones are the useful warning: two tools doing the same job is wasted effort, so it tells you when you only need one.',
-  },
-
-  // ---------- 8. Visual selector ----------
   {
     id: 'visual',
     chapter: '8. Visual tool selector',
     title: 'Narrow by branches',
-    body: 'The same narrowing as the questionnaire, laid out as a decision tree. Choose a goal, then a context, and the matches beside it update with every branch you take.',
+    body: 'The same narrowing as the questionnaire, laid out as a decision tree. Choose a goal, then a context; the matches beside it update with every branch, and backing out of one widens the list again.',
+    target: '[data-tour="visual-tree"]',
   },
 
-  // ---------- Tool pages ----------
+  // ---------- tool pages ----------
   {
     id: 'tool-tags',
     chapter: 'Tool pages',
     title: 'Tags are the index',
-    body: 'Every tool carries tags, and each is a link rather than a label. Click one to see everything else sharing it — the fastest way to find the neighbours of a tool you already like.',
+    body: 'Every tool carries tags, and each is a link rather than a label. Clicking one opens everything else in the collection sharing it — the fastest way to find the neighbours of a tool you already like.',
+    target: '[data-tour="tag-modal"]',
   },
   {
     id: 'tool-dimensions',
     chapter: 'Tool pages',
     title: 'Twelve dimensions, every tool',
-    body: 'Each tool is described along the same twelve dimensions — objective, target audience, entrepreneurship stage, methodological approach, collaboration level and more — each carrying its own tags. That consistency is what lets the Atlas compare tools at all.',
+    body: 'Each tool is described along the same twelve dimensions — objective, target audience, entrepreneurship stage, methodological approach, collaboration level and more — each carrying its own tags. That consistency is what makes the stage view, comparison and compatibility possible at all.',
+    target: 'h1:has-text("Dimensions")',
   },
   {
     id: 'tool-prereq',
     chapter: 'Tool pages',
     title: 'What a tool asks of you',
     body: 'Prerequisites and a difficulty level, stated before you commit. This is what decides whether a tool survives contact with a real workshop: one you can hand out cold is a different proposition from one needing three things in place first.',
-  },
-  {
-    id: 'tool-compat',
-    chapter: 'Tool pages',
-    title: 'What works alongside it',
-    body: 'Every tool page ranks the rest of the collection against it, so you can keep moving outward from whatever you are reading without going back to a menu.',
+    target: '[data-tour="tool-prereq"]',
   },
   {
     id: 'panels',
     chapter: 'Tool pages',
     title: 'Two pages at once',
-    body: 'Opening a related tool slides it in beside what you are reading instead of replacing it, so you can compare two tools without losing your place. Panels stack, expand to full width, and close back to where you were.',
+    body: 'Related tools and the per-tool compatibility list open beside what you are reading instead of replacing it, so you can compare without losing your place. Panels stack, expand to full width, and close back to where you were.',
+    target: '[data-panel-id]',
   },
 
-  // ---------- Assistant ----------
+  // ---------- the rest ----------
+  {
+    id: 'toolbar',
+    chapter: 'Keeping track',
+    title: 'Search, bookmarks and history',
+    body: 'Search runs across titles, descriptions and tags from any page. Beside it: the pages you viewed recently, the ones you bookmarked, and the light/dark switch. The play button replays this tour whenever you want it.',
+    target: '[data-tour="toolbar"]',
+  },
   {
     id: 'assistant',
-    chapter: 'The assistant',
-    title: 'Describe the job, not the tool',
-    body: 'Tell the assistant what you are trying to do and it reads your question against the same tags the site is organised by. Each message narrows the last, the filters it applied show as chips you can remove, and every suggestion says which parts of your question it matched.',
+    chapter: 'Asking and adding',
+    title: 'Describe the job, or add your own',
+    body: 'The assistant reads your question against the same tags the site is organised by, narrowing with each message and showing which parts it matched. And if something is missing, Submit a tool adds it — or let Auto create draft the entry from your source material for review.',
+    target: '[aria-label="Tool assistant"]',
   },
 ];
 
 /** Path to a step's captured screen. */
 export const tourImage = (id: string) => `/tour/${id}.jpg`;
+
+/** Recorded position of a step's subject within its screen, if it has one. */
+export const tourHotspot = (id: string): Hotspot | undefined =>
+  (hotspots as Record<string, Hotspot>)[id];

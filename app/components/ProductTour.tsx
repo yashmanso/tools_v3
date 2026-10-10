@@ -2,7 +2,7 @@
 
 import { useState, useEffect, useCallback, useRef } from 'react';
 import { usePathname, useRouter } from 'next/navigation';
-import { TOUR_STEPS, tourImage } from '../lib/tourSteps';
+import { TOUR_STEPS, tourImage, tourHotspot } from '../lib/tourSteps';
 
 /**
  * The guided tour.
@@ -155,7 +155,27 @@ export function ProductTour() {
   const step = TOUR_STEPS[index];
   if (!step) return null;
 
+  const hotspot = tourHotspot(step.id);
   const isLast = index === TOUR_STEPS.length - 1;
+
+  // Zoom in on a small subject. A toolbar ringed inside a full page screenshot
+  // is a speck; scaling so it fills a good share of the frame makes the caption
+  // and the picture agree. Capped so a zoomed screen never looks mushy, and
+  // the pan is clamped so the image still covers the frame.
+  let zoom = { scale: 1, tx: 0, ty: 0 };
+  if (hotspot) {
+    const fill = 0.6;
+    const scale = Math.min(2.4, Math.max(1, Math.min(fill / hotspot.w, fill / hotspot.h)));
+    if (scale > 1.05) {
+      const cx = hotspot.x + hotspot.w / 2;
+      const cy = hotspot.y + hotspot.h / 2;
+      zoom = {
+        scale,
+        tx: Math.min(0, Math.max(1 - scale, 0.5 - cx * scale)),
+        ty: Math.min(0, Math.max(1 - scale, 0.5 - cy * scale)),
+      };
+    }
+  }
   const canGoBack = index > 0;
   const progress = ((index + 1) / TOUR_STEPS.length) * 100;
 
@@ -183,17 +203,40 @@ export function ProductTour() {
 
         {/* The captured screen */}
         <div className="relative bg-[var(--bg-primary)] border-b border-[var(--border)]">
-          <div className="aspect-[16/10] w-full overflow-hidden">
-            {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img
-              key={step.id}
-              src={tourImage(step.id)}
-              alt={step.title}
-              width={1280}
-              height={800}
-              className="w-full h-full object-cover object-top"
-              draggable={false}
-            />
+          <div className="relative aspect-[16/10] w-full overflow-hidden">
+            {/* The screen and its ring share one transform, so the ring stays
+                on the pixels it was measured against at any zoom. */}
+            <div
+              className="absolute inset-0 transition-transform duration-500"
+              style={{
+                transform: `translate(${zoom.tx * 100}%, ${zoom.ty * 100}%) scale(${zoom.scale})`,
+                transformOrigin: 'top left',
+              }}
+            >
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img
+                key={step.id}
+                src={tourImage(step.id)}
+                alt={step.title}
+                width={1280}
+                height={800}
+                className="w-full h-full object-cover object-top"
+                draggable={false}
+              />
+              {/* The caption's subject, at the position recorded when the screen
+                  was captured - so the ring cannot drift from the pixels. */}
+              {hotspot && (
+                <div
+                  className="pointer-events-none absolute rounded-md ring-2 ring-blue-500 shadow-[0_0_0_9999px_rgba(0,0,0,0.5)]"
+                  style={{
+                    left: `${hotspot.x * 100}%`,
+                    top: `${hotspot.y * 100}%`,
+                    width: `${hotspot.w * 100}%`,
+                    height: `${hotspot.h * 100}%`,
+                  }}
+                />
+              )}
+            </div>
           </div>
           <button
             type="button"

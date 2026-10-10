@@ -78,7 +78,7 @@ export function TagModal({ resources }: TagModalProps) {
           setOpenResourceTags(null);
         }}
       />
-      <div className="fixed right-0 top-0 bottom-0 w-80 bg-[var(--bg-secondary)] border-l border-[var(--border)] z-[200] overflow-y-auto shadow-xl flex flex-col">
+      <div data-tour="tag-modal" className="fixed right-0 top-0 bottom-0 w-80 bg-[var(--bg-secondary)] border-l border-[var(--border)] z-[200] overflow-y-auto shadow-xl flex flex-col">
         <div className="p-4 border-b border-[var(--border)] sticky top-0 bg-[var(--bg-secondary)] flex-shrink-0">
           <div className="flex items-center justify-between mb-2">
             <div>

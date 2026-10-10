@@ -598,6 +598,7 @@ export function NetworkGraph({ allResources, graphData }: NetworkGraphProps) {
         onMouseLeave={handleMouseUp}
       >
         <svg
+          data-tour="network-canvas"
           ref={svgRef}
           width="100%"
           height="100%"
