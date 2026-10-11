@@ -153,6 +153,12 @@ const recipes = {
     await centre(page, '[data-tour="visual-tree"]');
   },
 
+  async session(page) {
+    await gotoMode(page, 'session');
+    await sleep(900);
+    await centre(page, '[data-tour="session-plan"]');
+  },
+
   // ---------- tool pages ----------
   async 'tool-tags'(page) {
     await page.goto(`${BASE}${TOOL}`, { waitUntil: 'networkidle' });

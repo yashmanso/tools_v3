@@ -10,6 +10,7 @@ import { NetworkGraph } from './NetworkGraph';
 import { WorkflowBuilder } from './WorkflowBuilder';
 import { ToolCompatibilityChecker } from './ToolCompatibilityChecker';
 import { VisualToolSelector } from './VisualToolSelector';
+import { SessionPlanner } from './SessionPlanner';
 import { Button } from '@/components/ui/button';
 import { CardButton } from './CardButton';
 import { cn } from '@/lib/utils';
@@ -25,7 +26,7 @@ interface ExploreSectionProps {
 }
 
 export function ExploreSection({ allResources, graphData }: ExploreSectionProps) {
-  const [mode, setMode] = useState<'select' | 'browse' | 'find' | 'compare' | 'timeline' | 'network' | 'workflows' | 'compatibility' | 'visual'>('select');
+  const [mode, setMode] = useState<'select' | 'browse' | 'find' | 'compare' | 'timeline' | 'network' | 'workflows' | 'compatibility' | 'visual' | 'session'>('select');
   const contentRef = useRef<HTMLDivElement | null>(null);
   const sectionRef = useRef<HTMLElement | null>(null);
   const { panels } = usePanels();
@@ -51,7 +52,7 @@ export function ExploreSection({ allResources, graphData }: ExploreSectionProps)
     {
       id: 'select',
       label: 'Overview',
-      description: 'Start here. All nine ways to explore.',
+      description: 'Start here. All ten ways to explore.',
     },
     {
       id: 'browse',
@@ -92,6 +93,11 @@ export function ExploreSection({ allResources, graphData }: ExploreSectionProps)
       id: 'visual',
       label: 'Visual tool selector',
       description: 'Narrow the collection down with a decision tree.',
+    },
+    {
+      id: 'session',
+      label: 'Plan a session',
+      description: 'Get a running order you can facilitate, with what to prepare.',
     },
   ];
 
@@ -254,6 +260,21 @@ export function ExploreSection({ allResources, graphData }: ExploreSectionProps)
           </Button>
         </div>
         <VisualToolSelector allResources={allResources} />
+      </div>
+    );
+  } else if (mode === 'session') {
+    content = (
+      <div className="py-8">
+        <div className="mb-6">
+          <Button
+            variant="ghost"
+            onClick={() => setMode('select')}
+            className="text-sm text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-100 mb-4 inline-flex items-center gap-2"
+          >
+            ← Back to options
+          </Button>
+        </div>
+        <SessionPlanner allResources={allResources} />
       </div>
     );
   }
@@ -460,6 +481,22 @@ export function ExploreSection({ allResources, graphData }: ExploreSectionProps)
                     </p>
                     <div className="mt-auto pt-4 text-center text-blue-600 dark:text-blue-400 text-sm font-medium">
                       Start selecting →
+                    </div>
+                  </div>
+                </CardButton>
+
+                {/* Session Planner Option */}
+                <CardButton data-tour="mode-session" onClick={() => setMode('session')} className="group p-4 sm:p-6 lg:p-8 min-h-[200px] sm:min-h-[240px]">
+                  <div className="flex w-full flex-col h-full">
+                    <h3 className="text-xl font-semibold mb-3 text-[var(--text-primary)]">
+                      Plan a session
+                    </h3>
+                    <p className="text-sm text-[var(--text-secondary)] leading-relaxed break-words">
+                      Say who is in the room, how much they know, and what the session should achieve.
+                      You get an opening, a main exercise, and a close, plus everything to prepare beforehand.
+                    </p>
+                    <div className="mt-auto pt-4 text-center text-blue-600 dark:text-blue-400 text-sm font-medium">
+                      Plan a session →
                     </div>
                   </div>
                 </CardButton>

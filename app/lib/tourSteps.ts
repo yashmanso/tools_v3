@@ -48,7 +48,7 @@ export const TOUR_STEPS: TourStep[] = [
   {
     id: 'hub',
     chapter: 'Getting around',
-    title: 'Nine ways to explore',
+    title: 'Ten ways to explore',
     body: 'People arrive knowing different things, so there is no single front door. Browse if you want the shape of the collection, answer questions if you know your situation but not the vocabulary, or go straight to your stage of the innovation journey.',
     target: '[data-tour="explore-hub"]',
   },
@@ -56,7 +56,7 @@ export const TOUR_STEPS: TourStep[] = [
     id: 'menu',
     chapter: 'Getting around',
     title: 'Every workflow, from anywhere',
-    body: 'The menu beside the wordmark opens on any page and lists all nine. Overview returns you to the start. The eight that follow are what the others do.',
+    body: 'The menu beside the wordmark opens on any page and lists all ten. Overview returns you to the start. The nine that follow are what the others do.',
     target: '[data-tour="workflow-menu"]',
   },
 
@@ -116,6 +116,14 @@ export const TOUR_STEPS: TourStep[] = [
     title: 'Narrow by branches',
     body: 'The same narrowing as the questionnaire, laid out as a decision tree. Choose a goal, then a context; the matches beside it update with every branch, and backing out of one widens the list again.',
     target: '[data-tour="visual-tree"]',
+  },
+
+  {
+    id: 'session',
+    chapter: '9. Plan a session',
+    title: 'A running order for the room',
+    body: 'Say who is in the room, how much they already know, how they will work, and what the session should achieve. You get an opening, a main exercise, and a close, each pitched at that group, plus the one thing the tool pages cannot tell you on their own: everything to prepare beforehand, gathered across the whole session.',
+    target: '[data-tour="session-plan"]',
   },
 
   // ---------- tool pages ----------

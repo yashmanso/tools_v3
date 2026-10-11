@@ -49,21 +49,93 @@ export function buildPageGraph(): PageGraph {
 
   // Build edges based on relationships
   const resourceList = Array.from(nodes.entries());
+  const idf = buildTagIdf(resourceList.map(([, n]) => n));
 
+  const candidates: GraphEdge[] = [];
   for (let i = 0; i < resourceList.length; i++) {
     for (let j = i + 1; j < resourceList.length; j++) {
       const [id1, node1] = resourceList[i];
       const [id2, node2] = resourceList[j];
 
-      const edge = calculateRelationship(node1, node2, id1, id2);
+      const edge = calculateRelationship(node1, node2, id1, id2, idf);
 
       if (edge && edge.weight > 0) {
-        edges.push(edge);
+        candidates.push(edge);
       }
     }
   }
 
-  return { nodes, edges };
+  return { nodes, edges: pruneToStrongest(candidates, MAX_EDGES_PER_NODE) };
+}
+
+/**
+ * How many of a node's relationships to keep.
+ *
+ * Tools carry 36 tags each out of 127, so almost every pair shares something
+ * and scoring alone leaves a near-complete graph: 723 edges over 64 nodes,
+ * which draws as a hairball. Keeping each node's strongest few relationships
+ * bounds the density without hiding any node entirely.
+ */
+const MAX_EDGES_PER_NODE = 6;
+
+/**
+ * Shared tag weight at which a relationship is counted at half strength.
+ * Below it, a pair has too little in common for similarity alone to be
+ * trusted; above it, the normalised score carries most of the result.
+ */
+const EVIDENCE_HALF_WEIGHT = 6;
+
+/**
+ * Rarity weight for every tag in the corpus.
+ *
+ * A tag carried by nearly everything says nothing about a pair: #team is on
+ * all 28 tools, #systems-thinking on 27. Weighting by inverse document
+ * frequency makes those contribute almost nothing, while a tag on two or
+ * three resources counts heavily. This is what separates clusters that mean
+ * something from clusters that are an artifact of thorough tagging.
+ */
+function buildTagIdf(allNodes: GraphNode[]): Map<string, number> {
+  const total = allNodes.length || 1;
+  const docFreq = new Map<string, number>();
+
+  for (const node of allNodes) {
+    for (const tag of new Set(node.tags)) {
+      docFreq.set(tag, (docFreq.get(tag) ?? 0) + 1);
+    }
+  }
+
+  const idf = new Map<string, number>();
+  for (const [tag, freq] of docFreq) {
+    // log(total / freq): 0 when a tag is on everything, growing as it gets rarer.
+    idf.set(tag, Math.log(total / freq));
+  }
+  return idf;
+}
+
+/**
+ * Keep each node's strongest relationships, and the union of those keeps.
+ *
+ * An edge survives if either end ranks it among its best, so a niche resource
+ * keeps its lifeline to the rest of the graph even when the node at the other
+ * end has stronger options.
+ */
+function pruneToStrongest(candidates: GraphEdge[], perNode: number): GraphEdge[] {
+  const byNode = new Map<string, GraphEdge[]>();
+  for (const edge of candidates) {
+    for (const id of [edge.source, edge.target]) {
+      const list = byNode.get(id) ?? [];
+      list.push(edge);
+      byNode.set(id, list);
+    }
+  }
+
+  const kept = new Set<GraphEdge>();
+  for (const list of byNode.values()) {
+    list.sort((a, b) => b.weight - a.weight);
+    for (const edge of list.slice(0, perNode)) kept.add(edge);
+  }
+
+  return candidates.filter(edge => kept.has(edge));
 }
 
 /**
@@ -73,51 +145,67 @@ function calculateRelationship(
   node1: GraphNode,
   node2: GraphNode,
   id1: string,
-  id2: string
+  id2: string,
+  idf: Map<string, number>
 ): GraphEdge | null {
   const reasons: string[] = [];
   let weight = 0;
 
-  // 1. Shared tags (strongest signal)
+  // 1. Shared tags, each worth what it is rare.
+  //    Counting them flat made a shared #team (on every tool) worth as much as
+  //    a shared #biomimicry, which is how everything ended up connected to
+  //    everything.
   const sharedTags = node1.tags.filter((tag) => node2.tags.includes(tag));
   if (sharedTags.length > 0) {
-    // Weight increases with more shared tags
-    weight += sharedTags.length * 2;
-    reasons.push(`Shared tags: ${sharedTags.slice(0, 3).join(', ')}${sharedTags.length > 3 ? '...' : ''}`);
+    const ranked = sharedTags
+      .map((tag) => ({ tag, score: idf.get(tag) ?? 0 }))
+      .sort((a, b) => b.score - a.score);
+
+    // Normalise by each page's own tag weight, so similarity is measured
+    // rather than thoroughness. Future-Fit Business Benchmark carries 55 tags
+    // against 26 for the leanest tool, and on a raw sum it outscored
+    // everything simply for being tagged more completely.
+    const shared = ranked.reduce((sum, t) => sum + t.score, 0);
+    const mass = (node: GraphNode) =>
+      node.tags.reduce((sum, tag) => sum + (idf.get(tag) ?? 0), 0);
+    const norm = Math.sqrt(mass(node1) * mass(node2)) || 1;
+
+    // Discount thin evidence. Articles carry about one tag each, so two of
+    // them sharing #academic-articles are a perfect match by similarity alone
+    // and outranked genuinely related tools. Scaling by how much shared weight
+    // there is in absolute terms keeps a single common tag modest.
+    const confidence = shared / (shared + EVIDENCE_HALF_WEIGHT);
+    weight += (shared / norm) * confidence * 100;
+
+    // Name the tags that actually drove the score, not the first three
+    // alphabetically, so the stated reason matches the real one.
+    const telling = ranked.filter((t) => t.score > 0.4).slice(0, 3);
+    if (telling.length > 0) {
+      reasons.push(`Shared tags: ${telling.map((t) => t.tag).join(', ')}`);
+    }
   }
 
-  // 2. Same category (moderate signal)
-  if (node1.category === node2.category) {
-    weight += 1;
-    reasons.push(`Same category: ${node1.category}`);
-  }
-
-  // 3. Title word overlap (weak signal)
+  // 2. Title word overlap, as a tiebreaker between similarly tagged pages.
   const titleWords1 = extractKeywords(node1.title);
   const titleWords2 = extractKeywords(node2.title);
   const sharedWords = titleWords1.filter((word) => titleWords2.includes(word));
   if (sharedWords.length > 0) {
-    weight += sharedWords.length * 0.5;
+    weight += sharedWords.length * 2;
     reasons.push(`Related terms: ${sharedWords.slice(0, 3).join(', ')}`);
   }
 
-  // 4. Tag category overlap (e.g., both have sustainability-related tags)
-  const tagCategories1 = getTagCategories(node1.tags);
-  const tagCategories2 = getTagCategories(node2.tags);
-  const sharedCategories = tagCategories1.filter((cat) => tagCategories2.includes(cat));
-  if (sharedCategories.length > 0 && sharedTags.length === 0) {
-    // Only add if no direct tag overlap
-    weight += sharedCategories.length * 0.3;
-  }
+  // Same category used to add a flat point, which drew an edge between every
+  // pair of articles whether or not they had anything in common. Category is
+  // already visible as colour in the graph, so it no longer scores.
 
-  if (weight === 0) {
+  if (weight <= 0 || reasons.length === 0) {
     return null;
   }
 
   return {
     source: id1,
     target: id2,
-    weight,
+    weight: Math.round(weight * 100) / 100,
     reasons,
   };
 }
@@ -141,33 +229,6 @@ function extractKeywords(title: string): string[] {
     .replace(/[^\w\s]/g, ' ')
     .split(/\s+/)
     .filter((word) => word.length > 2 && !stopWords.has(word));
-}
-
-/**
- * Get broad categories from tags
- */
-function getTagCategories(tags: string[]): string[] {
-  const categories: string[] = [];
-
-  const sustainabilityTags = ['environmental-sustainability', 'social-sustainability', 'economic-sustainability', 'SDGs', 'circular-economy'];
-  const innovationTags = ['product-innovation', 'process-innovation', 'business-model-innovation', 'social-innovation'];
-  const stageTags = ['ideation', 'design', 'development', 'implementation', 'startup', 'growth'];
-  const audienceTags = ['entrepreneurs', 'researchers', 'students', 'practitioners'];
-
-  if (tags.some((t) => sustainabilityTags.includes(t))) {
-    categories.push('sustainability');
-  }
-  if (tags.some((t) => innovationTags.includes(t))) {
-    categories.push('innovation');
-  }
-  if (tags.some((t) => stageTags.includes(t))) {
-    categories.push('entrepreneurship-stage');
-  }
-  if (tags.some((t) => audienceTags.includes(t))) {
-    categories.push('audience');
-  }
-
-  return categories;
 }
 
 /**

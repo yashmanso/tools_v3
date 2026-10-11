@@ -35,14 +35,26 @@ const getNodeIcon = (node: GraphNode): string => {
   return '•';
 };
 
-const getNodeColor = (node: GraphNode, isSelected: boolean): string => {
-  if (isSelected) return '#64748b'; // slate for selected
-  // Monochrome palette based on category
-  if (node.category === 'tools') return '#475569'; // slate-600
-  if (node.category === 'collections') return '#64748b'; // slate-500
-  if (node.category === 'articles') return '#94a3b8'; // slate-400
-  return '#6b7280'; // gray
+/**
+ * One hue per category.
+ *
+ * The three categories used to be three shades of slate, which told the reader
+ * nothing at a glance: the only way to know what a node was was to hover it.
+ */
+const CATEGORY_COLORS: Record<string, string> = {
+  tools: '#2563eb',       // blue
+  collections: '#0d9488', // teal
+  articles: '#9333ea',    // violet
 };
+
+const getNodeColor = (node: GraphNode, isSelected: boolean): string => {
+  if (isSelected) return '#1e293b';
+  return CATEGORY_COLORS[node.category] ?? '#6b7280';
+};
+
+/** Shorten a title to something that fits under a node. */
+const shortLabel = (title: string, max = 22): string =>
+  title.length <= max ? title : `${title.slice(0, max - 1).trimEnd()}…`;
 
 export function NetworkGraph({ allResources, graphData }: NetworkGraphProps) {
   const { addPanel } = usePanels();
@@ -54,7 +66,8 @@ export function NetworkGraph({ allResources, graphData }: NetworkGraphProps) {
   const containerRef = useRef<HTMLDivElement>(null);
   const [dimensions, setDimensions] = useState({ width: 1000, height: 700 });
   const [hoveredNode, setHoveredNode] = useState<string | null>(null);
-  const [legendExpanded, setLegendExpanded] = useState(false);
+  // Open by default: a key the reader has to find first is not doing its job.
+  const [legendExpanded, setLegendExpanded] = useState(true);
   const [showWeightHelp, setShowWeightHelp] = useState(false);
   
   // Zoom and pan state
@@ -180,6 +193,9 @@ export function NetworkGraph({ allResources, graphData }: NetworkGraphProps) {
     // --- Force simulation (refines radial layout) ---
     let iteration = 0;
     const maxIterations = 200;
+    // Relationship strengths are relative, so normalise against the strongest
+    // edge on screen rather than assuming a fixed range.
+    const maxWeight = Math.max(1, ...edges.map(e => e.weight));
 
     const simulate = () => {
       if (iteration >= maxIterations) {
@@ -220,8 +236,13 @@ export function NetworkGraph({ allResources, graphData }: NetworkGraphProps) {
           const dx = other.x - pos1.x;
           const dy = other.y - pos1.y;
           const dist = Math.sqrt(dx * dx + dy * dy) || 1;
-          const ideal = 120 + edge.weight * 15;
-          const force = ((dist - ideal) * t * 0.25) / Math.max(edge.weight, 1);
+          // Strongly related pages settle close together and pull harder.
+          // This was inverted: the ideal distance grew with weight and the
+          // force was divided by it, so the most related pages were pushed
+          // furthest apart and held there most weakly.
+          const strength = edge.weight / maxWeight;
+          const ideal = 240 - strength * 150;
+          const force = (dist - ideal) * t * 0.25 * (0.3 + strength);
           fx += (dx / dist) * force;
           fy += (dy / dist) * force;
         });
@@ -231,7 +252,9 @@ export function NetworkGraph({ allResources, graphData }: NetworkGraphProps) {
         const dy = pos1.y - centerY;
         const currentR = Math.sqrt(dx * dx + dy * dy) || 1;
         const targetR = targetRadii.get(pos1.id) ?? maxRadius * 0.5;
-        const radialStrength = (targetR - currentR) * 0.04 * t;
+        // Weak enough to keep the drawing centred without imposing rings;
+        // at full strength it flattened every cluster into a grid.
+        const radialStrength = (targetR - currentR) * 0.008 * t;
         fx += (dx / currentR) * radialStrength;
         fy += (dy / currentR) * radialStrength;
 
@@ -743,6 +766,25 @@ export function NetworkGraph({ allResources, graphData }: NetworkGraphProps) {
                       {icon}
                     </text>
 
+                    {/* Every node carries its name. Without this the graph is a
+                        field of identical dots and the only way to learn what
+                        anything is, is to hover it one at a time. The halo
+                        keeps the text legible where it crosses an edge. */}
+                    {!isThisHovered && !isNeighborOfHovered && (
+                      <text
+                        x={pos.x}
+                        y={pos.y + size + 11}
+                        textAnchor="middle"
+                        fontSize="9"
+                        className="pointer-events-none select-none fill-[var(--text-secondary)]"
+                        stroke="var(--bg-primary)"
+                        strokeWidth="3"
+                        paintOrder="stroke"
+                      >
+                        {shortLabel(pos.node.title)}
+                      </text>
+                    )}
+
                     {/* Label on neighbor nodes so user can identify them */}
                     {isNeighborOfHovered && !isThisHovered && (
                       <g transform={`translate(${pos.x}, ${pos.y + size + 4})`} className="pointer-events-none select-none">
@@ -829,19 +871,19 @@ export function NetworkGraph({ allResources, graphData }: NetworkGraphProps) {
           {legendExpanded && (
             <div className="px-3 pb-3 pt-1 space-y-1.5">
               <div className="flex items-center gap-2">
-                <div className="w-6 h-6 rounded-full bg-[#475569] flex items-center justify-center text-white text-[10px] font-bold">
+                <div className="w-6 h-6 rounded-full bg-[#2563eb] flex items-center justify-center text-white text-[10px] font-bold">
                   T
                 </div>
                 <span className="text-xs text-gray-600 dark:text-gray-400">Tools</span>
               </div>
               <div className="flex items-center gap-2">
-                <div className="w-6 h-6 rounded-full bg-[#64748b] flex items-center justify-center text-white text-[10px] font-bold">
+                <div className="w-6 h-6 rounded-full bg-[#0d9488] flex items-center justify-center text-white text-[10px] font-bold">
                   K
                 </div>
                 <span className="text-xs text-gray-600 dark:text-gray-400">Collections</span>
               </div>
               <div className="flex items-center gap-2">
-                <div className="w-6 h-6 rounded-full bg-[#94a3b8] flex items-center justify-center text-white text-[10px] font-bold">
+                <div className="w-6 h-6 rounded-full bg-[#9333ea] flex items-center justify-center text-white text-[10px] font-bold">
                   A
                 </div>
                 <span className="text-xs text-gray-600 dark:text-gray-400">Articles</span>

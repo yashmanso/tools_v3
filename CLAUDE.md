@@ -13,7 +13,7 @@ it, reword it, or correct it as part of an interface change. If something reads
 oddly on a tool page, the fix is in the markdown file, and it is the
 maintainer's call.
 
-**Interface copy** is written in the components: the home page, the nine
+**Interface copy** is written in the components: the home page, the ten
 workflow descriptions, headings, empty states, button labels, the assistant's
 replies, and the tour captions in `app/lib/tourSteps.ts`. That text is ours to
 improve, and the rules below apply to it.
