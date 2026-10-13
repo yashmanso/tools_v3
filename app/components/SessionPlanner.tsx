@@ -71,7 +71,7 @@ export function SessionPlanner({ allResources }: SessionPlannerProps) {
       variant="ghost"
       onClick={onClick}
       aria-pressed={active}
-      className={`h-auto flex-col items-start text-left whitespace-normal rounded-xl border px-3 py-2 transition-colors ${
+      className={`h-auto flex-col items-start text-left whitespace-normal break-words min-w-0 rounded-xl border px-3 py-2 transition-colors ${
         active
           ? 'border-blue-500 bg-blue-50 dark:bg-blue-900/25 text-[var(--text-primary)]'
           : 'border-[var(--border)] hover:border-blue-300 text-[var(--text-secondary)]'
@@ -91,18 +91,18 @@ export function SessionPlanner({ allResources }: SessionPlannerProps) {
         </p>
       </div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 sm:gap-6">
+      <div className="flex flex-wrap gap-4 sm:gap-6">
         {/* The brief */}
-        <div className="lg:col-span-1">
+        <div className="min-w-0 flex-[1_1_16rem]">
           <div
             data-tour="session-brief"
-            className="bg-[var(--bg-secondary)] rounded-2xl sm:rounded-3xl border border-gray-200 dark:border-gray-700 p-4 sm:p-6 lg:sticky lg:top-4 space-y-5"
+            className="bg-[var(--bg-secondary)] rounded-2xl sm:rounded-3xl border border-gray-200 dark:border-gray-700 p-4 sm:p-6 space-y-5"
           >
             <div>
               <h3 className="text-xs font-semibold uppercase tracking-wide text-[var(--text-secondary)] mb-2">
                 Who is in the room
               </h3>
-              <div className="grid grid-cols-2 gap-2">
+              <div className="grid grid-cols-[repeat(auto-fill,minmax(8.5rem,1fr))] gap-2">
                 {AUDIENCES.map(a =>
                   choice(audience === a.value, () => setAudience(a.value), a.label, undefined, a.value)
                 )}
@@ -143,7 +143,7 @@ export function SessionPlanner({ allResources }: SessionPlannerProps) {
         </div>
 
         {/* The plan */}
-        <div data-tour="session-plan" className="lg:col-span-2 space-y-4 sm:space-y-6">
+        <div data-tour="session-plan" className="min-w-0 flex-[2_1_22rem] space-y-4 sm:space-y-6">
           {plan.shortfall && (
             <p className="rounded-xl border border-yellow-200 dark:border-yellow-800 bg-yellow-50 dark:bg-yellow-900/20 px-4 py-3 text-sm text-yellow-800 dark:text-yellow-200">
               {plan.shortfall}
