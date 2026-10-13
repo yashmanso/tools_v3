@@ -99,7 +99,7 @@ export function ToolCompatibilityChecker({ allResources }: ToolCompatibilityChec
       {/* Selected Tools */}
       {selectedTools.length > 0 && (
         <div className="mb-4 sm:mb-6">
-          <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between mb-3 gap-2">
+          <div className="flex flex-col @2xl:flex-row items-start @2xl:items-center justify-between mb-3 gap-2">
             <h3 className="text-base sm:text-lg font-semibold text-gray-900 dark:text-gray-100">
               Selected Tools ({selectedTools.length}/5)
             </h3>
@@ -155,9 +155,9 @@ export function ToolCompatibilityChecker({ allResources }: ToolCompatibilityChec
         </div>
       )}
 
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 sm:gap-6">
+      <div className="grid grid-cols-1 @5xl:grid-cols-3 gap-4 sm:gap-6">
         {/* Left: Tool Selection */}
-        <div className="lg:col-span-1">
+        <div className="@5xl:col-span-1">
           <div className="bg-[var(--bg-secondary)] rounded-2xl sm:rounded-3xl border border-gray-200 dark:border-gray-700 p-4 sm:p-6 lg:sticky lg:top-4">
             <h3 data-tour="compat-select" className="text-base sm:text-lg font-semibold mb-3 sm:mb-4 text-gray-900 dark:text-gray-100">
               Select Tools
@@ -212,7 +212,7 @@ export function ToolCompatibilityChecker({ allResources }: ToolCompatibilityChec
         </div>
 
         {/* Right: Compatibility Results */}
-        <div data-tour="compat-results" className="lg:col-span-2 space-y-4 sm:space-y-6">
+        <div data-tour="compat-results" className="@5xl:col-span-2 space-y-4 sm:space-y-6">
           {selectedTools.length === 0 ? (
             <div className="text-center py-8 sm:py-12 bg-[var(--bg-secondary)] rounded-2xl sm:rounded-3xl border border-gray-200 dark:border-gray-700 border-dashed">
               <p className="text-sm sm:text-base text-gray-500 dark:text-gray-400 mb-2 sm:mb-4">Select tools to check compatibility</p>
@@ -240,7 +240,7 @@ export function ToolCompatibilityChecker({ allResources }: ToolCompatibilityChec
                         key={result.tool.slug}
                         className={`p-3 sm:p-4 rounded-lg sm:rounded-xl border ${getRelationshipColor(result.relationship)}`}
                       >
-                        <div className="flex flex-col sm:flex-row items-start sm:items-start justify-between mb-2 gap-2">
+                        <div className="flex flex-col @2xl:flex-row items-start @2xl:items-start justify-between mb-2 gap-2">
                           <div className="flex-1 min-w-0">
                             <h4 className="text-sm sm:text-base font-semibold text-gray-900 dark:text-gray-100 mb-1 break-words">
                               {result.tool.title}

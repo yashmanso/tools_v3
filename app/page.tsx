@@ -40,7 +40,7 @@ export default function HomePage() {
           </p>
         </section>
 
-        <section className="grid md:grid-cols-3 gap-6 mb-16">
+        <section className="grid @3xl:grid-cols-3 gap-6 mb-16">
         <ScrollAnimation direction="slide-up" delay={0}>
           <div>
             <Link

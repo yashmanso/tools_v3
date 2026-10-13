@@ -78,7 +78,7 @@ export function FilteredResourceList({
       {/* Results grid or list */}
       {filteredResources.length > 0 ? (
         view === 'grid' ? (
-          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-4">
+          <div className="grid @3xl:grid-cols-2 @5xl:grid-cols-3 gap-4">
             {filteredResources.map((resource, index) => {
               const isSelected = selectedTools.some(t => t.slug === resource.slug);
               const canSelect = !onToolSelect || selectedTools.length < 3 || isSelected;

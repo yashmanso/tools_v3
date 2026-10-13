@@ -216,7 +216,7 @@ export function ToolFinder({ allResources }: ToolFinderProps) {
     return (
       <div className="max-w-6xl mx-auto">
         <div className="mb-6 sm:mb-8">
-          <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between mb-4 gap-3">
+          <div className="flex flex-col @2xl:flex-row items-start @2xl:items-center justify-between mb-4 gap-3">
             <div className="flex-1">
               <h2 className="text-2xl font-bold mb-2">Your shortlist</h2>
               <p className="text-sm sm:text-base text-gray-600 dark:text-gray-400">
@@ -228,7 +228,7 @@ export function ToolFinder({ allResources }: ToolFinderProps) {
             </div>
             <Button variant="ghost"
               onClick={handleReset}
-              className="px-3 sm:px-4 py-2 text-xs sm:text-sm border border-gray-300 dark:border-gray-600 rounded-full hover:border-blue-500 dark:hover:border-blue-500 transition-colors w-full sm:w-auto"
+              className="px-3 sm:px-4 py-2 text-xs sm:text-sm border border-gray-300 dark:border-gray-600 rounded-full hover:border-blue-500 dark:hover:border-blue-500 transition-colors w-full @2xl:w-auto"
             >
               Start Over
             </Button>
@@ -261,7 +261,7 @@ export function ToolFinder({ allResources }: ToolFinderProps) {
             <h3 className="text-lg sm:text-xl font-semibold mb-3 sm:mb-4 text-gray-900 dark:text-gray-100">
               Most Relevant Tools ({topMatches.length})
             </h3>
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-4">
+            <div className="grid grid-cols-1 @2xl:grid-cols-2 @5xl:grid-cols-3 gap-3 sm:gap-4">
               {topMatches.map((item, idx) => (
                 <div key={item.tool.slug} className="relative">
                   <ResourceCard 
@@ -286,7 +286,7 @@ export function ToolFinder({ allResources }: ToolFinderProps) {
             <h3 className="text-lg sm:text-xl font-semibold mb-3 sm:mb-4 text-gray-900 dark:text-gray-100">
               All Other Tools ({otherTools.length})
             </h3>
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-4">
+            <div className="grid grid-cols-1 @2xl:grid-cols-2 @5xl:grid-cols-3 gap-3 sm:gap-4">
               {otherTools.map((item, idx) => (
                 <ResourceCard 
                   key={item.tool.slug} 
@@ -301,7 +301,7 @@ export function ToolFinder({ allResources }: ToolFinderProps) {
 
         {/* If no matches but tools exist, show all */}
         {topMatches.length === 0 && reorderedTools.length > 0 && (
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-4">
+          <div className="grid grid-cols-1 @2xl:grid-cols-2 @5xl:grid-cols-3 gap-3 sm:gap-4">
             {reorderedTools.map((item, idx) => (
               <ResourceCard 
                 key={item.tool.slug} 
@@ -346,7 +346,7 @@ export function ToolFinder({ allResources }: ToolFinderProps) {
         <h2 data-tour="finder-question" className="text-2xl font-bold mb-2 px-2 sm:px-0">{currentQuestion.question}</h2>
         <p className="text-sm sm:text-base text-gray-600 dark:text-gray-400 mb-4 sm:mb-6 px-2 sm:px-0">{currentQuestion.description}</p>
 
-        <div data-tour="finder-options" className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+        <div data-tour="finder-options" className="grid grid-cols-1 @2xl:grid-cols-2 gap-3">
           {currentQuestion.options.map((option) => (
             <Button variant="ghost"
               key={option.value}
@@ -385,7 +385,7 @@ export function ToolFinder({ allResources }: ToolFinderProps) {
           onClick={() => {
             goToNextStep();
           }}
-          className="text-xs sm:text-sm text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-100 px-3 py-2"
+          className="text-xs sm:text-sm text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-100 px-3 py-2 max-w-full whitespace-normal"
         >
           Skip this question →
         </Button>

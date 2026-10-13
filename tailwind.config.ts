@@ -80,7 +80,7 @@ const config: Config = {
   		}
   	}
   },
-  plugins: [require('@tailwindcss/typography'), require("tailwindcss-animate")],
+  plugins: [require('@tailwindcss/typography'), require('@tailwindcss/container-queries'), require("tailwindcss-animate")],
 };
 
 export default config;

@@ -173,7 +173,7 @@ export function ToolSubmissionSection() {
   return (
     <section className="rounded-3xl border border-gray-200 dark:border-gray-700 bg-[var(--bg-secondary)] p-6">
       <form onSubmit={handleSubmit} className="space-y-6">
-        <div className="grid gap-4 md:grid-cols-2">
+        <div className="grid gap-4 @3xl:grid-cols-2">
           <div className="space-y-2">
             <Label htmlFor="tool-title">Tool name</Label>
             <Input

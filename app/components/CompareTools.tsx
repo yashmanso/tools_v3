@@ -90,7 +90,7 @@ export function CompareTools({ allResources }: CompareToolsProps) {
   if (showComparison && selectedTools.length >= 2) {
     return (
       <div className="w-full px-4 sm:px-6">
-        <div className="mb-4 sm:mb-6 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
+        <div className="mb-4 sm:mb-6 flex flex-col @2xl:flex-row items-start @2xl:items-center justify-between gap-3">
           <h2 className="text-xl sm:text-2xl font-bold">Compare tools</h2>
           <Button variant="ghost"
             onClick={handleReset}
@@ -244,14 +244,14 @@ export function CompareTools({ allResources }: CompareToolsProps) {
       {/* Selected tools */}
       {selectedTools.length > 0 && (
         <div className="mb-4 sm:mb-6 p-3 sm:p-4 bg-blue-50 dark:bg-blue-900/20 rounded-2xl border border-blue-200 dark:border-blue-800">
-          <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between mb-3 gap-2">
+          <div className="flex flex-col @2xl:flex-row items-start @2xl:items-center justify-between mb-3 gap-2">
             <h3 className="text-sm sm:text-base font-semibold text-gray-900 dark:text-gray-100">
               Selected tools ({selectedTools.length}/3)
             </h3>
             {selectedTools.length >= 2 && (
               <Button variant="ghost"
                 onClick={handleCompare}
-                className="px-3 sm:px-4 py-2 bg-blue-600 text-white rounded-full hover:bg-blue-700 transition-colors text-xs sm:text-sm w-full sm:w-auto"
+                className="px-3 sm:px-4 py-2 bg-blue-600 text-white rounded-full hover:bg-blue-700 transition-colors text-xs sm:text-sm w-full @2xl:w-auto"
               >
                 Compare selected tools
               </Button>
@@ -303,7 +303,7 @@ export function CompareTools({ allResources }: CompareToolsProps) {
         </div>
 
         {/* Results grid */}
-        <div data-tour="compare-list" className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
+        <div data-tour="compare-list" className="grid grid-cols-1 @2xl:grid-cols-2 gap-3 sm:gap-4">
           {tools
             .filter((tool) => {
               const matchesSearch =

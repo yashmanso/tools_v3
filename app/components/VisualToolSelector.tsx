@@ -209,9 +209,9 @@ export function VisualToolSelector({ allResources }: VisualToolSelectorProps) {
         </p>
       </div>
 
-      <div className="grid lg:grid-cols-3 gap-4 sm:gap-6">
+      <div className="grid @5xl:grid-cols-3 gap-4 sm:gap-6">
         {/* Left: Decision Tree */}
-        <div className="lg:col-span-2 space-y-4 sm:space-y-6">
+        <div className="@5xl:col-span-2 space-y-4 sm:space-y-6">
           {/* Decision Tree Flow */}
           <div className="bg-[var(--bg-secondary)] rounded-2xl sm:rounded-3xl border border-gray-200 dark:border-gray-700 p-4 sm:p-6">
             <h3 data-tour="visual-tree" className="text-lg sm:text-xl font-semibold mb-4 sm:mb-6 text-gray-900 dark:text-gray-100">
@@ -230,7 +230,7 @@ export function VisualToolSelector({ allResources }: VisualToolSelectorProps) {
                   What's your goal?
                 </h4>
               </div>
-              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-2 2xl:grid-cols-4 gap-3 sm:gap-4 ml-0 sm:ml-11 items-stretch">
+              <div className="grid grid-cols-1 @2xl:grid-cols-2 @5xl:grid-cols-2 @7xl:grid-cols-4 gap-3 sm:gap-4 ml-0 @2xl:ml-11 items-stretch">
                 {GOALS.map((goal) => (
                   <Button variant="ghost"
                     data-tour="visual-goal"
@@ -272,7 +272,7 @@ export function VisualToolSelector({ allResources }: VisualToolSelectorProps) {
                     Who's your audience?
                   </h4>
                 </div>
-                <div className="grid grid-cols-2 md:grid-cols-4 gap-3 sm:gap-4 ml-0 sm:ml-11 items-stretch">
+                <div className="grid grid-cols-2 @3xl:grid-cols-4 gap-3 sm:gap-4 ml-0 @2xl:ml-11 items-stretch">
                   {AUDIENCES.map((audience) => (
                     <Button variant="ghost"
                       key={audience.id}
@@ -312,7 +312,7 @@ export function VisualToolSelector({ allResources }: VisualToolSelectorProps) {
                     What's your timeline?
                   </h4>
                 </div>
-                <div className="grid grid-cols-2 md:grid-cols-4 gap-3 sm:gap-4 ml-0 sm:ml-11 items-stretch">
+                <div className="grid grid-cols-2 @3xl:grid-cols-4 gap-3 sm:gap-4 ml-0 @2xl:ml-11 items-stretch">
                   {TIMELINES.map((timeline) => (
                     <Button variant="ghost"
                       key={timeline.id}
@@ -351,11 +351,11 @@ export function VisualToolSelector({ allResources }: VisualToolSelectorProps) {
 
           {/* Results */}
           <div>
-            <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 mb-4">
+            <div className="flex flex-col @2xl:flex-row @2xl:items-center @2xl:justify-between gap-3 mb-4">
               <h3 className="text-xl font-semibold text-gray-900 dark:text-gray-100">
                 Results ({filteredTools.length})
               </h3>
-              <div className="flex items-center gap-2 self-start sm:self-auto">
+              <div className="flex items-center gap-2 self-start @2xl:self-auto">
                 {searchOpen && (
                   <div className="relative">
                     <input
@@ -414,7 +414,7 @@ export function VisualToolSelector({ allResources }: VisualToolSelectorProps) {
                 </Button>
               </div>
             ) : (
-              <div className="grid md:grid-cols-2 gap-4">
+              <div className="grid @3xl:grid-cols-2 gap-4">
                 {filteredTools.slice(0, 12).map((tool) => (
                   <ResourceCard
                     key={tool.slug}
@@ -428,7 +428,7 @@ export function VisualToolSelector({ allResources }: VisualToolSelectorProps) {
         </div>
 
         {/* Right: Visual Filters */}
-        <div data-tour="visual-results" className="lg:col-span-1">
+        <div data-tour="visual-results" className="@5xl:col-span-1">
           <div className="lg:sticky lg:top-4 space-y-4 sm:space-y-6">
             {/* Sustainability Focus */}
             <div className="bg-[var(--bg-secondary)] rounded-2xl sm:rounded-3xl border border-gray-200 dark:border-gray-700 p-4 sm:p-6">

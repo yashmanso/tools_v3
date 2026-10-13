@@ -84,7 +84,7 @@ export function ToolCompatibility({ currentTool, allResources }: ToolCompatibili
             <p className="text-sm text-gray-600 dark:text-gray-400 mb-4">
               These tools work well together with <strong>{currentTool.title}</strong>
             </p>
-            <div className="grid md:grid-cols-2 gap-4">
+            <div className="grid @3xl:grid-cols-2 gap-4">
               {analysis.complementaryTools.slice(0, 6).map((result) => (
                 <div
                   key={result.tool.slug}
@@ -124,7 +124,7 @@ export function ToolCompatibility({ currentTool, allResources }: ToolCompatibili
             <p className="text-sm text-gray-600 dark:text-gray-400 mb-4">
               These tools cover much the same ground as <strong>{currentTool.title}</strong>. You probably only need one.
             </p>
-            <div className="grid md:grid-cols-2 gap-4">
+            <div className="grid @3xl:grid-cols-2 gap-4">
               {analysis.overlappingTools.slice(0, 4).map((result) => (
                 <div
                   key={result.tool.slug}

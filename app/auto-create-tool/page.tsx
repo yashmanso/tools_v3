@@ -278,7 +278,7 @@ Thank you!`
                 />
               </div>
 
-              <div className="grid gap-4 md:grid-cols-3">
+              <div className="grid gap-4 @3xl:grid-cols-3">
                 <div className="space-y-2">
                   <Label htmlFor="openai-key">
                     OpenAI API Key

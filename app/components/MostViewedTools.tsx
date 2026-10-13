@@ -64,7 +64,7 @@ export function MostViewedTools({ allResources }: MostViewedToolsProps) {
           </p>
         </div>
 
-        <div className="grid md:grid-cols-3 gap-6">
+        <div className="grid @3xl:grid-cols-3 gap-6">
           {mostViewed.map((tool, index) => (
             <ScrollAnimation key={`${tool.category}/${tool.slug}`} direction="slide-up" delay={index * 100}>
               <CardLink

@@ -168,7 +168,7 @@ export function WorkflowBuilder({ allResources }: WorkflowBuilderProps) {
   if (isCreating && currentWorkflow) {
     return (
       <div className="max-w-7xl mx-auto">
-        <div className="mb-4 sm:mb-6 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
+        <div className="mb-4 sm:mb-6 flex flex-col @2xl:flex-row items-start @2xl:items-center justify-between gap-3">
           <Button variant="ghost"
             onClick={() => {
               setIsCreating(false);
@@ -180,7 +180,7 @@ export function WorkflowBuilder({ allResources }: WorkflowBuilderProps) {
           >
             ← Back to workflows
           </Button>
-          <div className="flex gap-2 w-full sm:w-auto">
+          <div className="flex gap-2 w-full @2xl:w-auto">
             {currentWorkflow.id && workflows.some(w => w.id === currentWorkflow.id) && (
               <Button variant="ghost"
                 onClick={() => {
@@ -202,9 +202,9 @@ export function WorkflowBuilder({ allResources }: WorkflowBuilderProps) {
           </div>
         </div>
 
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 sm:gap-6">
+        <div className="grid grid-cols-1 @5xl:grid-cols-3 gap-4 sm:gap-6">
           {/* Left: Workflow Editor */}
-          <div className="lg:col-span-2 space-y-4 sm:space-y-6">
+          <div className="@5xl:col-span-2 space-y-4 sm:space-y-6">
             {/* Workflow Info */}
             <div className="bg-[var(--bg-secondary)] rounded-2xl sm:rounded-3xl border border-gray-200 dark:border-gray-700 p-4 sm:p-6">
               <input
@@ -246,7 +246,7 @@ export function WorkflowBuilder({ allResources }: WorkflowBuilderProps) {
                         {step.order}
                       </div>
 
-                      <div className="ml-10 sm:ml-12">
+                      <div className="ml-10 @2xl:ml-12">
                         <div className="flex items-start justify-between mb-2 sm:mb-3">
                           <div className="flex-1 pr-2">
                             <h4 className="text-base sm:text-lg font-semibold text-gray-900 dark:text-gray-100 break-words">
@@ -310,7 +310,7 @@ export function WorkflowBuilder({ allResources }: WorkflowBuilderProps) {
           </div>
 
           {/* Right: Tool Search */}
-          <div className="lg:col-span-1">
+          <div className="@5xl:col-span-1">
             <div className="lg:sticky lg:top-4">
               <div data-tour="wf-add" className="bg-[var(--bg-secondary)] rounded-2xl sm:rounded-3xl border border-gray-200 dark:border-gray-700 p-4 sm:p-6">
                 <h3 className="text-base sm:text-lg font-semibold mb-3 sm:mb-4 text-gray-900 dark:text-gray-100">
@@ -422,7 +422,7 @@ export function WorkflowBuilder({ allResources }: WorkflowBuilderProps) {
         <Button variant="ghost"
           data-tour="wf-create"
           onClick={handleCreateNew}
-          className="px-6 py-3 bg-blue-600 text-white rounded-full hover:bg-blue-700 transition-colors"
+          className="px-6 py-3 bg-blue-600 text-white rounded-full max-w-full whitespace-normal hover:bg-blue-700 transition-colors"
         >
           + Create workflow
         </Button>
@@ -442,7 +442,7 @@ export function WorkflowBuilder({ allResources }: WorkflowBuilderProps) {
               {showTemplates ? 'Hide' : 'Show'} templates
             </Button>
           </div>
-          <div className="grid md:grid-cols-3 gap-4">
+          <div className="grid @3xl:grid-cols-3 gap-4">
             {templates.map((template) => (
               <div
                 key={template.id}
@@ -488,7 +488,7 @@ export function WorkflowBuilder({ allResources }: WorkflowBuilderProps) {
             </Button>
           </div>
         ) : (
-          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-4">
+          <div className="grid @3xl:grid-cols-2 @5xl:grid-cols-3 gap-4">
             {workflows.map((workflow) => (
               <div
                 key={workflow.id}

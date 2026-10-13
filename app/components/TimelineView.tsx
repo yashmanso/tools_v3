@@ -91,11 +91,11 @@ export function TimelineView({ allResources }: TimelineViewProps) {
       {/* Timeline visualization */}
       <div className="relative mb-8 sm:mb-12">
         {/* Timeline line - hidden on mobile, visible on larger screens */}
-        <div className="hidden lg:block absolute left-0 right-0 top-8 h-1 bg-gradient-to-r from-blue-500 via-purple-500 via-green-500 via-orange-500 to-indigo-500 rounded-full"></div>
+        <div className="hidden @5xl:block absolute left-0 right-0 top-8 h-1 bg-gradient-to-r from-blue-500 via-purple-500 via-green-500 via-orange-500 to-indigo-500 rounded-full"></div>
 
         {/* Stage markers - horizontally scrollable on small screens */}
         <div data-tour="timeline-stages" className="overflow-x-auto pb-4 -mx-4 px-4 sm:mx-0 sm:px-0">
-          <div className="relative flex justify-between items-start gap-2 min-w-[640px] lg:min-w-0">
+          <div className="relative flex justify-between items-start gap-2 min-w-[640px] @5xl:min-w-0">
             {INNOVATION_STAGES.map((stage, index) => {
               const toolCount = toolsByStage[stage.id]?.length || 0;
               const isSelected = selectedStage === stage.id;
@@ -116,12 +116,12 @@ export function TimelineView({ allResources }: TimelineViewProps) {
                         ? `Show all stages`
                         : `Show ${toolCount} ${toolCount === 1 ? 'tool' : 'tools'} in ${stage.label}`
                   }
-                  className={`flex flex-col items-center w-[75px] lg:flex-1 bg-transparent rounded-xl p-1 transition-opacity ${
+                  className={`flex flex-col items-center w-[75px] @5xl:flex-1 bg-transparent rounded-xl p-1 transition-opacity ${
                     isEmpty ? 'cursor-default opacity-40' : 'cursor-pointer'
                   } ${isDimmed ? 'opacity-50 hover:opacity-100' : 'opacity-100'}`}
                 >
                   <div
-                    className={`relative z-10 w-12 h-12 lg:w-16 lg:h-16 rounded-full ${stage.color} flex items-center justify-center font-semibold text-xs lg:text-sm mb-2 border-2 border-white dark:border-gray-800 shadow-lg transition-transform ${
+                    className={`relative z-10 w-12 h-12 @5xl:w-16 @5xl:h-16 rounded-full ${stage.color} flex items-center justify-center font-semibold text-xs lg:text-sm mb-2 border-2 border-white dark:border-gray-800 shadow-lg transition-transform ${
                       isSelected
                         ? 'ring-2 ring-offset-2 ring-blue-500 dark:ring-offset-gray-900 scale-110'
                         : isEmpty
@@ -187,22 +187,22 @@ export function TimelineView({ allResources }: TimelineViewProps) {
               className="relative scroll-mt-24"
             >
               {/* Stage header */}
-              <div className="flex flex-col sm:flex-row items-start sm:items-center gap-2 sm:gap-4 mb-4 sm:mb-6">
+              <div className="flex flex-col @2xl:flex-row items-start @2xl:items-center gap-2 sm:gap-4 mb-4 sm:mb-6">
                 <div className={`px-3 sm:px-4 py-1.5 sm:py-2 rounded-full ${stage.color} font-semibold text-xs sm:text-sm`}>
                   {stage.label}
                 </div>
-                <div className="hidden sm:block flex-1 h-px bg-gray-200 dark:bg-gray-700"></div>
+                <div className="hidden @2xl:block flex-1 h-px bg-gray-200 dark:bg-gray-700"></div>
                 <div className="text-xs sm:text-sm text-gray-500 dark:text-gray-400">
                   {stageTools.length} {stageTools.length === 1 ? 'tool' : 'tools'}
                 </div>
               </div>
               
-              <p className="text-xs sm:text-sm text-gray-600 dark:text-gray-400 mb-3 sm:mb-4 ml-0 sm:ml-2">
+              <p className="text-xs sm:text-sm text-gray-600 dark:text-gray-400 mb-3 sm:mb-4 ml-0 @2xl:ml-2">
                 {stage.description}
               </p>
 
               {/* Tools grid */}
-              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-4">
+              <div className="grid grid-cols-1 @2xl:grid-cols-2 @5xl:grid-cols-3 gap-3 sm:gap-4">
                 {stageTools.map((tool, index) => (
                   <ResourceCard key={tool.slug} resource={tool} allResources={allResources} animationDelay={index * 50} />
                 ))}
@@ -214,21 +214,21 @@ export function TimelineView({ allResources }: TimelineViewProps) {
         {/* Uncategorized tools - hidden while a specific stage is selected */}
         {!selectedStage && toolsByStage['uncategorized'] && toolsByStage['uncategorized'].length > 0 && (
           <div className="relative">
-            <div className="flex flex-col sm:flex-row items-start sm:items-center gap-2 sm:gap-4 mb-4 sm:mb-6">
+            <div className="flex flex-col @2xl:flex-row items-start @2xl:items-center gap-2 sm:gap-4 mb-4 sm:mb-6">
               <div className="px-3 sm:px-4 py-1.5 sm:py-2 rounded-full bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300 font-semibold text-xs sm:text-sm">
                 Other tools
               </div>
-              <div className="hidden sm:block flex-1 h-px bg-gray-200 dark:bg-gray-700"></div>
+              <div className="hidden @2xl:block flex-1 h-px bg-gray-200 dark:bg-gray-700"></div>
               <div className="text-xs sm:text-sm text-gray-500 dark:text-gray-400">
                 {toolsByStage['uncategorized'].length} {toolsByStage['uncategorized'].length === 1 ? 'tool' : 'tools'}
               </div>
             </div>
             
-            <p className="text-xs sm:text-sm text-gray-600 dark:text-gray-400 mb-3 sm:mb-4 ml-0 sm:ml-2">
+            <p className="text-xs sm:text-sm text-gray-600 dark:text-gray-400 mb-3 sm:mb-4 ml-0 @2xl:ml-2">
               Tools without a specific innovation stage tag
             </p>
 
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-4">
+            <div className="grid grid-cols-1 @2xl:grid-cols-2 @5xl:grid-cols-3 gap-3 sm:gap-4">
               {toolsByStage['uncategorized'].map((tool, index) => (
                 <ResourceCard key={tool.slug} resource={tool} allResources={allResources} animationDelay={index * 50} />
               ))}

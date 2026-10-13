@@ -505,11 +505,11 @@ export function NetworkGraph({ allResources, graphData }: NetworkGraphProps) {
   return (
     <div className={
       isExpanded
-        ? 'fixed inset-0 z-[100] flex flex-col lg:flex-row bg-[var(--bg-primary)] overflow-hidden'
-        : 'flex flex-col lg:flex-row h-[600px] sm:h-[700px] lg:h-[800px] bg-[var(--bg-primary)] rounded-2xl sm:rounded-3xl border border-gray-200 dark:border-gray-700 overflow-hidden'
+        ? 'fixed inset-0 z-[100] flex flex-col @5xl:flex-row bg-[var(--bg-primary)] overflow-hidden'
+        : 'flex flex-col @5xl:flex-row h-[600px] sm:h-[700px] lg:h-[800px] bg-[var(--bg-primary)] rounded-2xl sm:rounded-3xl border border-gray-200 dark:border-gray-700 overflow-hidden'
     }>
       {/* Left Sidebar */}
-      <div className={`w-full lg:w-80 border-b lg:border-b-0 lg:border-r border-gray-200 dark:border-gray-700 bg-[var(--bg-secondary)] flex flex-col ${
+      <div className={`w-full @5xl:w-80 border-b @5xl:border-b-0 @5xl:border-r border-gray-200 dark:border-gray-700 bg-[var(--bg-secondary)] flex flex-col ${
         isExpanded ? 'h-[200px] lg:h-full' : 'h-[200px] sm:h-[250px] lg:h-auto'
       }`}>
         {/* Search */}

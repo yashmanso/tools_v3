@@ -224,7 +224,7 @@ export function SlidingPanels({ children, allResources = [] }: SlidingPanelsProp
         style={{ height: '100%', overflow: 'hidden' }}
       >
         <div 
-          className={`container mx-auto px-6 py-12 max-w-7xl bg-[var(--bg-primary)] transition-[padding] duration-300 ease-in-out `}
+          className={`@container container mx-auto px-6 py-12 max-w-7xl bg-[var(--bg-primary)] transition-[padding] duration-300 ease-in-out `}
           style={{ height: '100%', overflowY: 'auto', overscrollBehavior: 'contain' }}
         >
           {children}
@@ -294,7 +294,7 @@ export function SlidingPanels({ children, allResources = [] }: SlidingPanelsProp
               <div
                 key={panel.id}
                 data-panel-id={panel.id}
-                className={`flex-shrink-0 border-r border-[var(--border)] bg-[var(--bg-secondary)] relative transition-all duration-300 ${
+                className={`@container flex-shrink-0 border-r border-[var(--border)] bg-[var(--bg-secondary)] relative transition-all duration-300 ${
                   isPanelExpanded ? 'w-full' : isHidden ? 'w-0 opacity-0' : 'w-[500px]'
                 }`}
                 style={{ 
